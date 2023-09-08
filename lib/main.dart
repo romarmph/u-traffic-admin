@@ -1,5 +1,7 @@
-import "package:flutter/material.dart";
-import 'package:firebase_core/firebase_core.dart';
+import 'package:u_traffic_admin/views/wrapper.dart';
+
+import 'config/exports/flutter.dart';
+import 'config/exports/packages.dart';
 
 import 'firebase_options.dart';
 
@@ -8,7 +10,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const UTrafficAdmin());
+  runApp(
+    const ProviderScope(
+      child: UTrafficAdmin(),
+    ),
+  );
 }
 
 class UTrafficAdmin extends StatelessWidget {
@@ -17,12 +23,9 @@ class UTrafficAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "U-Traffic Admin",
-      home: Scaffold(
-        body: Center(
-          child: Text("Admin Home"),
-        ),
-      ),
+      home: Wrapper(),
     );
   }
 }
