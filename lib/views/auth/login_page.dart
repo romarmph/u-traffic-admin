@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class LoginPage extends ConsumerWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final formkey = ref.watch(loginFormControllerProvider).formKey;
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends ConsumerState<LoginPage> {
+  @override
+  Widget build(BuildContext context) {
+    final formKey = ref.read(loginFormKeyProvider);
 
     return Scaffold(
       body: Center(
         child: Container(
-          width: 300,
+          width: 400,
+          height: 400,
           padding: const EdgeInsets.all(USpace.space12),
+          decoration: BoxDecoration(
+            color: UColors.gray50,
+            border: Border.all(
+              color: UColors.blue200,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.circular(USpace.space12),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -24,16 +38,11 @@ class LoginPage extends ConsumerWidget {
               ),
               const SizedBox(height: USpace.space20),
               Form(
-                key: formkey,
+                key: formKey,
                 child: const LoginForm(),
               ),
               const SizedBox(height: USpace.space20),
-              ElevatedButton(
-                onPressed: () {
-                  ref.watch(loginFormControllerProvider).login();
-                },
-                child: const Text('Login'),
-              ),
+              const LoginButton(),
             ],
           ),
         ),

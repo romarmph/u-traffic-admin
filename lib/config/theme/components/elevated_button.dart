@@ -9,7 +9,7 @@ final elevatedButtonTheme = ElevatedButtonThemeData(
       borderRadius: BorderRadius.circular(USpace.space8),
     ),
     padding: const EdgeInsets.symmetric(
-      vertical: USpace.space16,
+      vertical: USpace.space24,
       horizontal: USpace.space24,
     ),
     textStyle: const UTextStyle().textbasefontmedium,

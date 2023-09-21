@@ -21,6 +21,7 @@ class UTrafficAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: "U-Traffic Admin",
       theme: ThemeData(

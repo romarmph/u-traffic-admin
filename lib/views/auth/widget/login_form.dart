@@ -6,15 +6,13 @@ class LoginForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final loginController =
-        ref.watch(loginFormControllerProvider).loginController;
-    final passwordController =
-        ref.watch(loginFormControllerProvider).passwordController;
+    final emailController = ref.read(emailControllerProvider);
+    final passwordController = ref.read(passwordControllerProvider);
 
     return Column(
       children: [
         TextFormField(
-          controller: loginController,
+          controller: emailController,
           decoration: const InputDecoration(
             labelText: 'Email',
           ),
