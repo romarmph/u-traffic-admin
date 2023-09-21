@@ -50,7 +50,7 @@ class CustomExceptions {
   );
 
   static CustomException tooManyRequests = const CustomException(
-    message: 'Too many requests. Try again later',
+    message: 'Consecutive incorrect login attempts. Please try again later',
     code: 'too-many-requests',
   );
 }

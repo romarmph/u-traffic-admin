@@ -11,7 +11,7 @@ class LoginPage extends ConsumerStatefulWidget {
 class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    final formKey = ref.read(loginFormKeyProvider);
+    final formKey = ref.read(loginFormControllerProvider).formKey;
 
     return Scaffold(
       body: Center(

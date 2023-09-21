@@ -6,17 +6,33 @@ class LoginForm extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final emailController = ref.read(emailControllerProvider);
-    final passwordController = ref.read(passwordControllerProvider);
-    final isVisible = ref.watch(passwordVisibilityStateProvider);
+    final loginFormController = ref.read(loginFormControllerProvider);
+
+    final emailController = loginFormController.emailController;
+    final passwordController = loginFormController.passwordController;
+    final isHidden = ref.watch(passwordVisibilityStateProvider);
+    final emailError = ref.watch(emailErrorStateProvider);
+    final passwordError = ref.watch(passwordErrorStateProvider);
+
+    final showEmailError = emailError != null;
+    final showPasswordError = passwordError != null;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextFormField(
           controller: emailController,
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: showEmailError ? UColors.red400 : Colors.white,
+              ),
+            ),
             labelText: 'Email',
-            prefixIcon: Icon(
+            labelStyle: TextStyle(
+              color: showEmailError ? UColors.red400 : UColors.gray400,
+            ),
+            prefixIcon: const Icon(
               Icons.mail,
               size: USpace.space16,
             ),
@@ -29,12 +45,30 @@ class LoginForm extends ConsumerWidget {
             return null;
           },
         ),
+        Visibility(
+          visible: showEmailError,
+          child: Text(
+            emailError ?? "",
+            textAlign: TextAlign.start,
+            style: const TextStyle(
+              color: UColors.red400,
+            ),
+          ),
+        ),
         const SizedBox(height: USpace.space12),
         TextFormField(
           controller: passwordController,
-          obscureText: isVisible,
+          obscureText: isHidden,
           decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                color: showPasswordError ? UColors.red400 : Colors.white,
+              ),
+            ),
             labelText: 'Password',
+            labelStyle: TextStyle(
+              color: showPasswordError ? UColors.red400 : UColors.gray400,
+            ),
             prefixIcon: const Icon(
               Icons.lock,
               size: USpace.space16,
@@ -46,7 +80,8 @@ class LoginForm extends ConsumerWidget {
                     );
               },
               icon: Icon(
-                isVisible ? Icons.visibility_off : Icons.visibility,
+                isHidden ? Icons.visibility_off : Icons.visibility,
+                color: isHidden ? UColors.gray400 : UColors.blue400,
               ),
             ),
           ),
@@ -57,6 +92,16 @@ class LoginForm extends ConsumerWidget {
 
             return null;
           },
+        ),
+        Visibility(
+          visible: showPasswordError,
+          child: Text(
+            passwordError ?? "",
+            textAlign: TextAlign.start,
+            style: const TextStyle(
+              color: UColors.red400,
+            ),
+          ),
         ),
       ],
     );

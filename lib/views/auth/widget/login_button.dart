@@ -13,9 +13,11 @@ class LoginButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final formKey = ref.read(loginFormKeyProvider);
-    final emailController = ref.read(emailControllerProvider);
-    final passwordController = ref.read(passwordControllerProvider);
+    final loginFormController = ref.read(loginFormControllerProvider);
+
+    final formKey = loginFormController.formKey;
+    final emailController = loginFormController.emailController;
+    final passwordController = loginFormController.passwordController;
     final isLoading = ref.watch(isLoadingProvider);
 
     void setLoading(bool value) {
@@ -30,19 +32,33 @@ class LoginButton extends ConsumerWidget {
                 email: emailController.text,
                 password: passwordController.text,
               );
+
+          ref.read(emailErrorStateProvider.notifier).update((state) {
+            return null;
+          });
+          ref.read(passwordErrorStateProvider.notifier).update((state) {
+            return null;
+          });
+          loginFormController.clear();
         } on CustomException catch (e) {
           if (e == CustomExceptions.adminNotFound) {
-            CustomAlerts.showError(
-              title: 'Login Error',
-              text: e.message,
-            );
+            ref.read(emailErrorStateProvider.notifier).update((state) {
+              return e.message;
+            });
+          } else {
+            ref.read(emailErrorStateProvider.notifier).update((state) {
+              return null;
+            });
           }
 
           if (e == CustomExceptions.incorrectPassword) {
-            CustomAlerts.showError(
-              title: 'Login Error',
-              text: e.message,
-            );
+            ref.read(passwordErrorStateProvider.notifier).update((state) {
+              return e.message;
+            });
+          } else {
+            ref.read(passwordErrorStateProvider.notifier).update((state) {
+              return null;
+            });
           }
 
           if (e == CustomExceptions.tooManyRequests) {
@@ -52,6 +68,7 @@ class LoginButton extends ConsumerWidget {
             );
           }
         }
+
         setLoading(false);
       }
     }
