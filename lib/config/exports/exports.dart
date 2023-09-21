@@ -23,6 +23,7 @@ export 'package:quickalert/quickalert.dart';
 
 // Commons
 export 'package:u_traffic_admin/views/common/alert_dialogs.dart';
+export 'package:u_traffic_admin/views/common/theme_toggle.dart';
 
 // Auth
 export 'package:u_traffic_admin/views/auth/login_page.dart';
@@ -50,6 +51,7 @@ export 'package:u_traffic_admin/config/theme/components/elevated_button.dart';
 export 'package:u_traffic_admin/config/theme/components/fab.dart';
 export 'package:u_traffic_admin/config/theme/components/input_decoration.dart';
 export 'package:u_traffic_admin/config/theme/components/text_button.dart';
+export 'package:u_traffic_admin/config/theme/components/outlined_button.dart';
 
 /**
  * 
@@ -63,6 +65,9 @@ export 'package:u_traffic_admin/riverpod/database/database_providers.dart';
 // Auth
 export 'package:u_traffic_admin/riverpod/auth/auth_provider.dart';
 export 'package:u_traffic_admin/riverpod/auth/form_controller.dart';
+
+// Theme
+export 'package:u_traffic_admin/riverpod/theme/theme_mode_provider.dart';
 
 /**
  * 
