@@ -40,6 +40,9 @@ dependencies:
   cloud_firestore: ^4.8.2
   flutter_riverpod: ^2.4.0
   intl: ^0.18.1
+  google_fonts: ^6.0.0
+  email_validator: ^2.1.17
+  quickalert: ^1.0.2
 
 dev_dependencies:
   flutter_test:

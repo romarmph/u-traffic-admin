@@ -1,7 +1,5 @@
-import '../config/exports/flutter.dart';
-import '../config/exports/packages.dart';
-import '../config/exports/riverpod.dart';
-import '../config/exports/views.dart';
+import 'package:flutter/material.dart';
+import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class Wrapper extends ConsumerWidget {
   const Wrapper({super.key});

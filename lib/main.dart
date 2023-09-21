@@ -1,7 +1,5 @@
-import 'package:u_traffic_admin/views/wrapper.dart';
-
-import 'config/exports/flutter.dart';
-import 'config/exports/packages.dart';
+import 'package:flutter/material.dart';
+import 'config/exports/exports.dart';
 
 import 'firebase_options.dart';
 
@@ -22,10 +20,41 @@ class UTrafficAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: "U-Traffic Admin",
-      home: Wrapper(),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: UColors.blue600,
+        ),
+        useMaterial3: true,
+        fontFamily: GoogleFonts.inter().fontFamily,
+        elevatedButtonTheme: elevatedButtonTheme,
+        inputDecorationTheme: inputDecorationTheme,
+        textButtonTheme: textButtonTheme,
+        floatingActionButtonTheme: fabTheme,
+        appBarTheme: appBarTheme,
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            textStyle: const UTextStyle().textbasefontmedium,
+            side: const BorderSide(
+              color: UColors.blue500,
+              width: 1.5,
+            ),
+            foregroundColor: UColors.blue500,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        scaffoldBackgroundColor: UColors.white,
+      ),
+      initialRoute: Routes.home,
+      routes: {
+        Routes.home: (context) => const Wrapper(),
+        Routes.login: (context) => const LoginPage(),
+      },
     );
   }
 }
