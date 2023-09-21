@@ -8,6 +8,7 @@ class LoginForm extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final emailController = ref.read(emailControllerProvider);
     final passwordController = ref.read(passwordControllerProvider);
+    final isVisible = ref.watch(passwordVisibilityStateProvider);
 
     return Column(
       children: [
@@ -15,6 +16,10 @@ class LoginForm extends ConsumerWidget {
           controller: emailController,
           decoration: const InputDecoration(
             labelText: 'Email',
+            prefixIcon: Icon(
+              Icons.mail,
+              size: USpace.space16,
+            ),
           ),
           validator: (value) {
             if (value!.isEmpty) {
@@ -27,8 +32,23 @@ class LoginForm extends ConsumerWidget {
         const SizedBox(height: USpace.space12),
         TextFormField(
           controller: passwordController,
-          decoration: const InputDecoration(
+          obscureText: isVisible,
+          decoration: InputDecoration(
             labelText: 'Password',
+            prefixIcon: const Icon(
+              Icons.lock,
+              size: USpace.space16,
+            ),
+            suffixIcon: IconButton(
+              onPressed: () {
+                ref.read(passwordVisibilityStateProvider.notifier).update(
+                      (state) => !state,
+                    );
+              },
+              icon: Icon(
+                isVisible ? Icons.visibility_off : Icons.visibility,
+              ),
+            ),
           ),
           validator: (value) {
             if (value!.isEmpty) {

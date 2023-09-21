@@ -39,7 +39,6 @@ class LoginButton extends ConsumerWidget {
           }
 
           if (e == CustomExceptions.incorrectPassword) {
-            print('dadsa');
             CustomAlerts.showError(
               title: 'Login Error',
               text: e.message,

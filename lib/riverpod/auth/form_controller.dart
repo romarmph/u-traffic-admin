@@ -15,3 +15,10 @@ final emailControllerProvider = Provider<TextEditingController>((ref) {
 final passwordControllerProvider = Provider<TextEditingController>((ref) {
   return TextEditingController();
 });
+
+///
+/// Password Visibility
+///
+final passwordVisibilityStateProvider = StateProvider<bool>((ref) {
+  return true;
+});
