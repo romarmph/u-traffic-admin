@@ -33,7 +33,22 @@ class LoginButton extends ConsumerWidget {
         } on CustomException catch (e) {
           if (e == CustomExceptions.adminNotFound) {
             CustomAlerts.showError(
-              title: 'Account Error',
+              title: 'Login Error',
+              text: e.message,
+            );
+          }
+
+          if (e == CustomExceptions.incorrectPassword) {
+            print('dadsa');
+            CustomAlerts.showError(
+              title: 'Login Error',
+              text: e.message,
+            );
+          }
+
+          if (e == CustomExceptions.tooManyRequests) {
+            CustomAlerts.showError(
+              title: 'Login Error',
               text: e.message,
             );
           }

@@ -23,9 +23,23 @@ class AuthService {
       throw CustomExceptions.adminDisabled;
     }
 
-    await _firebaseAuth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+    } on FirebaseException catch (e) {
+      if (e.toString().contains('user-not-found')) {
+        throw CustomExceptions.adminNotFound;
+      }
+
+      if (e.toString().contains('wrong-password')) {
+        throw CustomExceptions.incorrectPassword;
+      }
+
+      if (e.toString().contains('too-many-requests')) {
+        throw CustomExceptions.tooManyRequests;
+      }
+    }
   }
 }

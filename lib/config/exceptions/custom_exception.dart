@@ -48,4 +48,9 @@ class CustomExceptions {
     message: 'Incorrect password',
     code: 'incorrect-password',
   );
+
+  static CustomException tooManyRequests = const CustomException(
+    message: 'Too many requests. Try again later',
+    code: 'too-many-requests',
+  );
 }
