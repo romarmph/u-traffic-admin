@@ -14,6 +14,7 @@ export 'package:intl/intl.dart';
 export 'package:google_fonts/google_fonts.dart';
 export 'package:email_validator/email_validator.dart';
 export 'package:quickalert/quickalert.dart';
+export 'package:easy_sidemenu/easy_sidemenu.dart';
 
 /**
  * 
@@ -21,8 +22,13 @@ export 'package:quickalert/quickalert.dart';
  * 
  */
 
-// Commons
-export 'package:u_traffic_admin/views/common/alert_dialogs.dart';
+// Widgets
+export 'package:u_traffic_admin/views/widgets/alert_dialogs.dart';
+export 'package:u_traffic_admin/views/widgets/theme_toggle.dart';
+export 'package:u_traffic_admin/views/widgets/side_menu/divider.dart';
+export 'package:u_traffic_admin/views/widgets/side_menu/header.dart';
+export 'package:u_traffic_admin/views/widgets/side_menu/footer.dart';
+export 'package:u_traffic_admin/views/widgets/side_menu/menu_tile.dart';
 
 // Auth
 export 'package:u_traffic_admin/views/auth/login_page.dart';
@@ -32,7 +38,29 @@ export 'package:u_traffic_admin/views/auth/widget/login_button.dart';
 // Home
 export 'package:u_traffic_admin/views/home/home_page.dart';
 
+// Admin
+export 'package:u_traffic_admin/views/admin/admin_page.dart';
+
+// Enforcer
+export 'package:u_traffic_admin/views/enforcer/enforcer_page.dart';
+
+// Ticket
+export 'package:u_traffic_admin/views/ticket/ticket_page.dart';
+
+// Analytics
+export 'package:u_traffic_admin/views/analytics/analytics_page.dart';
+
+// Complaints
+export 'package:u_traffic_admin/views/complaints/complaints_page.dart';
+
+// System
+export 'package:u_traffic_admin/views/system/system_page.dart';
+
+// Settings
+export 'package:u_traffic_admin/views/settings/settings_page.dart';
+
 // Wrapper
+export 'package:u_traffic_admin/views/page_container.dart';
 export 'package:u_traffic_admin/views/wrapper.dart';
 
 /**
@@ -50,6 +78,7 @@ export 'package:u_traffic_admin/config/theme/components/elevated_button.dart';
 export 'package:u_traffic_admin/config/theme/components/fab.dart';
 export 'package:u_traffic_admin/config/theme/components/input_decoration.dart';
 export 'package:u_traffic_admin/config/theme/components/text_button.dart';
+export 'package:u_traffic_admin/config/theme/components/outlined_button.dart';
 
 /**
  * 
@@ -63,6 +92,13 @@ export 'package:u_traffic_admin/riverpod/database/database_providers.dart';
 // Auth
 export 'package:u_traffic_admin/riverpod/auth/auth_provider.dart';
 export 'package:u_traffic_admin/riverpod/auth/form_controller.dart';
+
+// Theme
+export 'package:u_traffic_admin/riverpod/theme/theme_mode_provider.dart';
+
+// Views
+export 'package:u_traffic_admin/riverpod/views/page_container/selected_route_provider.dart';
+export 'package:u_traffic_admin/riverpod/views/page_container/main_pages_provider.dart';
 
 /**
  * 
@@ -105,3 +141,6 @@ export 'package:u_traffic_admin/config/routes/routes.dart';
 
 // Keys
 export 'package:u_traffic_admin/config/navigator_key.dart';
+
+// Navigator
+export 'package:u_traffic_admin/config/navigator.dart';

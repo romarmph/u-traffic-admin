@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:u_traffic_admin/config/theme/data/dark_theme.dart';
+import 'package:u_traffic_admin/config/theme/data/light_theme.dart';
 import 'config/exports/exports.dart';
 
 import 'firebase_options.dart';
@@ -15,45 +17,30 @@ void main() async {
   );
 }
 
-class UTrafficAdmin extends StatelessWidget {
+class UTrafficAdmin extends ConsumerWidget {
   const UTrafficAdmin({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp(
       navigatorKey: navigatorKey,
       debugShowCheckedModeBanner: false,
       title: "U-Traffic Admin",
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: UColors.blue600,
-        ),
-        useMaterial3: true,
-        fontFamily: GoogleFonts.inter().fontFamily,
-        elevatedButtonTheme: elevatedButtonTheme,
-        inputDecorationTheme: inputDecorationTheme,
-        textButtonTheme: textButtonTheme,
-        floatingActionButtonTheme: fabTheme,
-        appBarTheme: appBarTheme,
-        outlinedButtonTheme: OutlinedButtonThemeData(
-          style: OutlinedButton.styleFrom(
-            textStyle: const UTextStyle().textbasefontmedium,
-            side: const BorderSide(
-              color: UColors.blue500,
-              width: 1.5,
-            ),
-            foregroundColor: UColors.blue500,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-        scaffoldBackgroundColor: UColors.white,
-      ),
+      themeMode: themeMode,
+      darkTheme: darkTheme,
+      theme: lightTheme,
       initialRoute: Routes.home,
       routes: {
         Routes.home: (context) => const Wrapper(),
         Routes.login: (context) => const LoginPage(),
+        Routes.adminStaffs: (context) => const AdminPage(),
+        Routes.enforcers: (context) => const EnforcerPage(),
+        Routes.tickets: (context) => const TicketPage(),
+        Routes.analytics: (context) => const AnalyticsPage(),
+        Routes.complaints: (context) => const ComplaintsPage(),
+        Routes.system: (context) => const SystemPage(),
+        Routes.settings: (context) => const SettingsPage(),
       },
     );
   }

@@ -15,36 +15,58 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     return Scaffold(
       body: Center(
-        child: Container(
-          width: 400,
-          height: 400,
-          padding: const EdgeInsets.all(USpace.space12),
-          decoration: BoxDecoration(
-            color: UColors.gray50,
-            border: Border.all(
-              color: UColors.blue200,
-              width: 1,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(USpace.space24),
+              decoration: BoxDecoration(
+                color: UColors.gray50,
+                border: Border.all(
+                  color: UColors.blue200,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(USpace.space12),
+              ),
+              child: SizedBox(
+                width: 400,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: 100,
+                      child: Image.asset(
+                        'assets/logo/logo_color.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: USpace.space20),
+                    Text(
+                      'U -Traffic Admin',
+                      style: const UTextStyle().text2xlfontblack,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: USpace.space20),
+                    Text(
+                      'Welcome back...',
+                      style: const UTextStyle()
+                          .textxlfontnormal
+                          .copyWith(color: UColors.gray500),
+                      textAlign: TextAlign.start,
+                    ),
+                    const SizedBox(height: USpace.space20),
+                    Form(
+                      key: formKey,
+                      child: const LoginForm(),
+                    ),
+                    const SizedBox(height: USpace.space20),
+                    const LoginButton(),
+                  ],
+                ),
+              ),
             ),
-            borderRadius: BorderRadius.circular(USpace.space12),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Login',
-                style: const UTextStyle().leadingloosetext2xlfontbold,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: USpace.space20),
-              Form(
-                key: formKey,
-                child: const LoginForm(),
-              ),
-              const SizedBox(height: USpace.space20),
-              const LoginButton(),
-            ],
-          ),
+          ],
         ),
       ),
     );
