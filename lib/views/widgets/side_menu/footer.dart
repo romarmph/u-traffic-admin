@@ -22,12 +22,14 @@ class SideMenuFooter extends ConsumerWidget {
         );
       }
 
-      return IconButton(
-        color: UColors.gray600,
-        onPressed: () {},
-        icon: const Icon(
-          Icons.logout,
+      return TextButton.icon(
+        style: TextButton.styleFrom(
+          foregroundColor: UColors.gray400,
+          padding: const EdgeInsets.all(USpace.space24),
         ),
+        onPressed: () {},
+        icon: const Icon(Icons.logout),
+        label: const Text('Logout'),
       );
     }
 
