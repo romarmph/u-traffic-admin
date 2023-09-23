@@ -11,7 +11,17 @@ class SideMenuFooter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (isCompact) {
+    Widget compactLogoutButton() {
+      if (isCompact) {
+        return IconButton(
+          color: UColors.gray600,
+          onPressed: () {},
+          icon: const Icon(
+            Icons.logout,
+          ),
+        );
+      }
+
       return IconButton(
         color: UColors.gray600,
         onPressed: () {},
@@ -29,15 +39,7 @@ class SideMenuFooter extends ConsumerWidget {
         const SizedBox(height: USpace.space12),
         const Center(child: ThemeToggleButton()),
         const SizedBox(height: USpace.space12),
-        TextButton.icon(
-          style: TextButton.styleFrom(
-            foregroundColor: UColors.gray600,
-            padding: const EdgeInsets.all(USpace.space24),
-          ),
-          onPressed: () {},
-          label: const Text('Logout'),
-          icon: const Icon(Icons.logout),
-        ),
+        compactLogoutButton(),
       ],
     );
   }

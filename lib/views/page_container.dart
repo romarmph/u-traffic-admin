@@ -112,7 +112,6 @@ class PageContainer extends ConsumerWidget {
                   return PageRouteBuilder(
                     pageBuilder: (context, animation, secondaryAnimation) {
                       final page = ref.watch(mainPagesProvider);
-                      print(page);
                       return page;
                     },
                     transitionsBuilder:
