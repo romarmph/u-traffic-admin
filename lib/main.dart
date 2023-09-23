@@ -34,6 +34,13 @@ class UTrafficAdmin extends ConsumerWidget {
       routes: {
         Routes.home: (context) => const Wrapper(),
         Routes.login: (context) => const LoginPage(),
+        Routes.adminStaffs: (context) => const AdminPage(),
+        Routes.enforcers: (context) => const EnforcerPage(),
+        Routes.tickets: (context) => const TicketPage(),
+        Routes.analytics: (context) => const AnalyticsPage(),
+        Routes.complaints: (context) => const ComplaintsPage(),
+        Routes.system: (context) => const SystemPage(),
+        Routes.settings: (context) => const SettingsPage(),
       },
     );
   }

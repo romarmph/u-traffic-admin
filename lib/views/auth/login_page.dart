@@ -34,10 +34,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    SizedBox(
+                      height: 100,
+                      child: Image.asset(
+                        'assets/logo/logo_color.png',
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    const SizedBox(height: USpace.space20),
                     Text(
-                      'Login',
-                      style: const UTextStyle().leadingloosetext2xlfontbold,
+                      'U -Traffic Admin',
+                      style: const UTextStyle().text2xlfontblack,
                       textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: USpace.space20),
+                    Text(
+                      'Welcome back...',
+                      style: const UTextStyle()
+                          .textxlfontnormal
+                          .copyWith(color: UColors.gray500),
+                      textAlign: TextAlign.start,
                     ),
                     const SizedBox(height: USpace.space20),
                     Form(
