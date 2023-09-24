@@ -44,18 +44,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     const SizedBox(height: USpace.space20),
                     Text(
                       'U -Traffic Admin',
-                      style: const UTextStyle().text2xlfontblack,
+                      style: const UTextStyle().text3xlfontbold.copyWith(
+                            color: UColors.gray700,
+                          ),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: USpace.space20),
-                    Text(
-                      'Welcome back...',
-                      style: const UTextStyle()
-                          .textxlfontnormal
-                          .copyWith(color: UColors.gray500),
-                      textAlign: TextAlign.start,
-                    ),
-                    const SizedBox(height: USpace.space20),
+                    const SizedBox(height: USpace.space28),
                     Form(
                       key: formKey,
                       child: const LoginForm(),
