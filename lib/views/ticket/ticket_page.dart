@@ -6,6 +6,11 @@ class TicketPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Placeholder();
+    return ContentView(
+      appBar: const CustomAppBar(
+        title: Text('Tickets'),
+      ),
+      body: Center(child: Text('Ticket Page')),
+    );
   }
 }

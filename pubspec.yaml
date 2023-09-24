@@ -23,6 +23,7 @@ dependencies:
   quickalert: ^1.0.2
   flutter_admin_scaffold: ^1.2.0
   easy_sidemenu: ^0.5.0
+  syncfusion_flutter_datagrid: ^23.1.36
 
 dev_dependencies:
   flutter_test:

@@ -11,7 +11,10 @@ class PageContainer extends ConsumerWidget {
     final sideMenuController = ref.watch(sideMenuControllerProvider);
 
     final deviceWidth = MediaQuery.of(context).size.width;
+    final deviceHeight = MediaQuery.of(context).size.height;
     final isCompact = deviceWidth <= 600;
+    final contentAreaWidth =
+        deviceWidth - (isCompact ? compactSideMenuWidth : openSideMenuWidth);
 
     return Scaffold(
       body: SafeArea(
@@ -21,6 +24,8 @@ class PageContainer extends ConsumerWidget {
               alwaysShowFooter: true,
               style: SideMenuStyle(
                 selectedColor: Colors.transparent,
+                compactSideMenuWidth: compactSideMenuWidth,
+                openSideMenuWidth: openSideMenuWidth,
               ),
               title: const SideMenuHeader(),
               controller: sideMenuController,
@@ -105,8 +110,9 @@ class PageContainer extends ConsumerWidget {
               ],
               footer: SideMenuFooter(isCompact: isCompact),
             ),
-            Expanded(
-              flex: 5,
+            SizedBox(
+              width: contentAreaWidth,
+              height: deviceHeight,
               child: Navigator(
                 onGenerateRoute: (settings) {
                   return PageRouteBuilder(

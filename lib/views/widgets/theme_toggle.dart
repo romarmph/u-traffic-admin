@@ -15,8 +15,6 @@ class ThemeToggleButton extends ConsumerWidget {
       ref.read(isDarkModeProvider.notifier).state = !isDarkMode;
     }
 
-    print(isCompact);
-
     if (isCompact) {
       return IconButton(
         onPressed: () => toggle(),
