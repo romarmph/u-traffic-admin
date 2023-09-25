@@ -10,7 +10,36 @@ class TicketPage extends ConsumerWidget {
       appBar: const CustomAppBar(
         title: Text('Tickets'),
       ),
-      body: Center(child: Text('Ticket Page')),
+      body: Padding(
+        padding: const EdgeInsets.all(USpace.space12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SfDataGrid(
+              gridLinesVisibility: GridLinesVisibility.horizontal,
+              
+              columnWidthMode: ColumnWidthMode.auto,
+              source: TicketDataSource(
+                ticketdata: ref.watch(fetchedTicketsProvider),
+              ),
+              columns: [
+                GridColumn(
+                  columnName: TicketGridFields.ticketNumber,
+                  label: const Text('Ticket No.'),
+                ),
+                GridColumn(
+                  columnName: TicketGridFields.driverName,
+                  label: const Text('Driver Name'),
+                ),
+                GridColumn(
+                  columnName: TicketGridFields.licenseNumber,
+                  label: const Text('License No.'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
