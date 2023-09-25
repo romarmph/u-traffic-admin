@@ -26,10 +26,10 @@ class TicketDatabase {
         );
       }).toList();
       return tickets;
+    } on FirebaseException {
+      rethrow;
     } catch (e) {
-      print(e);
+      rethrow;
     }
-
-    return [];
   }
 }
