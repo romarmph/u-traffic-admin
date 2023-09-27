@@ -27,39 +27,44 @@ class SideMenuItemTile extends ConsumerWidget {
       ref.read(selectedRouteProvider.notifier).update((state) => route);
     }
 
-    return Card(
-      color: Colors.transparent,
-      elevation: 0,
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      child: Material(
-        color: isSelected ? UColors.blue700 : Colors.transparent,
-        child: InkWell(
-          splashColor: UColors.blue600,
-          onTap: changePage,
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isCompact ? 0 : USpace.space12,
-              vertical: USpace.space12,
-            ),
-            child: Row(
-              mainAxisAlignment: isCompact
-                  ? MainAxisAlignment.center
-                  : MainAxisAlignment.start,
-              children: [
-                Icon(
-                  icon,
-                  color: isSelected ? UColors.white : fgColor,
-                ),
-                SizedBox(width: isCompact ? 0 : USpace.space8),
-                isCompact
-                    ? const SizedBox.shrink()
-                    : Text(
-                        title,
-                        style: const UTextStyle().textsmfontnormal.copyWith(
-                              color: isSelected ? UColors.white : fgColor,
-                            ),
-                      ),
-              ],
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: isCompact ? 0 : USpace.space12,
+      ),
+      child: Card(
+        color: Colors.transparent,
+        elevation: 0,
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: Material(
+          color: isSelected ? UColors.blue700 : Colors.transparent,
+          child: InkWell(
+            splashColor: UColors.blue600,
+            onTap: changePage,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: isCompact ? 0 : USpace.space12,
+                vertical: USpace.space12,
+              ),
+              child: Row(
+                mainAxisAlignment: isCompact
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    icon,
+                    color: isSelected ? UColors.white : fgColor,
+                  ),
+                  SizedBox(width: isCompact ? 0 : USpace.space8),
+                  isCompact
+                      ? const SizedBox.shrink()
+                      : Text(
+                          title,
+                          style: const UTextStyle().textsmfontnormal.copyWith(
+                                color: isSelected ? UColors.white : fgColor,
+                              ),
+                        ),
+                ],
+              ),
             ),
           ),
         ),

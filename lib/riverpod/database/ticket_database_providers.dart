@@ -11,3 +11,15 @@ final fetchedTicketsProvider = Provider<List<Ticket>>((ref) {
         loading: () => [],
       );
 });
+
+final getTicketCountProvider = FutureProvider<int>((ref) async {
+  return await TicketDatabase.instance.getTicketCount();
+});
+
+final fetchedTicketCountProvider = Provider<dynamic>((ref) {
+  return ref.watch(getTicketCountProvider).when(
+        data: (count) => count,
+        error: (error, stackTrace) => 0,
+        loading: () => 0,
+      );
+});

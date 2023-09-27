@@ -57,7 +57,7 @@ class CustomAppBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(isDarkModeProvider);
-    final backgroundColor = isDarkMode ? UColors.gray700 : UColors.white;
+    final backgroundColor = isDarkMode ? UColors.gray800 : UColors.white;
     final foregroundColor = isDarkMode ? UColors.white : UColors.gray800;
     return AppBar(
       title: title,

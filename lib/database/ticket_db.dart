@@ -32,4 +32,48 @@ class TicketDatabase {
       rethrow;
     }
   }
+
+  Future<List<Ticket>> getUnpaidTickets() async {
+    try {
+      const String collection = "tickets";
+      const String queryField = "status";
+      const String query = "unpaid";
+
+      final QuerySnapshot<Map<String, dynamic>> result = await _firestore
+          .collection(collection)
+          .where(queryField, isEqualTo: query)
+          .get();
+
+      if (result.docs.isEmpty) {
+        return [];
+      }
+
+      List<Ticket> tickets = result.docs.map((e) {
+        return Ticket.fromJson(
+          e.data(),
+          e.id,
+        );
+      }).toList();
+
+      return tickets;
+    } on FirebaseException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<int> getTicketCount() async {
+    try {
+      const String collection = "tickets";
+
+      final result = await _firestore.collection(collection).count().get();
+
+      return result.count;
+    } on FirebaseException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

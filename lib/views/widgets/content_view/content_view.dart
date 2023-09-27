@@ -14,12 +14,9 @@ class ContentView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(isDarkModeProvider);
-    final contentViewBgColor = isDarkMode ? UColors.gray800 : UColors.gray100;
-    final tileBgColor = isDarkMode ? UColors.gray700 : UColors.white;
-    final tileFgColor = isDarkMode ? UColors.white : UColors.gray800;
+    final tileBgColor = isDarkMode ? UColors.gray800 : UColors.white;
 
     return Container(
-      color: contentViewBgColor,
       padding: const EdgeInsets.all(
         USpace.space16,
       ),
