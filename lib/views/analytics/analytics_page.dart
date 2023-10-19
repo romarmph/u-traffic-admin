@@ -6,6 +6,12 @@ class AnalyticsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Placeholder();
+    return PageContainer(
+      route: Routes.analytics,
+      appBar: AppBar(
+        title: const Text("Analytics"),
+      ),
+      body: Placeholder(),
+    );
   }
 }

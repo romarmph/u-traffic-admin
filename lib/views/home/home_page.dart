@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class HomePage extends ConsumerWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomePage extends ConsumerStatefulWidget {
+  const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return const Placeholder();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
+}
+
+class _HomePageState extends ConsumerState<HomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return PageContainer(
+      route: Routes.home,
+      appBar: AppBar(
+        title: const Text("Dashboard"),
+      ),
+      body: Placeholder(),
+    );
   }
 }

@@ -6,6 +6,12 @@ class ComplaintsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Placeholder();
+    return PageContainer(
+      route: Routes.complaints,
+      appBar: AppBar(
+        title: const Text("Complaints"),
+      ),
+      body: Placeholder(),
+    );
   }
 }

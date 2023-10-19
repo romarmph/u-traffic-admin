@@ -6,8 +6,12 @@ class AdminPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Placeholder(
-      child: Text('Admin Page'),
+    return PageContainer(
+      route: Routes.adminStaffs,
+      appBar: AppBar(
+        title: const Text("Staffs"),
+      ),
+      body: Placeholder(),
     );
   }
 }

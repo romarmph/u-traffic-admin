@@ -6,6 +6,12 @@ class SystemPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Placeholder();
+    return PageContainer(
+      route: Routes.system,
+      appBar: AppBar(
+        title: const Text("System"),
+      ),
+      body: Placeholder(),
+    );
   }
 }

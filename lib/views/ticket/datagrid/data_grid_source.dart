@@ -95,7 +95,7 @@ class TicketDataSource extends DataGridSource {
         return Center(
           child: TextButton(
             onPressed: () {
-              print(e.value.toString());
+              goToTicketView(e.value);
             },
             child: const Text('View'),
           ),

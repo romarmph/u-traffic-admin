@@ -68,4 +68,6 @@ class TicketDatabase {
       rethrow;
     }
   }
+
+  // Cancel Ticket: Must be approve by chief
 }

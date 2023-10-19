@@ -18,27 +18,6 @@ export 'package:easy_sidemenu/easy_sidemenu.dart';
 export 'package:syncfusion_flutter_datagrid/datagrid.dart';
 export 'package:syncfusion_flutter_core/theme.dart';
 
-
-/**
- * 
- * !-------------------------------------------------------------Widgets
- * 
- */
-
-// ?------------------------------------------------------Widgets
-export 'package:u_traffic_admin/views/widgets/alert_dialogs.dart';
-export 'package:u_traffic_admin/views/widgets/theme_toggle.dart';
-
-// ?------------------------------------------------------Side Menu
-export 'package:u_traffic_admin/views/widgets/side_menu/divider.dart';
-export 'package:u_traffic_admin/views/widgets/side_menu/header.dart';
-export 'package:u_traffic_admin/views/widgets/side_menu/footer.dart';
-export 'package:u_traffic_admin/views/widgets/side_menu/menu_tile.dart';
-
-// ?------------------------------------------------------Content View
-export 'package:u_traffic_admin/views/widgets/content_view/content_view.dart';
-export 'package:u_traffic_admin/views/widgets/content_view/custom_appbar.dart';
-
 /**
  * 
  * !-------------------------------------------------------------Views
@@ -46,6 +25,12 @@ export 'package:u_traffic_admin/views/widgets/content_view/custom_appbar.dart';
  */
 
 //
+
+// ?------------------------------------------------------Common
+export 'package:u_traffic_admin/views/common/page_container.dart';
+export 'package:u_traffic_admin/views/common/admin_scaffold/admin_scaffold.dart';
+export 'package:u_traffic_admin/views/common/alert_dialogs.dart';
+export 'package:u_traffic_admin/views/common/theme_toggle.dart';
 
 // ?------------------------------------------------------Auth
 export 'package:u_traffic_admin/views/auth/login_page.dart';
@@ -63,6 +48,7 @@ export 'package:u_traffic_admin/views/enforcer/enforcer_page.dart';
 
 // ?------------------------------------------------------Ticket
 export 'package:u_traffic_admin/views/ticket/ticket_page.dart';
+export 'package:u_traffic_admin/views/ticket/view_ticket.dart';
 
 // ?------------------------------------------------------Analytics
 export 'package:u_traffic_admin/views/analytics/analytics_page.dart';
@@ -77,7 +63,6 @@ export 'package:u_traffic_admin/views/system/system_page.dart';
 export 'package:u_traffic_admin/views/settings/settings_page.dart';
 
 // ?------------------------------------------------------Wrapper
-export 'package:u_traffic_admin/views/page_container.dart';
 export 'package:u_traffic_admin/views/wrapper.dart';
 
 /**
@@ -115,8 +100,6 @@ export 'package:u_traffic_admin/riverpod/auth/form_controller.dart';
 export 'package:u_traffic_admin/riverpod/theme/theme_mode_provider.dart';
 
 // ?------------------------------------------------------Views
-export 'package:u_traffic_admin/riverpod/views/page_container/selected_route_provider.dart';
-export 'package:u_traffic_admin/riverpod/views/page_container/main_pages_provider.dart';
 
 /**
  * 

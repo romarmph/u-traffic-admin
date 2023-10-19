@@ -14,9 +14,10 @@ class TicketPage extends ConsumerWidget {
       color: isDarkMode ? UColors.gray400 : UColors.gray500,
     );
 
-    return ContentView(
-      appBar: const CustomAppBar(
-        title: Text('Tickets'),
+    return PageContainer(
+      route: Routes.tickets,
+      appBar: AppBar(
+        title: const Text("Tickets"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(USpace.space12),
@@ -198,12 +199,6 @@ class DataGridPager extends ConsumerWidget {
         disabledItemTextStyle: itemTextStyle,
       ),
       child: SfDataPager(
-        onPageNavigationStart: (pageIndex) {
-          print(pageIndex);
-        },
-        onPageNavigationEnd: (pageIndex) {
-          print(pageIndex);
-        },
         visibleItemsCount: 10,
         direction: Axis.horizontal,
         previousPageItemVisible: true,
