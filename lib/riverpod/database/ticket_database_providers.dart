@@ -4,14 +4,19 @@ final getAllTicketsStreamProvider = StreamProvider<List<Ticket>>((ref) {
   return TicketDatabase.instance.getAllTicketsAsStream();
 });
 
+final getAllTicketsProvider = Provider<List<Ticket>>((ref) {
+  return ref.watch(getAllTicketsStreamProvider).when(
+        data: (data) => data,
+        error: (error, stackTrace) => [],
+        loading: () => [],
+      );
+});
+
 final getTicketCountProvider = FutureProvider<int>((ref) async {
   return await TicketDatabase.instance.getAllTicketCount();
 });
 
-final fetchedTicketCountProvider = Provider<dynamic>((ref) {
-  return ref.watch(getTicketCountProvider).when(
-        data: (count) => count,
-        error: (error, stackTrace) => 0,
-        loading: () => 0,
-      );
+final getPageCount = Provider<double>((ref) {
+  return ref.watch(getAllTicketsProvider).length /
+      ref.watch(rowsPerPageProvider);
 });
