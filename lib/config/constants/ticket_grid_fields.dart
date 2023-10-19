@@ -21,4 +21,5 @@ class TicketGridFields {
   static const String violationPlace = 'violationPlace';
   static const String violationsID = 'violationsID';
   static const String totalFine = 'totalFine';
+  static const String actions = 'actions';
 }

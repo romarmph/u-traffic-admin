@@ -1,19 +1,11 @@
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-final getTicketProvider = FutureProvider<List<Ticket>>((ref) async {
-  return await TicketDatabase.instance.getTickets();
-});
-
-final fetchedTicketsProvider = Provider<List<Ticket>>((ref) {
-  return ref.watch(getTicketProvider).when(
-        data: (tickets) => tickets,
-        error: (error, stackTrace) => [],
-        loading: () => [],
-      );
+final getAllTicketsStreamProvider = StreamProvider<List<Ticket>>((ref) {
+  return TicketDatabase.instance.getAllTicketsAsStream();
 });
 
 final getTicketCountProvider = FutureProvider<int>((ref) async {
-  return await TicketDatabase.instance.getTicketCount();
+  return await TicketDatabase.instance.getAllTicketCount();
 });
 
 final fetchedTicketCountProvider = Provider<dynamic>((ref) {

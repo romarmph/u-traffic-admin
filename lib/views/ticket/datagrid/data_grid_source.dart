@@ -35,6 +35,10 @@ class TicketDataSource extends DataGridSource {
                 columnName: TicketGridFields.status,
                 value: ticket.status.toString().split('.').last.toUpperCase(),
               ),
+              DataGridCell<String>(
+                columnName: TicketGridFields.actions,
+                value: ticket.id,
+              ),
             ],
           ),
         )
@@ -83,6 +87,17 @@ class TicketDataSource extends DataGridSource {
                 ),
               ),
             ),
+          ),
+        );
+      }
+
+      if (e.columnName == TicketGridFields.actions) {
+        return Center(
+          child: TextButton(
+            onPressed: () {
+              print(e.value.toString());
+            },
+            child: const Text('View'),
           ),
         );
       }

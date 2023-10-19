@@ -8,32 +8,24 @@ class TicketDatabase {
 
   static final _firestore = FirebaseFirestore.instance;
 
-  Future<List<Ticket>> getTickets() async {
-    try {
-      const String collection = "tickets";
+  Stream<List<Ticket>> getAllTicketsAsStream() {
+    const String collection = "tickets";
 
-      final QuerySnapshot<Map<String, dynamic>> result =
-          await _firestore.collection(collection).get();
-
-      if (result.docs.isEmpty) {
+    return _firestore.collection(collection).snapshots().map((snapshot) {
+      if (snapshot.docs.isEmpty) {
         return [];
       }
 
-      List<Ticket> tickets = result.docs.map((e) {
+      return snapshot.docs.map((e) {
         return Ticket.fromJson(
           e.data(),
           e.id,
         );
       }).toList();
-      return tickets;
-    } on FirebaseException {
-      rethrow;
-    } catch (e) {
-      rethrow;
-    }
+    });
   }
 
-  Future<List<Ticket>> getUnpaidTickets() async {
+  Future<List<Ticket>> getAllUnpaidTickets() async {
     try {
       const String collection = "tickets";
       const String queryField = "status";
@@ -63,7 +55,7 @@ class TicketDatabase {
     }
   }
 
-  Future<int> getTicketCount() async {
+  Future<int> getAllTicketCount() async {
     try {
       const String collection = "tickets";
 

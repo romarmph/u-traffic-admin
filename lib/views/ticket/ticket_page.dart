@@ -6,7 +6,6 @@ class TicketPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<Ticket> tickets = ref.watch(fetchedTicketsProvider);
     final isDarkMode = ref.watch(isDarkModeProvider);
 
     final headerColor = isDarkMode ? UColors.gray700 : UColors.gray100;
@@ -36,90 +35,132 @@ class TicketPage extends ConsumerWidget {
                     width: 2,
                   ),
                 ),
-                child: SfDataGridTheme(
-                  data: SfDataGridThemeData(
-                    headerColor: headerColor,
-                    sortIconColor: headerFgColor,
-                    filterIconColor: headerFgColor,
-                  ),
-                  child: SfDataGrid(
-                    allowFiltering: true,
-                    allowSorting: true,
-                    columnWidthMode: ColumnWidthMode.fill,
-                    gridLinesVisibility: GridLinesVisibility.none,
-                    isScrollbarAlwaysShown: true,
-                    rowHeight: 64,
-                    showHorizontalScrollbar: true,
-                    source: TicketDataSource(
-                      ticketdata: tickets,
-                      ref: ref,
-                    ),
-                    columns: [
-                      GridColumn(
-                        columnWidthMode: ColumnWidthMode.fitByColumnName,
-                        columnName: TicketGridFields.ticketNumber,
-                        label: Center(
-                          child: Text(
-                            'Ticket No.',
-                            style: headerTextStyle,
-                          ),
-                        ),
+                child: ref.watch(getAllTicketsStreamProvider).when(
+                  data: (data) {
+                    return SfDataGridTheme(
+                      data: SfDataGridThemeData(
+                        headerColor: headerColor,
+                        sortIconColor: headerFgColor,
+                        filterIconColor: headerFgColor,
                       ),
-                      GridColumn(
-                        columnName: TicketGridFields.licenseNumber,
-                        label: Center(
-                          child: Text(
-                            'License No.',
-                            style: headerTextStyle,
-                          ),
+                      child: SfDataGrid(
+                        allowFiltering: true,
+                        rowsPerPage: 10,
+                        allowSorting: true,
+                        columnWidthMode: ColumnWidthMode.fill,
+                        gridLinesVisibility: GridLinesVisibility.none,
+                        isScrollbarAlwaysShown: true,
+                        rowHeight: 64,
+                        showHorizontalScrollbar: true,
+                        source: TicketDataSource(
+                          ticketdata: data,
+                          ref: ref,
                         ),
-                      ),
-                      GridColumn(
-                        columnName: TicketGridFields.driverName,
-                        label: Center(
-                          child: Text(
-                            'Driver Name',
-                            style: headerTextStyle,
+                        columns: [
+                          GridColumn(
+                            columnWidthMode: ColumnWidthMode.fitByColumnName,
+                            columnName: TicketGridFields.ticketNumber,
+                            label: Center(
+                              child: Text(
+                                'Ticket No.',
+                                style: headerTextStyle,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      GridColumn(
-                        columnName: TicketGridFields.dateCreated,
-                        label: Center(
-                          child: Text(
-                            'Date Issued',
-                            style: headerTextStyle,
+                          GridColumn(
+                            columnName: TicketGridFields.licenseNumber,
+                            label: Center(
+                              child: Text(
+                                'License No.',
+                                style: headerTextStyle,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      GridColumn(
-                        columnName: TicketGridFields.totalFine,
-                        label: Center(
-                          child: Text(
-                            'Fina Amount',
-                            style: headerTextStyle,
+                          GridColumn(
+                            columnName: TicketGridFields.driverName,
+                            label: Center(
+                              child: Text(
+                                'Driver Name',
+                                style: headerTextStyle,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      GridColumn(
-                        columnName: TicketGridFields.status,
-                        label: Center(
-                          child: Text(
-                            'Status',
-                            style: headerTextStyle,
+                          GridColumn(
+                            columnName: TicketGridFields.dateCreated,
+                            label: Center(
+                              child: Text(
+                                'Date Issued',
+                                style: headerTextStyle,
+                              ),
+                            ),
                           ),
-                        ),
+                          GridColumn(
+                            columnName: TicketGridFields.totalFine,
+                            label: Center(
+                              child: Text(
+                                'Fina Amount',
+                                style: headerTextStyle,
+                              ),
+                            ),
+                          ),
+                          GridColumn(
+                            columnName: TicketGridFields.status,
+                            label: Center(
+                              child: Text(
+                                'Status',
+                                style: headerTextStyle,
+                              ),
+                            ),
+                          ),
+                          GridColumn(
+                            columnName: TicketGridFields.status,
+                            label: Center(
+                              child: Text(
+                                'Actions',
+                                style: headerTextStyle,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    return Center(
+                      child: Text(
+                        error.toString(),
+                      ),
+                    );
+                  },
+                  loading: () {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  },
                 ),
               ),
             ),
-            DataGridPager(
-              delegate: TicketDataSource(
-                ticketdata: ref.watch(fetchedTicketsProvider),
-                ref: ref,
-              ),
+            ref.watch(getAllTicketsStreamProvider).when(
+              data: (data) {
+                return DataGridPager(
+                  delegate: TicketDataSource(
+                    ticketdata: data,
+                    ref: ref,
+                  ),
+                );
+              },
+              error: (error, stackTrace) {
+                return Center(
+                  child: Text(
+                    error.toString(),
+                  ),
+                );
+              },
+              loading: () {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
             )
           ],
         ),
@@ -138,7 +179,11 @@ class DataGridPager extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<Ticket> tickets = ref.watch(fetchedTicketsProvider);
+    final List<Ticket> tickets = ref.watch(getAllTicketsStreamProvider).when(
+          data: (data) => data,
+          error: (error, stackTrace) => [],
+          loading: () => [],
+        );
     final isDarkMode = ref.watch(isDarkModeProvider);
 
     final backgroundColor = isDarkMode ? UColors.gray800 : UColors.white;
@@ -153,6 +198,12 @@ class DataGridPager extends ConsumerWidget {
         disabledItemTextStyle: itemTextStyle,
       ),
       child: SfDataPager(
+        onPageNavigationStart: (pageIndex) {
+          print(pageIndex);
+        },
+        onPageNavigationEnd: (pageIndex) {
+          print(pageIndex);
+        },
         visibleItemsCount: 10,
         direction: Axis.horizontal,
         previousPageItemVisible: true,
