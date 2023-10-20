@@ -53,6 +53,7 @@ export 'package:u_traffic_admin/views/enforcer/enforcer_page.dart';
 export 'package:u_traffic_admin/views/ticket/ticket_page.dart';
 export 'package:u_traffic_admin/views/ticket/view_ticket.dart';
 export 'package:u_traffic_admin/views/ticket/widgets/data_grid.dart';
+export 'package:u_traffic_admin/views/ticket/widgets/ticket_status.dart';
 
 // ?------------------------------------------------------Analytics
 export 'package:u_traffic_admin/views/analytics/analytics_page.dart';

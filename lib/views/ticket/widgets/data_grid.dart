@@ -124,6 +124,15 @@ class TicketDataGrid extends ConsumerWidget {
       ),
       GridColumn(
         minimumWidth: 150,
+        columnName: TicketGridFields.dateCreated,
+        label: const Center(
+          child: Text(
+            'Due Date',
+          ),
+        ),
+      ),
+      GridColumn(
+        minimumWidth: 150,
         columnName: TicketGridFields.totalFine,
         label: const Center(
           child: Text(

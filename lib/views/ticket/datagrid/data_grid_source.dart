@@ -39,6 +39,12 @@ class TicketDataGridSource extends DataGridSource {
           );
         }
 
+        if (dataGridCell.columnName == TicketGridFields.status) {
+          return TicketStatusChip(
+            status: dataGridCell.value.toString(),
+          );
+        }
+
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           alignment: Alignment.center,
@@ -70,6 +76,10 @@ class TicketDataGridSource extends DataGridSource {
                 DataGridCell<String>(
                   columnName: TicketGridFields.dateCreated,
                   value: ticket.dateCreated.toAmericanDate,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.dateCreated,
+                  value: ticket.dateCreated.addSevenDays.toAmericanDate,
                 ),
                 DataGridCell<double>(
                   columnName: TicketGridFields.totalFine,
