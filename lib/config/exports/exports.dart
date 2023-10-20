@@ -34,6 +34,7 @@ export 'package:u_traffic_admin/views/common/admin_scaffold/admin_scaffold.dart'
 export 'package:u_traffic_admin/views/common/alert_dialogs.dart';
 export 'package:u_traffic_admin/views/common/theme_toggle.dart';
 export 'package:u_traffic_admin/views/common/buttons/elevated_button.dart';
+export 'package:u_traffic_admin/views/common/buttons/back_button.dart';
 
 // ?------------------------------------------------------Auth
 export 'package:u_traffic_admin/views/auth/login_page.dart';

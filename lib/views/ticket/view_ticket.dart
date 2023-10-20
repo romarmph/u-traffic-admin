@@ -16,11 +16,51 @@ class TicketView extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("View Ticket"),
       ),
-      body: ElevatedButton(
-        onPressed: () {
-          Navigator.of(context).pop();
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: 100,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        color: UColors.white,
+                        borderRadius: BorderRadius.circular(USpace.space16),
+                      ),
+                      child: Row(
+                        children: [
+                          const UBackButton(),
+                          const Spacer(),
+                          UElevatedButton(
+                            onPressed: () {},
+                            child: const Text("Edit Ticket"),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+              ],
+            ),
+          );
         },
-        child: const Text("Back"),
       ),
     );
   }
