@@ -9,33 +9,49 @@ class TicketPage extends ConsumerStatefulWidget {
 }
 
 class _TicketPageState extends ConsumerState<TicketPage> {
+  final searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = ref.watch(isDarkModeProvider);
-
     return PageContainer(
       route: Routes.tickets,
       appBar: AppBar(
         title: const Text('Tickets'),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              top: 16.0,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 16,
             ),
-            child: Container(
-              color: UColors.white,
-              height: 100,
-              child: Text("Header"),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  height: 100,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: UColors.white,
+                        borderRadius: BorderRadius.circular(USpace.space16),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                TicketDataGrid(
+                  constraints: constraints,
+                ),
+              ],
             ),
-          ),
-          const TicketDataGrid()
-        ],
+          );
+        },
       ),
     );
   }

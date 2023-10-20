@@ -2,93 +2,89 @@ import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class TicketDataGridSource extends DataGridSource {
-  TicketDataGridSource(this.tickets, this.rowsPerPage) {
-    _paginatedTickets = tickets.getRange(0, rowsPerPage).toList();
+  TicketDataGridSource(this.ticketList) {
     buildDataGridRows();
   }
-  late int rowsPerPage;
-  late List<Ticket> _paginatedTickets;
-  late List<Ticket> tickets;
-  late List<DataGridRow> dataGridRows;
+
+  List<Ticket> ticketList = [];
+
+  List<DataGridRow> _ticketRows = [];
+
+  @override
+  List<DataGridRow> get rows => _ticketRows;
 
   @override
   DataGridRowAdapter? buildRow(DataGridRow row) {
     return DataGridRowAdapter(
-      cells: row.getCells().map<Widget>((dataGridCell) {
+        cells: row.getCells().map<Widget>(
+      (dataGridCell) {
         if (dataGridCell.columnName == TicketGridFields.actions) {
           return Center(
-            child: TextButton(
-              onPressed: () {},
+            child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  vertical: USpace.space8,
+                  horizontal: USpace.space16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(USpace.space8),
+                ),
+                side: const BorderSide(color: UColors.blue600),
+              ),
+              onPressed: () {
+                goToTicketView(dataGridCell.value);
+              },
               child: const Text('View'),
             ),
           );
         }
 
-        return Center(
-          child: Text(dataGridCell.value.toString()),
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          alignment: Alignment.center,
+          child: Text(
+            dataGridCell.value.toString(),
+            overflow: TextOverflow.ellipsis,
+          ),
         );
-      }).toList(growable: false),
-    );
+      },
+    ).toList());
   }
-
-  @override
-  Future<bool> handlePageChange(int oldPageIndex, int newPageIndex) async {
-    int startIndex = newPageIndex * rowsPerPage;
-    int endIndex = startIndex + rowsPerPage;
-
-    if (endIndex > tickets.length) {
-      endIndex = tickets.length;
-    }
-
-    if (startIndex < tickets.length && endIndex <= tickets.length) {
-      _paginatedTickets =
-          tickets.getRange(startIndex, endIndex).toList(growable: false);
-      buildDataGridRows();
-      notifyListeners();
-    } else {
-      _paginatedTickets = [];
-    }
-
-    return true;
-  }
-
-  @override
-  List<DataGridRow> get rows => dataGridRows;
 
   void buildDataGridRows() {
-    dataGridRows = _paginatedTickets.map<DataGridRow>((ticket) {
-      return DataGridRow(
-        cells: [
-          DataGridCell<String>(
-            columnName: TicketGridFields.ticketNumber,
-            value: ticket.ticketNumber.toString(),
-          ),
-          DataGridCell<String>(
-            columnName: TicketGridFields.licenseNumber,
-            value: ticket.licenseNumber,
-          ),
-          DataGridCell<String>(
-            columnName: TicketGridFields.driverName,
-            value: ticket.driverName,
-          ),
-          DataGridCell<String>(
-            columnName: TicketGridFields.dateCreated,
-            value: ticket.dateCreated.toAmericanDate,
-          ),
-          DataGridCell<String>(
-            columnName: TicketGridFields.totalFine,
-            value: ticket.totalFine.toString(),
-          ),
-          DataGridCell<String>(
-            columnName: TicketGridFields.status,
-            value: ticket.status.toString().split('.').last.toUpperCase(),
-          ),
-          DataGridCell<String>(
-            columnName: TicketGridFields.actions,
-            value: ticket.id,
-          ),
-        ],
-      );
-    }).toList(growable: false);
+    _ticketRows = ticketList
+        .map<DataGridRow>((ticket) => DataGridRow(
+              cells: [
+                DataGridCell<int>(
+                  columnName: TicketGridFields.ticketNumber,
+                  value: ticket.ticketNumber,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.licenseNumber,
+                  value: ticket.licenseNumber,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.driverName,
+                  value: ticket.driverName,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.dateCreated,
+                  value: ticket.dateCreated.toAmericanDate,
+                ),
+                DataGridCell<double>(
+                  columnName: TicketGridFields.totalFine,
+                  value: ticket.totalFine,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.status,
+                  value: ticket.status.toString().split('.').last,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.actions,
+                  value: ticket.id,
+                ),
+              ],
+            ))
+        .toList();
   }
 }

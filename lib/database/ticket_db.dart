@@ -11,7 +11,11 @@ class TicketDatabase {
   Stream<List<Ticket>> getAllTicketsAsStream() {
     const String collection = "tickets";
 
-    return _firestore.collection(collection).snapshots().map((snapshot) {
+    return _firestore
+        .collection(collection)
+        .orderBy('ticketNumber')
+        .snapshots()
+        .map((snapshot) {
       if (snapshot.docs.isEmpty) {
         return [];
       }

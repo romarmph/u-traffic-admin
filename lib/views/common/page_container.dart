@@ -21,7 +21,7 @@ class _PageContainerState extends ConsumerState<PageContainer> {
   @override
   Widget build(BuildContext context) {
     return AdminScaffold(
-      backgroundColor: UColors.gray50,
+      backgroundColor: UColors.gray100,
       appBar: widget.appBar,
       sideBar: SideBar(
         activeBackgroundColor: UColors.blue600,

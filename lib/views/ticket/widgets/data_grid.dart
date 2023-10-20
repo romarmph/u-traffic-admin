@@ -2,68 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class TicketDataGrid extends ConsumerWidget {
-  const TicketDataGrid({super.key});
+  const TicketDataGrid({
+    super.key,
+    required this.constraints,
+  });
+
+  final BoxConstraints constraints;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDarkMode = ref.watch(isDarkModeProvider);
-
-    final headerColor = isDarkMode ? UColors.gray700 : UColors.gray100;
-    final headerFgColor = isDarkMode ? UColors.gray400 : UColors.gray500;
-
+    final appBarHeight = AppBar().preferredSize.height;
     return ref.watch(getAllTicketsStreamProvider).when(
           data: (data) {
             final TicketDataGridSource source = TicketDataGridSource(
               data,
-              ref.watch(rowsPerPageProvider),
             );
-            return Expanded(
+            return Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Container(
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        decoration: BoxDecoration(
-                          color: isDarkMode ? UColors.gray800 : Colors.white,
-                          borderRadius: BorderRadius.circular(USpace.space12),
-                          border: Border.all(
-                            color:
-                                isDarkMode ? UColors.gray700 : UColors.gray200,
-                            width: 2,
-                            strokeAlign: BorderSide.strokeAlignInside,
-                          ),
-                        ),
-                        child: SfDataGridTheme(
-                          data: SfDataGridThemeData(
-                            headerColor: headerColor,
-                            sortIconColor: headerFgColor,
-                            filterIconColor: headerFgColor,
-                          ),
-                          child: SfDataGrid(
-                            highlightRowOnHover: true,
-                            allowFiltering: true,
-                            rowsPerPage: 10,
-                            allowSorting: true,
-                            columnWidthMode: ColumnWidthMode.fill,
-                            gridLinesVisibility: GridLinesVisibility.none,
-                            isScrollbarAlwaysShown: true,
-                            rowHeight: 64,
-                            showHorizontalScrollbar: true,
-                            source: source,
-                            columns: gridColumns,
-                          ),
-                        ),
+                  Container(
+                    clipBehavior: Clip.antiAlias,
+                    height:
+                        constraints.maxHeight - 60 - appBarHeight - 100 - 16,
+                    decoration: BoxDecoration(
+                      color: UColors.white,
+                      // border: Border.all(
+                      //   color: UColors.blue600,
+                      // ),
+                      borderRadius: BorderRadius.circular(USpace.space16),
+                    ),
+                    child: SfDataGridTheme(
+                      data: SfDataGridThemeData(),
+                      child: SfDataGrid(
+                        rowsPerPage: 12,
+                        highlightRowOnHover: true,
+                        allowFiltering: true,
+                        allowSorting: true,
+                        columnWidthMode: ColumnWidthMode.fill,
+                        source: source,
+                        columns: gridColumns,
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 16.0,
-                      right: 16.0,
-                      bottom: 16.0,
-                    ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  SizedBox(
+                    height: 60,
                     child: SfDataPagerTheme(
                       data: SfDataPagerThemeData(
                         backgroundColor: UColors.white,

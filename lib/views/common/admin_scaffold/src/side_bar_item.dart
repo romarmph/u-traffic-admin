@@ -54,7 +54,7 @@ class SideBarItem extends StatelessWidget {
     if (item.children.isEmpty) {
       return ListTile(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(4),
         ),
         contentPadding: _getTilePadding(depth),
         leading: _buildIcon(item.icon, selected),
