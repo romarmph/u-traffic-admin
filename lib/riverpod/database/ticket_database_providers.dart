@@ -15,8 +15,3 @@ final getAllTicketsProvider = Provider<List<Ticket>>((ref) {
 final getTicketCountProvider = FutureProvider<int>((ref) async {
   return await TicketDatabase.instance.getAllTicketCount();
 });
-
-final getPageCount = Provider<double>((ref) {
-  return ref.watch(getAllTicketsProvider).length /
-      ref.watch(rowsPerPageProvider);
-});
