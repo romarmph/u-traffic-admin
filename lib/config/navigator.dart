@@ -26,3 +26,14 @@ void goToAndReplace(String route) {
     route,
   );
 }
+
+void goToTicketView(String id) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => TicketView(
+        ticketID: id,
+      ),
+    ),
+  );
+}

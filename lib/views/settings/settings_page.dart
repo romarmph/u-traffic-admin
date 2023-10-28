@@ -6,6 +6,12 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Placeholder();
+    return PageContainer(
+      route: Routes.settings,
+      appBar: AppBar(
+        title: const Text("Settings"),
+      ),
+      body: Placeholder(),
+    );
   }
 }

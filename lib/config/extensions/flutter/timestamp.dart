@@ -8,4 +8,8 @@ extension TimestampExtension on Timestamp {
   String get toISO8601 {
     return DateFormat('yyyy-MM-dd').format(toDate());
   }
+
+  Timestamp get addSevenDays {
+    return Timestamp.fromDate(toDate().add(const Duration(days: 7)));
+  }
 }

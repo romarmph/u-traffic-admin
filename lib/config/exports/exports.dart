@@ -1,10 +1,10 @@
 ///
 ///
-///   Packages
+/// * -------------------------------------------------------------Packages
 ///
 ///
 
-// Firebase
+// ?------------------------------------------------------Firebase
 export 'package:firebase_core/firebase_core.dart';
 export 'package:firebase_auth/firebase_auth.dart';
 export 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,64 +15,72 @@ export 'package:google_fonts/google_fonts.dart';
 export 'package:email_validator/email_validator.dart';
 export 'package:quickalert/quickalert.dart';
 export 'package:easy_sidemenu/easy_sidemenu.dart';
+export 'package:syncfusion_flutter_datagrid/datagrid.dart';
+export 'package:syncfusion_flutter_core/theme.dart';
 
 /**
  * 
- * views
+ * !-------------------------------------------------------------Views
  * 
  */
 
-// Widgets
-export 'package:u_traffic_admin/views/widgets/alert_dialogs.dart';
-export 'package:u_traffic_admin/views/widgets/theme_toggle.dart';
-export 'package:u_traffic_admin/views/widgets/side_menu/divider.dart';
-export 'package:u_traffic_admin/views/widgets/side_menu/header.dart';
-export 'package:u_traffic_admin/views/widgets/side_menu/footer.dart';
-export 'package:u_traffic_admin/views/widgets/side_menu/menu_tile.dart';
+//
+// ?------------------------------------------------------Data Grid Source
+export 'package:u_traffic_admin/views/ticket/datagrid/data_grid_source.dart';
 
-// Auth
+// ?------------------------------------------------------Common
+export 'package:u_traffic_admin/views/common/page_container.dart';
+export 'package:u_traffic_admin/views/common/admin_scaffold/admin_scaffold.dart';
+export 'package:u_traffic_admin/views/common/alert_dialogs.dart';
+export 'package:u_traffic_admin/views/common/theme_toggle.dart';
+export 'package:u_traffic_admin/views/common/buttons/elevated_button.dart';
+export 'package:u_traffic_admin/views/common/buttons/back_button.dart';
+
+// ?------------------------------------------------------Auth
 export 'package:u_traffic_admin/views/auth/login_page.dart';
 export 'package:u_traffic_admin/views/auth/widget/login_form.dart';
 export 'package:u_traffic_admin/views/auth/widget/login_button.dart';
 
-// Home
+// ?------------------------------------------------------Home
 export 'package:u_traffic_admin/views/home/home_page.dart';
 
-// Admin
+// ?------------------------------------------------------Admin
 export 'package:u_traffic_admin/views/admin/admin_page.dart';
 
-// Enforcer
+// ?------------------------------------------------------Enforcer
 export 'package:u_traffic_admin/views/enforcer/enforcer_page.dart';
 
-// Ticket
+// ?------------------------------------------------------Ticket
 export 'package:u_traffic_admin/views/ticket/ticket_page.dart';
+export 'package:u_traffic_admin/views/ticket/view_ticket.dart';
+export 'package:u_traffic_admin/views/ticket/widgets/data_grid.dart';
+export 'package:u_traffic_admin/views/ticket/widgets/ticket_status.dart';
 
-// Analytics
+// ?------------------------------------------------------Analytics
 export 'package:u_traffic_admin/views/analytics/analytics_page.dart';
 
-// Complaints
+// ?------------------------------------------------------Complaints
 export 'package:u_traffic_admin/views/complaints/complaints_page.dart';
 
-// System
+// ?------------------------------------------------------System
 export 'package:u_traffic_admin/views/system/system_page.dart';
 
-// Settings
+// ?------------------------------------------------------Settings
 export 'package:u_traffic_admin/views/settings/settings_page.dart';
 
-// Wrapper
-export 'package:u_traffic_admin/views/page_container.dart';
+// ?------------------------------------------------------Wrapper
 export 'package:u_traffic_admin/views/wrapper.dart';
 
 /**
  * 
- * Themes
+ * !-------------------------------------------------------------Themes
  * 
  */
 export 'package:u_traffic_admin/config/theme/colors.dart';
 export 'package:u_traffic_admin/config/theme/spacing.dart';
 export 'package:u_traffic_admin/config/theme/textstyles.dart';
 
-// Components
+// ?------------------------------------------------------Components
 export 'package:u_traffic_admin/config/theme/components/app_bar_theme.dart';
 export 'package:u_traffic_admin/config/theme/components/elevated_button.dart';
 export 'package:u_traffic_admin/config/theme/components/fab.dart';
@@ -82,65 +90,88 @@ export 'package:u_traffic_admin/config/theme/components/outlined_button.dart';
 
 /**
  * 
- * Riverpod
+ * !-------------------------------------------------------------Riverpod
  * 
  */
 
-// Database
-export 'package:u_traffic_admin/riverpod/database/database_providers.dart';
+// ?------------------------------------------------------Database
+export 'package:u_traffic_admin/riverpod/database/admin_database_providers.dart';
+export 'package:u_traffic_admin/riverpod/database/ticket_database_providers.dart';
 
-// Auth
+// ?------------------------------------------------------Auth
 export 'package:u_traffic_admin/riverpod/auth/auth_provider.dart';
 export 'package:u_traffic_admin/riverpod/auth/form_controller.dart';
 
-// Theme
+// ?------------------------------------------------------Theme
 export 'package:u_traffic_admin/riverpod/theme/theme_mode_provider.dart';
 
-// Views
-export 'package:u_traffic_admin/riverpod/views/page_container/selected_route_provider.dart';
-export 'package:u_traffic_admin/riverpod/views/page_container/main_pages_provider.dart';
+// ?------------------------------------------------------Views
+export 'package:u_traffic_admin/riverpod/views/ticket/ticket_providers.dart';
 
 /**
  * 
- * Models
+ * !-------------------------------------------------------------Models
  * 
  */
-export 'package:u_traffic_admin/model/admin_model.dart';
+export 'package:u_traffic_admin/model/user/admin_model.dart';
+export 'package:u_traffic_admin/model/user/driver_model.dart';
+export 'package:u_traffic_admin/model/user/enforcer_model.dart';
+export 'package:u_traffic_admin/model/location/address.dart';
+export 'package:u_traffic_admin/model/location/barangays.dart';
+export 'package:u_traffic_admin/model/location/city.dart';
+export 'package:u_traffic_admin/model/location/location_model.dart';
+export 'package:u_traffic_admin/model/location/province.dart';
+
+export 'package:u_traffic_admin/model/license_detail_model.dart';
+export 'package:u_traffic_admin/model/ticket_model.dart';
+export 'package:u_traffic_admin/model/vehicle_type.dart';
+export 'package:u_traffic_admin/model/violation_model.dart';
 
 /**
  * 
- * Database
+ * !-------------------------------------------------------------Database
  * 
  */
 export 'package:u_traffic_admin/database/admin_db.dart';
+export 'package:u_traffic_admin/database/ticket_db.dart';
 
 /**
  * 
- * Services
+ * !-------------------------------------------------------------Services
  * 
  */
 export 'package:u_traffic_admin/services/auth/auth_service.dart';
 
 /**
  * 
- * Config
+ * !-------------------------------------------------------------Config
  * 
  */
 
-// Extensions
-export 'package:u_traffic_admin/config/extensions/date_time_extension.dart';
-export 'package:u_traffic_admin/config/extensions/string_extensions.dart';
-export 'package:u_traffic_admin/config/extensions/timestamp.dart';
-export 'package:u_traffic_admin/config/extensions/validators.dart';
+// ?------------------------------------------------------Extensions
+export 'package:u_traffic_admin/config/extensions/flutter/date_time_extension.dart';
+export 'package:u_traffic_admin/config/extensions/flutter/string_extensions.dart';
+export 'package:u_traffic_admin/config/extensions/flutter/timestamp.dart';
+export 'package:u_traffic_admin/config/extensions/flutter/validators.dart';
 
-// Exceptions
+// ?------------------------------------------------------Exceptions
 export 'package:u_traffic_admin/config/exceptions/custom_exception.dart';
 
-// Routes
+// ?------------------------------------------------------Data Source
+// export 'package:u_traffic_admin/views/ticket/datagrid/data_grid_source.dart';
+
+// ?------------------------------------------------------Enums
+export 'package:u_traffic_admin/config/enums/ticket_status.dart';
+
+// ?------------------------------------------------------Routes
 export 'package:u_traffic_admin/config/routes/routes.dart';
 
-// Keys
+// ?------------------------------------------------------Keys
 export 'package:u_traffic_admin/config/navigator_key.dart';
 
-// Navigator
+// ?------------------------------------------------------Navigator
 export 'package:u_traffic_admin/config/navigator.dart';
+
+// ?------------------------------------------------------Constants
+export 'package:u_traffic_admin/config/constants/constants.dart';
+export 'package:u_traffic_admin/config/constants/ticket_grid_fields.dart';

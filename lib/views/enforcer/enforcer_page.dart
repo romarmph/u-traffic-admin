@@ -6,6 +6,12 @@ class EnforcerPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return const Placeholder();
+    return PageContainer(
+      route: Routes.enforcers,
+      appBar: AppBar(
+        title: const Text("Enforcers"),
+      ),
+      body: Placeholder(),
+    );
   }
 }

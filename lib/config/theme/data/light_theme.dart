@@ -7,11 +7,9 @@ final lightTheme = ThemeData(
   ),
   useMaterial3: true,
   fontFamily: GoogleFonts.inter().fontFamily,
-  elevatedButtonTheme: elevatedButtonTheme,
   inputDecorationTheme: inputDecorationTheme,
   textButtonTheme: textButtonTheme,
   floatingActionButtonTheme: fabTheme,
   appBarTheme: appBarTheme,
-  outlinedButtonTheme: outlinedButtonTheme,
   scaffoldBackgroundColor: UColors.white,
 );
