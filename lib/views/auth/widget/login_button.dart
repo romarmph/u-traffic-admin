@@ -73,7 +73,7 @@ class LoginButton extends ConsumerWidget {
       }
     }
 
-    return ElevatedButton(
+    return UElevatedButton(
       onPressed: login,
       child: isLoading
           ? const CircularProgressIndicator(
