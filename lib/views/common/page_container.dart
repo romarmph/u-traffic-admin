@@ -37,15 +37,19 @@ class _PageContainerState extends ConsumerState<PageContainer> {
         backgroundColor: UColors.white,
         selectedRoute: widget.route,
         onSelected: (item) {
-          if (item.route == widget.route) return;
+          print(item.route);
+          if (item.route == null || item.route == widget.route) return;
 
-          if (item.route != null) {
-            Navigator.of(context).pushReplacementNamed(
-              item.route!,
-            );
-          }
+          Navigator.of(context).pushReplacementNamed(
+            item.route!,
+          );
         },
         items: const [
+          AdminMenuItem(
+            title: "Payment",
+            route: Routes.payment,
+            icon: Icons.payment_rounded,
+          ),
           AdminMenuItem(
             title: "Dashboard",
             route: Routes.home,

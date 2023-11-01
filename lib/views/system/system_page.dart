@@ -11,7 +11,7 @@ class SystemPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("System"),
       ),
-      body: Placeholder(),
+      body: const Placeholder(),
     );
   }
 }

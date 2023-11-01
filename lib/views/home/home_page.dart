@@ -16,7 +16,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       appBar: AppBar(
         title: const Text("Dashboard"),
       ),
-      body: Placeholder(),
+      body: const Placeholder(),
     );
   }
 }

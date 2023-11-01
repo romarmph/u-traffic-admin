@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class TicketPage extends ConsumerStatefulWidget {
-  const TicketPage({super.key});
+class PaymentPage extends ConsumerWidget {
+  const PaymentPage({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _TicketPageState();
-}
-
-class _TicketPageState extends ConsumerState<TicketPage> {
-  final searchController = TextEditingController();
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return PageContainer(
-      route: Routes.tickets,
+      route: Routes.payment,
       appBar: AppBar(
-        title: const Text('Tickets'),
+        title: const Text("Payment"),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -45,17 +38,19 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                 const SizedBox(
                   height: 16,
                 ),
-                ref.watch(getAllTicketsStreamProvider).when(
+                ref.watch(getAllUnpaidTicketsStreamProvider).when(
                       data: (data) {
                         return TicketDataGrid(
-                          currentRoute: Routes.tickets,
+                          currentRoute: Routes.payment,
                           data: data,
                           constraints: constraints,
                         );
                       },
-                      error: (error, stackTrace) => const Center(
-                        child: Text('Error'),
-                      ),
+                      error: (error, stackTrace) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      },
                       loading: () => const Center(
                         child: LinearProgressIndicator(),
                       ),

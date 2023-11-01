@@ -11,7 +11,7 @@ class SettingsPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("Settings"),
       ),
-      body: Placeholder(),
+      body: const Placeholder(),
     );
   }
 }
