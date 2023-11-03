@@ -11,7 +11,7 @@ class AdminPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("Staffs"),
       ),
-      body: Placeholder(),
+      body: const Placeholder(),
     );
   }
 }

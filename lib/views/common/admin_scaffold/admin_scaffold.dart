@@ -12,15 +12,19 @@ class AdminScaffold extends StatefulWidget {
     this.sideBar,
     required this.body,
     this.backgroundColor,
+    this.endDrawer,
+    this.scaffoldKey,
   }) : super(key: key);
 
   final AppBar? appBar;
   final SideBar? sideBar;
   final Widget body;
   final Color? backgroundColor;
+  final Drawer? endDrawer;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
   @override
-  _AdminScaffoldState createState() => _AdminScaffoldState();
+  State<StatefulWidget> createState() => _AdminScaffoldState();
 }
 
 class _AdminScaffoldState extends State<AdminScaffold>
@@ -139,8 +143,10 @@ class _AdminScaffoldState extends State<AdminScaffold>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: widget.scaffoldKey,
       backgroundColor: widget.backgroundColor,
       appBar: _appBar,
+      endDrawer: widget.endDrawer,
       body: AnimatedBuilder(
         animation: _animation,
         builder: (_, __) => widget.sideBar == null

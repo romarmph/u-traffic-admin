@@ -29,29 +29,46 @@ class TicketDatabase {
     });
   }
 
-  Future<List<Ticket>> getAllUnpaidTickets() async {
+  Stream<List<Ticket>> getAllUnpaidTickets() {
     try {
       const String collection = "tickets";
       const String queryField = "status";
       const String query = "unpaid";
 
-      final QuerySnapshot<Map<String, dynamic>> result = await _firestore
+      return _firestore
           .collection(collection)
           .where(queryField, isEqualTo: query)
-          .get();
+          .orderBy('ticketNumber')
+          .snapshots()
+          .map((snapshot) {
+        if (snapshot.docs.isEmpty) {
+          return [];
+        }
 
-      if (result.docs.isEmpty) {
-        return [];
-      }
+        return snapshot.docs.map((e) {
+          return Ticket.fromJson(
+            e.data(),
+            e.id,
+          );
+        }).toList();
+      });
+    } on FirebaseException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 
-      List<Ticket> tickets = result.docs.map((e) {
-        return Ticket.fromJson(
-          e.data(),
-          e.id,
-        );
-      }).toList();
+  Future<Ticket> getTicketById(String id) async {
+    try {
+      const String collection = "tickets";
 
-      return tickets;
+      final result = await _firestore.collection(collection).doc(id).get();
+
+      return Ticket.fromJson(
+        result.data()!,
+        result.id,
+      );
     } on FirebaseException {
       rethrow;
     } catch (e) {

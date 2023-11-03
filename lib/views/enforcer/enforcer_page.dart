@@ -11,7 +11,7 @@ class EnforcerPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("Enforcers"),
       ),
-      body: Placeholder(),
+      body: const Placeholder(),
     );
   }
 }

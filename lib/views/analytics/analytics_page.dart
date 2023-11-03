@@ -11,7 +11,7 @@ class AnalyticsPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("Analytics"),
       ),
-      body: Placeholder(),
+      body: const Placeholder(),
     );
   }
 }

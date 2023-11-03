@@ -13,7 +13,7 @@ class Wrapper extends ConsumerWidget {
           return const LoginPage();
         }
 
-        return const TicketPage();
+        return const HomePage();
       },
       error: (error, stackTrace) {
         return Text('Error: $error');

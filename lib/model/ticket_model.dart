@@ -3,53 +3,48 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 class Ticket {
   String? id;
   int? ticketNumber;
-  final String licenseNumber;
-  final String driverName;
-  final String phone;
-  final String email;
-  final String address;
+  final String? licenseNumber;
+  final String? driverName;
+  final String? phone;
+  final String? email;
+  final String? address;
   final String vehicleTypeID;
-  final String engineNumber;
-  final String chassisNumber;
-  final String plateNumber;
-  final String vehicleOwner;
-  final String vehicleOwnerAddress;
+  final String vehicleTypeName;
+  final String? engineNumber;
+  final String? chassisNumber;
+  final String? plateNumber;
+  final String? conductionOrFileNumber;
+  final String? vehicleOwner;
+  final String? vehicleOwnerAddress;
   final String enforcerID;
   final String enforcerName;
   final double totalFine;
-  final Timestamp birthDate;
+  final Timestamp? birthDate;
   final Timestamp dateCreated;
   final Timestamp ticketDueDate;
   final Timestamp violationDateTime;
   final List<String?> violationsID;
   final ULocation violationPlace;
   final TicketStatus status;
-  final String? licenseFrontImageUrl;
-  final String? licenseBackImageUrl;
-  final String? signatureImageUrl;
-  final List<String>? evidenceImagesUrl;
 
   Ticket({
     this.id,
     this.ticketNumber,
-    this.licenseFrontImageUrl,
-    this.licenseBackImageUrl,
-    this.signatureImageUrl,
-    this.evidenceImagesUrl,
     required this.licenseNumber,
     required this.driverName,
     required this.phone,
     required this.email,
     required this.address,
     required this.vehicleTypeID,
+    required this.vehicleTypeName,
     required this.engineNumber,
+    required this.conductionOrFileNumber,
     required this.chassisNumber,
     required this.plateNumber,
     required this.vehicleOwner,
     required this.vehicleOwnerAddress,
     required this.enforcerID,
     required this.enforcerName,
-    required this.totalFine,
     required this.status,
     required this.birthDate,
     required this.dateCreated,
@@ -57,6 +52,7 @@ class Ticket {
     required this.violationDateTime,
     required this.violationPlace,
     required this.violationsID,
+    required this.totalFine,
   });
 
   factory Ticket.fromJson(Map<String, dynamic> json, [String? id]) {
@@ -69,14 +65,15 @@ class Ticket {
       email: json['email'],
       address: json['address'],
       vehicleTypeID: json['vehicleTypeID'],
+      vehicleTypeName: json['vehicleTypeName'],
       engineNumber: json['engineNumber'],
+      conductionOrFileNumber: json['conductionOrFileNumber'],
       chassisNumber: json['chassisNumber'],
       plateNumber: json['plateNumber'],
       vehicleOwner: json['vehicleOwner'],
       vehicleOwnerAddress: json['vehicleOwnerAddress'],
       enforcerID: json['enforcerID'],
       enforcerName: json['enforcerName'],
-      totalFine: json['totalFine'] as double,
       status: TicketStatus.values.firstWhere(
         (e) => e.toString() == 'TicketStatus.${json['status']}',
       ),
@@ -86,10 +83,7 @@ class Ticket {
       violationDateTime: json['violationDateTime'],
       violationPlace: ULocation.fromJson(json['violationPlace']),
       violationsID: List<String?>.from(json['violationsID'] ?? []),
-      licenseFrontImageUrl: json['licenseFrontImageUrl'],
-      licenseBackImageUrl: json['licenseBackImageUrl'],
-      signatureImageUrl: json['signatureImageUrl'],
-      evidenceImagesUrl: List<String>.from(json['evidenceImagesUrl'] ?? []),
+      totalFine: json['totalFine'].toDouble(),
     );
   }
 
@@ -102,14 +96,15 @@ class Ticket {
       'email': email,
       'address': address,
       'vehicleTypeID': vehicleTypeID,
+      'vehicleTypeName': vehicleTypeName,
       'engineNumber': engineNumber,
+      'conductionOrFileNumber': conductionOrFileNumber,
       'chassisNumber': chassisNumber,
       'plateNumber': plateNumber,
       'vehicleOwner': vehicleOwner,
       'vehicleOwnerAddress': vehicleOwnerAddress,
       'enforcerID': enforcerID,
       'enforcerName': enforcerName,
-      'totalFine': totalFine,
       'status': status.toString().split('.').last,
       'birthDate': birthDate,
       'dateCreated': dateCreated,
@@ -117,10 +112,7 @@ class Ticket {
       'violationDateTime': violationDateTime,
       'violationPlace': violationPlace.toJson(),
       'violationsID': violationsID,
-      'licenseFrontImageUrl': licenseFrontImageUrl,
-      'licenseBackImageUrl': licenseBackImageUrl,
-      'signatureImageUrl': signatureImageUrl,
-      'evidenceImagesUrl': evidenceImagesUrl,
+      'totalFine': totalFine,
     };
   }
 
@@ -150,14 +142,15 @@ class Ticket {
     String? email,
     String? address,
     String? vehicleTypeID,
+    String? vehicleTypeName,
     String? engineNumber,
+    String? conductionOrFileNumber,
     String? chassisNumber,
     String? plateNumber,
     String? vehicleOwner,
     String? vehicleOwnerAddress,
     String? enforcerID,
     String? enforcerName,
-    double? totalFine,
     TicketStatus? status,
     Timestamp? birthDate,
     Timestamp? dateCreated,
@@ -165,10 +158,7 @@ class Ticket {
     Timestamp? violationDateTime,
     ULocation? violationPlace,
     List<String?>? violationsID,
-    String? licenseFrontImageUrl,
-    String? licenseBackImageUrl,
-    String? signatureImageUrl,
-    List<String>? evidenceImagesUrl,
+    double? totalFine,
   }) {
     return Ticket(
       id: id ?? this.id,
@@ -179,14 +169,16 @@ class Ticket {
       email: email ?? this.email,
       address: address ?? this.address,
       vehicleTypeID: vehicleTypeID ?? this.vehicleTypeID,
+      vehicleTypeName: vehicleTypeName ?? this.vehicleTypeName,
       engineNumber: engineNumber ?? this.engineNumber,
+      conductionOrFileNumber:
+          conductionOrFileNumber ?? this.conductionOrFileNumber,
       chassisNumber: chassisNumber ?? this.chassisNumber,
       plateNumber: plateNumber ?? this.plateNumber,
       vehicleOwner: vehicleOwner ?? this.vehicleOwner,
       vehicleOwnerAddress: vehicleOwnerAddress ?? this.vehicleOwnerAddress,
       enforcerID: enforcerID ?? this.enforcerID,
       enforcerName: enforcerName ?? this.enforcerName,
-      totalFine: totalFine ?? this.totalFine,
       status: status ?? this.status,
       birthDate: birthDate ?? this.birthDate,
       dateCreated: dateCreated ?? this.dateCreated,
@@ -194,10 +186,7 @@ class Ticket {
       violationDateTime: violationDateTime ?? this.violationDateTime,
       violationPlace: violationPlace ?? this.violationPlace,
       violationsID: violationsID ?? this.violationsID,
-      licenseFrontImageUrl: licenseFrontImageUrl ?? this.licenseFrontImageUrl,
-      licenseBackImageUrl: licenseBackImageUrl ?? this.licenseBackImageUrl,
-      signatureImageUrl: signatureImageUrl ?? this.signatureImageUrl,
-      evidenceImagesUrl: evidenceImagesUrl ?? this.evidenceImagesUrl,
+      totalFine: totalFine ?? this.totalFine,
     );
   }
 }

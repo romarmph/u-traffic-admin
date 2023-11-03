@@ -11,7 +11,7 @@ class ComplaintsPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("Complaints"),
       ),
-      body: Placeholder(),
+      body: const Placeholder(),
     );
   }
 }

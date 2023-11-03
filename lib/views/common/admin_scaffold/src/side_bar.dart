@@ -99,7 +99,7 @@ class _SideBarState extends State<SideBar> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: _sideBarWidth,
       child: _child,
     );
