@@ -157,7 +157,9 @@ class TicketDataGridSource extends DataGridSource {
                 borderRadius: BorderRadius.circular(USpace.space8),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              goToPaymentView(ticketID);
+            },
             child: const Text('Pay'),
           )
         : const SizedBox.shrink();

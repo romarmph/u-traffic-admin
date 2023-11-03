@@ -7,11 +7,15 @@ class PageContainer extends ConsumerStatefulWidget {
     this.appBar,
     required this.body,
     required this.route,
+    this.endDrawer,
+    this.scaffoldKey,
   });
 
   final Widget body;
   final AppBar? appBar;
   final String route;
+  final Drawer? endDrawer;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PageContainerState();
@@ -20,9 +24,12 @@ class PageContainer extends ConsumerStatefulWidget {
 class _PageContainerState extends ConsumerState<PageContainer> {
   @override
   Widget build(BuildContext context) {
+    ref.watch(vehicleTypesProvider);
     return AdminScaffold(
       backgroundColor: UColors.gray100,
       appBar: widget.appBar,
+      endDrawer: widget.endDrawer,
+      scaffoldKey: widget.scaffoldKey,
       sideBar: SideBar(
         activeBackgroundColor: UColors.blue600,
         activeIconColor: UColors.white,
@@ -37,7 +44,6 @@ class _PageContainerState extends ConsumerState<PageContainer> {
         backgroundColor: UColors.white,
         selectedRoute: widget.route,
         onSelected: (item) {
-          print(item.route);
           if (item.route == null || item.route == widget.route) return;
 
           Navigator.of(context).pushReplacementNamed(
@@ -46,14 +52,14 @@ class _PageContainerState extends ConsumerState<PageContainer> {
         },
         items: const [
           AdminMenuItem(
-            title: "Payment",
-            route: Routes.payment,
-            icon: Icons.payment_rounded,
-          ),
-          AdminMenuItem(
             title: "Dashboard",
             route: Routes.home,
             icon: Icons.dashboard_rounded,
+          ),
+          AdminMenuItem(
+            title: "Payment",
+            route: Routes.payment,
+            icon: Icons.payment_rounded,
           ),
           AdminMenuItem(
             title: "Analytics",

@@ -59,6 +59,23 @@ class TicketDatabase {
     }
   }
 
+  Future<Ticket> getTicketById(String id) async {
+    try {
+      const String collection = "tickets";
+
+      final result = await _firestore.collection(collection).doc(id).get();
+
+      return Ticket.fromJson(
+        result.data()!,
+        result.id,
+      );
+    } on FirebaseException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<int> getAllTicketCount() async {
     try {
       const String collection = "tickets";
