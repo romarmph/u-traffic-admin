@@ -189,4 +189,6 @@ class Ticket {
       totalFine: totalFine ?? this.totalFine,
     );
   }
+
+  String get getStatus => status.toString().split('.').last;
 }

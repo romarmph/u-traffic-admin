@@ -77,7 +77,7 @@ class UTrafficAdmin extends ConsumerWidget {
             );
           case Routes.payment:
             return PageRouteBuilder(
-              pageBuilder: (_, __, ___) => const PaymentPage(),
+              pageBuilder: (_, __, ___) => const PaymentHomePage(),
             );
           default:
             return PageRouteBuilder(

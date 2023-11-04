@@ -25,6 +25,7 @@ class _PageContainerState extends ConsumerState<PageContainer> {
   @override
   Widget build(BuildContext context) {
     ref.watch(vehicleTypesProvider);
+    ref.watch(violationsProvider);
     return AdminScaffold(
       backgroundColor: UColors.gray100,
       appBar: widget.appBar,

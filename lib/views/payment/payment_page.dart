@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class PaymentPage extends ConsumerWidget {
-  const PaymentPage({super.key});
+class PaymentHomePage extends ConsumerWidget {
+  const PaymentHomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

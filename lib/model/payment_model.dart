@@ -5,6 +5,7 @@ class PaymentDetail {
   final PaymentMethod method;
   final double fineAmount;
   final double tenderedAmount;
+  final double change;
   final int ticketNumber;
   final String processedBy;
   final Timestamp processedAt;
@@ -16,6 +17,7 @@ class PaymentDetail {
     required this.method,
     required this.fineAmount,
     required this.tenderedAmount,
+    required this.change,
     required this.ticketNumber,
     required this.processedBy,
     required this.processedAt,
@@ -28,6 +30,7 @@ class PaymentDetail {
       'method': method,
       'fineAmount': fineAmount,
       'tenderedAmount': tenderedAmount,
+      'change': change,
       'ticketNumber': ticketNumber,
       'processedBy': processedBy,
       'processedAt': processedAt,
@@ -42,6 +45,7 @@ class PaymentDetail {
       method: json['method'],
       fineAmount: json['fineAmount'],
       tenderedAmount: json['tenderedAmount'],
+      change: json['change'],
       ticketNumber: json['ticketNumber'],
       processedBy: json['processedBy'],
       processedAt: json['processedAt'],
@@ -55,6 +59,7 @@ class PaymentDetail {
     PaymentMethod? method,
     double? fineAmount,
     double? tenderedAmount,
+    double? change,
     int? ticketNumber,
     String? processedBy,
     Timestamp? processedAt,
@@ -66,6 +71,7 @@ class PaymentDetail {
       method: method ?? this.method,
       fineAmount: fineAmount ?? this.fineAmount,
       tenderedAmount: tenderedAmount ?? this.tenderedAmount,
+      change: change ?? this.change,
       ticketNumber: ticketNumber ?? this.ticketNumber,
       processedBy: processedBy ?? this.processedBy,
       processedAt: processedAt ?? this.processedAt,

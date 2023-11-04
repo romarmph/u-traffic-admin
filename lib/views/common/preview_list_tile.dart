@@ -6,10 +6,12 @@ class PreviewListTile extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
+    this.titleStyle,
   });
 
   final String title;
   final String subtitle;
+  final TextStyle? titleStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +36,12 @@ class PreviewListTile extends StatelessWidget {
             ),
             Text(
               title,
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 20,
-                color: title.isEmpty ? UColors.gray400 : UColors.gray800,
-              ),
+              style: titleStyle ??
+                  TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                    color: title.isEmpty ? UColors.gray400 : UColors.gray800,
+                  ),
             ),
           ],
         ),

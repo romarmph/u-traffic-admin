@@ -42,8 +42,19 @@ void goToPaymentView(String id) {
   Navigator.push(
     navigatorKey.currentContext!,
     PageRouteBuilder(
-      pageBuilder: (_, __, ___) => PaymentProcessPage(
+      pageBuilder: (_, __, ___) => PaymentTicketDetailsPage(
         ticketID: id,
+      ),
+    ),
+  );
+}
+
+void goToPaymentProcessPage(Ticket ticket) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => PaymentProcessingPage(
+        ticket: ticket,
       ),
     ),
   );
