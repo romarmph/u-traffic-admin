@@ -294,7 +294,11 @@ class TicketDetails extends ConsumerWidget {
                                 children: _buildViolationsList(ref),
                               ),
                             ),
-                            _buildViolationsListFooter()
+                            Visibility(
+                              visible:
+                                  ticket.getStatus.toLowerCase() == "unpaid",
+                              child: _buildViolationsListFooter(),
+                            ),
                           ],
                         ),
                       ),
