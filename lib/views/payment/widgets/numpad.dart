@@ -216,7 +216,42 @@ class _NumPadState extends ConsumerState<NumPad> {
               backgroundColor: UColors.green500,
               foregroundColor: UColors.white,
             ),
-            onPressed: () {},
+            onPressed: () async {
+              if (_change < 0) {
+                QuickAlert.show(
+                  context: context,
+                  type: QuickAlertType.error,
+                  title: 'Invalid Amount',
+                  text: 'The amount tendered is less than the total fine.',
+                );
+                return;
+              }
+
+              final value = await _confirmPayment();
+
+              if (value != true) {
+                return;
+              }
+
+              _showLoading();
+              try {
+                await PaymentDatabase.instance.payTicket(
+                  ticket: widget.ticket,
+                  amountTendered: double.parse(_numPadScreenController.text),
+                  change: _change,
+                );
+
+                await TicketDatabase.instance.updateTicketStatus(
+                  id: widget.ticket.id!,
+                  status: TicketStatus.paid,
+                );
+                _pop();
+                _showPaymentSuccess();
+              } catch (e) {
+                _showPaymentFailed();
+                return;
+              }
+            },
             child: const Text(
               'Done',
               style: TextStyle(
@@ -250,6 +285,101 @@ class _NumPadState extends ConsumerState<NumPad> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<bool> _confirmPayment() async {
+    return await QuickAlert.show(
+      context: context,
+      type: QuickAlertType.custom,
+      widget: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text(
+            'Confirm Payment',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(
+            height: USpace.space16,
+          ),
+          Text(
+            'Tendered Amount: Php ${_numPadScreenController.text}',
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(
+            height: USpace.space16,
+          ),
+          Text(
+            'Total Fine: Php ${widget.ticket.totalFine}',
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: UColors.red400,
+            ),
+          ),
+          const SizedBox(
+            height: USpace.space16,
+          ),
+          Text(
+            'Change: Php $_change',
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w600,
+              color: UColors.green400,
+            ),
+          ),
+        ],
+      ),
+      showConfirmBtn: true,
+      showCancelBtn: true,
+      confirmBtnText: 'Confirm',
+      cancelBtnText: 'Cancel',
+      onConfirmBtnTap: () {
+        Navigator.of(context).pop(true);
+      },
+    );
+  }
+
+  void _pop() {
+    Navigator.of(context).pop();
+  }
+
+  void _showLoading() {
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.loading,
+      title: 'Processing Payment',
+      text: 'Please wait while we process the payment.',
+    );
+  }
+
+  void _showPaymentSuccess() {
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.success,
+      title: 'Payment Successful',
+      text:
+          "The payment has been successfully processed.\n Please check the Admin Mobile to print the receipt.",
+      onConfirmBtnTap: () {
+        Navigator.of(context).pushReplacementNamed(
+          Routes.payment,
+        );
+      },
+    );
+  }
+
+  void _showPaymentFailed() {
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.error,
+      title: 'Payment Failed',
+      text: 'The payment has failed to process.',
     );
   }
 

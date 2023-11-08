@@ -8,7 +8,7 @@ class TicketStatusChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "paid":
         return Chip(
           padding: const EdgeInsets.all(4),

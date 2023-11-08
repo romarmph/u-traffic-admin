@@ -8,8 +8,14 @@ final getTicketCountProvider = FutureProvider<int>((ref) async {
   return await TicketDatabase.instance.getAllTicketCount();
 });
 
-final getAllUnpaidTicketsStreamProvider = StreamProvider<List<Ticket>>((ref) {
-  return TicketDatabase.instance.getAllUnpaidTickets();
+final getAllUnpaidTicketsStreamProvider =
+    StreamProvider.family<List<Ticket>, String>((ref, status) {
+  return TicketDatabase.instance.getTicketsByStatus(status);
+});
+
+final getAllPaidTicketsStreamProvider =
+    StreamProvider.family<List<Ticket>, String>((ref, status) {
+  return TicketDatabase.instance.getTicketsByStatus(status);
 });
 
 final getTicketByIdFutureProvider = FutureProvider.family<Ticket, String>(

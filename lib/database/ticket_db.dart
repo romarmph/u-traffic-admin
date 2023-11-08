@@ -13,7 +13,7 @@ class TicketDatabase {
 
     return _firestore
         .collection(collection)
-        .orderBy('ticketNumber')
+        .orderBy('ticketNumber', descending: true)
         .snapshots()
         .map((snapshot) {
       if (snapshot.docs.isEmpty) {
@@ -29,16 +29,15 @@ class TicketDatabase {
     });
   }
 
-  Stream<List<Ticket>> getAllUnpaidTickets() {
+  Stream<List<Ticket>> getTicketsByStatus(String query) {
     try {
       const String collection = "tickets";
       const String queryField = "status";
-      const String query = "unpaid";
 
       return _firestore
           .collection(collection)
           .where(queryField, isEqualTo: query)
-          .orderBy('ticketNumber')
+          .orderBy('ticketNumber', descending: true)
           .snapshots()
           .map((snapshot) {
         if (snapshot.docs.isEmpty) {
@@ -90,5 +89,21 @@ class TicketDatabase {
     }
   }
 
-  // Cancel Ticket: Must be approve by chief
+  // Update ticket status
+  Future<void> updateTicketStatus({
+    required String id,
+    required TicketStatus status,
+  }) async {
+    try {
+      const String collection = "tickets";
+
+      await _firestore.collection(collection).doc(id).update({
+        'status': status.toString().split('.').last,
+      });
+    } on FirebaseException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

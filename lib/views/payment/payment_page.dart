@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
+final tabControllerProvider = StateProvider<TabController>((ref) {
+  return TabController(
+    length: 2,
+    vsync: ref.read(vsyncProvider),
+  );
+});
+
+final vsyncProvider = Provider<TickerProvider>((ref) {
+  return navigatorKey.currentState!;
+});
+
 class PaymentHomePage extends ConsumerWidget {
   const PaymentHomePage({super.key});
 
@@ -32,29 +43,74 @@ class PaymentHomePage extends ConsumerWidget {
                         color: UColors.white,
                         borderRadius: BorderRadius.circular(USpace.space16),
                       ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TabBar(
+                              controller: ref.watch(tabControllerProvider),
+                              tabs: const [
+                                Tab(
+                                  text: 'Unpaid',
+                                ),
+                                Tab(
+                                  text: 'Paid',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(
                   height: 16,
                 ),
-                ref.watch(getAllUnpaidTicketsStreamProvider).when(
-                      data: (data) {
-                        return TicketDataGrid(
-                          currentRoute: Routes.payment,
-                          data: data,
-                          constraints: constraints,
-                        );
-                      },
-                      error: (error, stackTrace) {
-                        return const Center(
-                          child: Text('Error'),
-                        );
-                      },
-                      loading: () => const Center(
-                        child: LinearProgressIndicator(),
-                      ),
-                    ),
+                SizedBox(
+                  height: constraints.maxHeight - 100 - 50,
+                  width: constraints.maxWidth,
+                  child: TabBarView(
+                    controller: ref.watch(tabControllerProvider),
+                    children: [
+                      ref
+                          .watch(getAllUnpaidTicketsStreamProvider('unpaid'))
+                          .when(
+                            data: (data) {
+                              return TicketDataGrid(
+                                currentRoute: Routes.payment,
+                                data: data,
+                                constraints: constraints,
+                              );
+                            },
+                            error: (error, stackTrace) {
+                              return const Center(
+                                child: Text('Error'),
+                              );
+                            },
+                            loading: () => const Center(
+                              child: LinearProgressIndicator(),
+                            ),
+                          ),
+                      ref.watch(getAllUnpaidTicketsStreamProvider('paid')).when(
+                            data: (data) {
+                              return TicketDataGrid(
+                                currentRoute: Routes.payment,
+                                data: data,
+                                constraints: constraints,
+                              );
+                            },
+                            error: (error, stackTrace) {
+                              return const Center(
+                                child: Text('Error'),
+                              );
+                            },
+                            loading: () => const Center(
+                              child: LinearProgressIndicator(),
+                            ),
+                          ),
+                    ],
+                  ),
+                ),
               ],
             ),
           );

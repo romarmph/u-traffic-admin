@@ -153,6 +153,7 @@ export 'package:u_traffic_admin/database/ticket_db.dart';
 export 'package:u_traffic_admin/database/vehicle_type_db.dart';
 export 'package:u_traffic_admin/database/violation_db.dart';
 export 'package:u_traffic_admin/database/evidence_db.dart';
+export 'package:u_traffic_admin/database/payments_db.dart';
 
 /**
  * 
@@ -182,6 +183,7 @@ export 'package:u_traffic_admin/config/exceptions/custom_exception.dart';
 // ?------------------------------------------------------Enums
 export 'package:u_traffic_admin/config/enums/ticket_status.dart';
 export 'package:u_traffic_admin/config/enums/payment_method.dart';
+export 'package:u_traffic_admin/config/enums/notification_type.dart';
 
 // ?------------------------------------------------------Routes
 export 'package:u_traffic_admin/config/routes/routes.dart';

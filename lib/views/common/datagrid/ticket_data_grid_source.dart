@@ -45,7 +45,7 @@ class TicketDataGridSource extends DataGridSource {
 
         if (dataGridCell.columnName == TicketGridFields.status) {
           return TicketStatusChip(
-            status: dataGridCell.value.toString(),
+            status: dataGridCell.value,
           );
         }
 
@@ -58,6 +58,21 @@ class TicketDataGridSource extends DataGridSource {
               dataGridCell.value.toString().isEmpty
                   ? '-'
                   : dataGridCell.value.toString(),
+              overflow: TextOverflow.ellipsis,
+              style: const UTextStyle().textbasefontsemibold,
+            ),
+          );
+        }
+
+        if (dataGridCell.columnName == TicketGridFields.dateCreated ||
+            dataGridCell.columnName == TicketGridFields.ticketDueDate) {
+          final date = dataGridCell.value as DateTime;
+
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            alignment: Alignment.center,
+            child: Text(
+              date.toTimestamp.toAmericanDate,
               overflow: TextOverflow.ellipsis,
               style: const UTextStyle().textbasefontsemibold,
             ),
@@ -118,13 +133,13 @@ class TicketDataGridSource extends DataGridSource {
                   columnName: TicketGridFields.driverName,
                   value: ticket.driverName,
                 ),
-                DataGridCell<String>(
+                DataGridCell<DateTime>(
                   columnName: TicketGridFields.dateCreated,
-                  value: ticket.dateCreated.toAmericanDate,
+                  value: ticket.dateCreated.toDate(),
                 ),
-                DataGridCell<String>(
-                  columnName: TicketGridFields.dateCreated,
-                  value: ticket.dateCreated.addSevenDays.toAmericanDate,
+                DataGridCell<DateTime>(
+                  columnName: TicketGridFields.ticketDueDate,
+                  value: ticket.dateCreated.addSevenDays.toDate(),
                 ),
                 DataGridCell<double>(
                   columnName: TicketGridFields.totalFine,
@@ -132,7 +147,7 @@ class TicketDataGridSource extends DataGridSource {
                 ),
                 DataGridCell<String>(
                   columnName: TicketGridFields.status,
-                  value: ticket.status.toString().split('.').last,
+                  value: ticket.status.toString().split('.').last.capitalize,
                 ),
                 DataGridCell<String>(
                   columnName: TicketGridFields.actions,
