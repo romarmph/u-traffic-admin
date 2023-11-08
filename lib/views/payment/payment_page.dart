@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-final tabControllerProvider = StateProvider<TabController>((ref) {
-  return TabController(
-    length: 2,
-    vsync: ref.read(vsyncProvider),
-  );
-});
-
-final vsyncProvider = Provider<TickerProvider>((ref) {
-  return navigatorKey.currentState!;
-});
-
-class PaymentHomePage extends ConsumerWidget {
+class PaymentHomePage extends ConsumerStatefulWidget {
   const PaymentHomePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _PaymentHomePageState();
+}
+
+class _PaymentHomePageState extends ConsumerState<PaymentHomePage> {
+  final searchController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
     return PageContainer(
       route: Routes.payment,
       appBar: AppBar(
@@ -39,23 +36,55 @@ class PaymentHomePage extends ConsumerWidget {
                       horizontal: 16,
                     ),
                     child: Container(
+                      padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: UColors.white,
                         borderRadius: BorderRadius.circular(USpace.space16),
                       ),
                       child: Row(
                         children: [
-                          Expanded(
-                            child: TabBar(
-                              controller: ref.watch(tabControllerProvider),
-                              tabs: const [
-                                Tab(
-                                  text: 'Unpaid',
+                          const Spacer(),
+                          const StatusTypeDropDown(
+                            statusList: [
+                              'unpaid',
+                              'paid',
+                            ],
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          SizedBox(
+                            width: 300,
+                            child: TextField(
+                              controller: searchController,
+                              onChanged: (value) {
+                                ref.read(searchQueryProvider.notifier).state =
+                                    value;
+                              },
+                              decoration: InputDecoration(
+                                hintText: 'Search',
+                                border: InputBorder.none,
+                                prefixIcon: const Icon(
+                                  Icons.search,
+                                  color: UColors.gray300,
                                 ),
-                                Tab(
-                                  text: 'Paid',
+                                suffixIcon: Visibility(
+                                  visible:
+                                      ref.watch(searchQueryProvider).isNotEmpty,
+                                  child: IconButton(
+                                    onPressed: () {
+                                      ref
+                                          .read(searchQueryProvider.notifier)
+                                          .state = '';
+                                      searchController.clear();
+                                    },
+                                    icon: const Icon(
+                                      Icons.filter_list,
+                                      color: UColors.gray300,
+                                    ),
+                                  ),
                                 ),
-                              ],
+                              ),
                             ),
                           ),
                         ],
@@ -66,56 +95,44 @@ class PaymentHomePage extends ConsumerWidget {
                 const SizedBox(
                   height: 16,
                 ),
-                SizedBox(
-                  height: constraints.maxHeight - 100 - 50,
-                  width: constraints.maxWidth,
-                  child: TabBarView(
-                    controller: ref.watch(tabControllerProvider),
-                    children: [
-                      ref
-                          .watch(getAllUnpaidTicketsStreamProvider('unpaid'))
-                          .when(
-                            data: (data) {
-                              return TicketDataGrid(
-                                currentRoute: Routes.payment,
-                                data: data,
-                                constraints: constraints,
-                              );
-                            },
-                            error: (error, stackTrace) {
-                              return const Center(
-                                child: Text('Error'),
-                              );
-                            },
-                            loading: () => const Center(
-                              child: LinearProgressIndicator(),
-                            ),
-                          ),
-                      ref.watch(getAllUnpaidTicketsStreamProvider('paid')).when(
-                            data: (data) {
-                              return TicketDataGrid(
-                                currentRoute: Routes.payment,
-                                data: data,
-                                constraints: constraints,
-                              );
-                            },
-                            error: (error, stackTrace) {
-                              return const Center(
-                                child: Text('Error'),
-                              );
-                            },
-                            loading: () => const Center(
-                              child: LinearProgressIndicator(),
-                            ),
-                          ),
-                    ],
-                  ),
-                ),
+                ref.watch(getAllTicketByStatusStream).when(
+                      data: (data) {
+                        final query = ref.watch(searchQueryProvider);
+                        return TicketDataGrid(
+                          currentRoute: Routes.payment,
+                          data: _searchTicket(data, query),
+                          constraints: constraints,
+                        );
+                      },
+                      error: (error, stackTrace) {
+                        return const Center(
+                          child: Text('Error'),
+                        );
+                      },
+                      loading: () => const Center(
+                        child: LinearProgressIndicator(),
+                      ),
+                    ),
               ],
             ),
           );
         },
       ),
     );
+  }
+
+  List<Ticket> _searchTicket(List<Ticket> tickets, String query) {
+    if (query.isNotEmpty) {
+      return tickets.where((ticket) {
+        query = query.toLowerCase();
+        return ticket.ticketNumber.toString().contains(query) ||
+            ticket.driverName!.toLowerCase().contains(query) ||
+            ticket.licenseNumber!.toLowerCase().contains(query) ||
+            ticket.enforcerName.toLowerCase().contains(query) ||
+            ticket.dateCreated.toAmericanDate.toLowerCase().contains(query) ||
+            ticket.ticketDueDate.toAmericanDate.toLowerCase().contains(query);
+      }).toList();
+    }
+    return tickets;
   }
 }

@@ -34,7 +34,6 @@ class EvidenceCard extends StatelessWidget {
             imageUrl: evidence.path,
             placeholder: (context, url) => const CircularProgressIndicator(),
             errorWidget: (context, url, error) {
-              print(error);
               return const Icon(Icons.error);
             },
             height: 200,

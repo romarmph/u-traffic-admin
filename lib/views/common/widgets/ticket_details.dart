@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class PayTicketDetailView extends ConsumerWidget {
-  const PayTicketDetailView({
+class TicketDetails extends ConsumerWidget {
+  const TicketDetails({
     super.key,
     required this.ticket,
     required this.constraints,
@@ -16,7 +16,6 @@ class PayTicketDetailView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appBarHeight = AppBar().preferredSize.height;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -57,6 +56,13 @@ class PayTicketDetailView extends ConsumerWidget {
                       scaffoldKey.currentState!.openEndDrawer();
                     },
                     child: const Text("View Evidence"),
+                  ),
+                  Visibility(
+                    visible: ticket.getStatus.toLowerCase() != "paid",
+                    child: UElevatedButton(
+                      onPressed: () {},
+                      child: const Text("Edit Ticket"),
+                    ),
                   ),
                 ],
               ),

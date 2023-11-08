@@ -71,6 +71,8 @@ class TicketDataGrid extends ConsumerWidget {
   }
 
   double pageCount(int dataCount, int rowsPerPage) {
+    if (dataCount == 0) return 1;
+
     return (dataCount / rowsPerPage).ceilToDouble();
   }
 

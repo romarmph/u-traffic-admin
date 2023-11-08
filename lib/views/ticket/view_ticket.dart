@@ -1,20 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class TicketView extends ConsumerWidget {
-  const TicketView({
-    super.key,
-    required this.ticketID,
-  });
+class TicketView extends ConsumerStatefulWidget {
+  const TicketView({super.key, required this.ticketID, required this.route});
 
   final String ticketID;
+  final String route;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _TicketViewState();
+}
+
+class _TicketViewState extends ConsumerState<TicketView> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  Widget build(BuildContext context) {
     return PageContainer(
-      route: Routes.tickets,
+      key: _scaffoldKey,
+      route: widget.route,
       appBar: AppBar(
         title: const Text("View Ticket"),
+        actions: [
+          Container(),
+        ],
+      ),
+      endDrawer: Drawer(
+        width: 500,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(USpace.space8),
+        ),
+        backgroundColor: UColors.white,
+        child: EvidenceDrawer(
+          ticketID: widget.ticketID,
+        ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -26,37 +45,31 @@ class TicketView extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
-                  height: 100,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8,
-                        horizontal: 16,
+                ref.watch(getTicketByIdFutureProvider(widget.ticketID)).when(
+                      data: (data) => TicketDetails(
+                        scaffoldKey: _scaffoldKey,
+                        constraints: constraints,
+                        ticket: data,
                       ),
-                      decoration: BoxDecoration(
-                        color: UColors.white,
-                        borderRadius: BorderRadius.circular(USpace.space16),
-                      ),
-                      child: Row(
-                        children: [
-                          const UBackButton(),
-                          const Spacer(),
-                          UElevatedButton(
-                            onPressed: () {},
-                            child: const Text("Edit Ticket"),
+                      error: (error, stackTrace) {
+                        return Container(
+                          color: UColors.white,
+                          height: constraints.maxHeight - 100 - 16,
+                          child: const Text(
+                            'Error fetching ticket. Please try again later.',
                           ),
-                        ],
-                      ),
+                        );
+                      },
+                      loading: () {
+                        return Container(
+                          color: UColors.white,
+                          height: constraints.maxHeight - 100 - 16,
+                          child: const Center(
+                            child: LinearProgressIndicator(),
+                          ),
+                        );
+                      },
                     ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
               ],
             ),
           );

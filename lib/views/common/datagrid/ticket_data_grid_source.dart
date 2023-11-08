@@ -27,17 +27,18 @@ class TicketDataGridSource extends DataGridSource {
         bool isUnpaid = false;
 
         if (dataGridCell.columnName == TicketGridFields.status) {
-          _isUnpaid = dataGridCell.value.toString() ==
-              TicketStatus.unpaid.toString().split('.').last;
+          _isUnpaid = dataGridCell.value.toString().toLowerCase() ==
+              TicketStatus.unpaid.toString().split('.').last.toLowerCase();
         }
 
         if (dataGridCell.columnName == TicketGridFields.actions) {
           isUnpaid = _isUnpaid;
           _isUnpaid = false;
+
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _renderViewButton(dataGridCell, currentRoute),
+              _renderViewButton(dataGridCell.value, isUnpaid),
               _renderPayButton(dataGridCell.value, isUnpaid)
             ],
           );
@@ -93,30 +94,6 @@ class TicketDataGridSource extends DataGridSource {
     ).toList());
   }
 
-  Widget _renderViewButton(
-    DataGridCell<dynamic> dataGridCell,
-    String currentRoute,
-  ) {
-    return currentRoute == Routes.tickets
-        ? OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                vertical: USpace.space8,
-                horizontal: USpace.space16,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(USpace.space8),
-              ),
-              side: const BorderSide(color: UColors.blue600),
-            ),
-            onPressed: () {
-              goToTicketView(dataGridCell.value);
-            },
-            child: const Text('View'),
-          )
-        : const SizedBox.shrink();
-  }
-
   void buildDataGridRows() {
     _ticketRows = ticketList
         .map<DataGridRow>((ticket) => DataGridRow(
@@ -158,7 +135,28 @@ class TicketDataGridSource extends DataGridSource {
         .toList();
   }
 
-  Widget _renderPayButton(String ticketID, bool isUnpaid) {
+  Widget _renderViewButton(String id, bool isUnpaid) {
+    return !isUnpaid
+        ? OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(
+                vertical: USpace.space8,
+                horizontal: USpace.space16,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(USpace.space8),
+              ),
+              side: const BorderSide(color: UColors.blue600),
+            ),
+            onPressed: () {
+              goToTicketView(id, currentRoute);
+            },
+            child: const Text('View'),
+          )
+        : const SizedBox.shrink();
+  }
+
+  Widget _renderPayButton(String id, bool isUnpaid) {
     return isUnpaid
         ? ElevatedButton(
             style: FilledButton.styleFrom(
@@ -173,7 +171,7 @@ class TicketDataGridSource extends DataGridSource {
               ),
             ),
             onPressed: () {
-              goToPaymentView(ticketID);
+              goToTicketView(id, currentRoute);
             },
             child: const Text('Pay'),
           )

@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class PaymentTicketDetailsPage extends ConsumerStatefulWidget {
-  const PaymentTicketDetailsPage({
+class TicketDetailsPage extends ConsumerStatefulWidget {
+  const TicketDetailsPage({
     super.key,
     required this.ticketID,
+    required this.route,
   });
 
   final String ticketID;
+  final String route;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _PaymentTicketDetailsPageState();
+      _TicketDetailsPageState();
 }
 
-class _PaymentTicketDetailsPageState
-    extends ConsumerState<PaymentTicketDetailsPage> {
+class _TicketDetailsPageState extends ConsumerState<TicketDetailsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -24,7 +25,7 @@ class _PaymentTicketDetailsPageState
       widget.ticketID,
     ));
     return PageContainer(
-      route: Routes.payment,
+      route: widget.route,
       endDrawer: Drawer(
         width: 500,
         shape: RoundedRectangleBorder(
@@ -55,7 +56,7 @@ class _PaymentTicketDetailsPageState
                   ),
                 )
                 .when(
-                  data: (data) => PayTicketDetailView(
+                  data: (data) => TicketDetails(
                     scaffoldKey: _scaffoldKey,
                     constraints: constraints,
                     ticket: data,

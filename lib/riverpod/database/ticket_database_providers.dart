@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 final getAllTicketsStreamProvider = StreamProvider<List<Ticket>>((ref) {
@@ -8,13 +9,8 @@ final getTicketCountProvider = FutureProvider<int>((ref) async {
   return await TicketDatabase.instance.getAllTicketCount();
 });
 
-final getAllUnpaidTicketsStreamProvider =
-    StreamProvider.family<List<Ticket>, String>((ref, status) {
-  return TicketDatabase.instance.getTicketsByStatus(status);
-});
-
-final getAllPaidTicketsStreamProvider =
-    StreamProvider.family<List<Ticket>, String>((ref, status) {
+final getAllTicketByStatusStream = StreamProvider<List<Ticket>>((ref) {
+  final status = ref.watch(statusQueryProvider);
   return TicketDatabase.instance.getTicketsByStatus(status);
 });
 
@@ -23,3 +19,15 @@ final getTicketByIdFutureProvider = FutureProvider.family<Ticket, String>(
     return TicketDatabase.instance.getTicketById(id);
   },
 );
+
+final statusQueryProvider = StateProvider<String>((ref) {
+  return 'unpaid';
+});
+
+final searchQueryProvider = StateProvider<String>((ref) {
+  return '';
+});
+
+final searchFieldController = Provider<TextEditingController>((ref) {
+  return TextEditingController();
+});
