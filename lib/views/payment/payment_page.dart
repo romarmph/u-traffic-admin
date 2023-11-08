@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-final tabController = StateProvider<TabController>((ref) {
-  return TabController(length: 2, vsync: ref.read(vsyncProvider));
-});
-
-final vsyncProvider = Provider<TickerProvider>((ref) {
-  return navigatorKey.currentState!;
-});
-
 class PaymentHomePage extends ConsumerStatefulWidget {
   const PaymentHomePage({super.key});
 
@@ -17,8 +9,25 @@ class PaymentHomePage extends ConsumerStatefulWidget {
       _PaymentHomePageState();
 }
 
-class _PaymentHomePageState extends ConsumerState<PaymentHomePage> {
+class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
+    with SingleTickerProviderStateMixin {
   final searchController = TextEditingController();
+  late TabController _tabController;
+  int _currentTabIndex = 0;
+
+  @override
+  void initState() {
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+    );
+    _tabController.addListener(() {
+      setState(() {
+        _currentTabIndex = _tabController.index;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +64,7 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage> {
                             width: 400,
                             child: TabBar(
                               dividerColor: Colors.transparent,
-                              controller: ref.watch(tabController),
+                              controller: _tabController,
                               tabs: const [
                                 Tab(
                                   text: 'Tickets',
@@ -67,43 +76,50 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage> {
                             ),
                           ),
                           const Spacer(),
-                          const StatusTypeDropDown(
-                            statusList: [
-                              'unpaid',
-                              'paid',
-                            ],
+                          Visibility(
+                            visible: _currentTabIndex == 0,
+                            child: const StatusTypeDropDown(
+                              statusList: [
+                                'unpaid',
+                                'paid',
+                              ],
+                            ),
                           ),
                           const SizedBox(
                             width: 16,
                           ),
-                          SizedBox(
-                            width: 300,
-                            child: TextField(
-                              controller: searchController,
-                              onChanged: (value) {
-                                ref.read(searchQueryProvider.notifier).state =
-                                    value;
-                              },
-                              decoration: InputDecoration(
-                                hintText: 'Search',
-                                border: InputBorder.none,
-                                prefixIcon: const Icon(
-                                  Icons.search,
-                                  color: UColors.gray300,
-                                ),
-                                suffixIcon: Visibility(
-                                  visible:
-                                      ref.watch(searchQueryProvider).isNotEmpty,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      ref
-                                          .read(searchQueryProvider.notifier)
-                                          .state = '';
-                                      searchController.clear();
-                                    },
-                                    icon: const Icon(
-                                      Icons.filter_list,
-                                      color: UColors.gray300,
+                          Visibility(
+                            visible: _currentTabIndex == 0,
+                            child: SizedBox(
+                              width: 300,
+                              child: TextField(
+                                controller: searchController,
+                                onChanged: (value) {
+                                  ref.read(searchQueryProvider.notifier).state =
+                                      value;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  border: InputBorder.none,
+                                  prefixIcon: const Icon(
+                                    Icons.search,
+                                    color: UColors.gray300,
+                                  ),
+                                  suffixIcon: Visibility(
+                                    visible: ref
+                                        .watch(searchQueryProvider)
+                                        .isNotEmpty,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        ref
+                                            .read(searchQueryProvider.notifier)
+                                            .state = '';
+                                        searchController.clear();
+                                      },
+                                      icon: const Icon(
+                                        Icons.filter_list,
+                                        color: UColors.gray300,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -121,7 +137,7 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage> {
                 SizedBox(
                   height: constraints.maxHeight - 50 - 100,
                   child: TabBarView(
-                    controller: ref.watch(tabController),
+                    controller: _tabController,
                     children: [
                       ref.watch(getAllTicketByStatusStream).when(
                             data: (data) {
@@ -148,9 +164,33 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage> {
                               ),
                             ),
                           ),
-                      Container(
-                        color: Colors.red,
-                      ),
+                      ref.watch(paymentStreamProvider).when(
+                            data: (data) {
+                              final query = ref.watch(searchQueryProvider);
+                              return DataGridContainer(
+                                source: PaymentDataGridSource(
+                                  paymentList:
+                                      _searchPaymentHistory(data, query),
+                                  currentRoute: Routes.payment,
+                                ),
+                                dataCount:
+                                    _searchPaymentHistory(data, query).length,
+                                gridColumns: paymentGridColumn,
+                                constraints: constraints,
+                              );
+                            },
+                            error: (error, stackTrace) {
+                              return const Center(
+                                child: Text('Error fetching payment history'),
+                              );
+                            },
+                            loading: () => SizedBox(
+                              height: constraints.maxHeight - 100 - 64,
+                              child: const Center(
+                                child: LinearProgressIndicator(),
+                              ),
+                            ),
+                          ),
                     ],
                   ),
                 )
@@ -175,5 +215,23 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage> {
       }).toList();
     }
     return tickets;
+  }
+
+  List<PaymentDetail> _searchPaymentHistory(
+    List<PaymentDetail> history,
+    String query,
+  ) {
+    if (query.isNotEmpty) {
+      return history.where((payment) {
+        query = query.toLowerCase();
+        return payment.ticketNumber.toString().contains(query) ||
+            payment.processedBy.toLowerCase().contains(query) ||
+            payment.processedAt.toAmericanDate.toLowerCase().contains(query) ||
+            payment.change.toString().contains(query) ||
+            payment.fineAmount.toString().contains(query) ||
+            payment.tenderedAmount.toString().contains(query);
+      }).toList();
+    }
+    return history;
   }
 }

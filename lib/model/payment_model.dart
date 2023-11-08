@@ -36,7 +36,9 @@ class PaymentDetail {
   factory PaymentDetail.fromJson(Map<String, dynamic> json, [String? docId]) {
     return PaymentDetail(
       id: docId,
-      method: json['method'],
+      method: PaymentMethod.values.firstWhere(
+        (element) => element.toString() == 'PaymentMethod.${json['method']}',
+      ),
       fineAmount: json['fineAmount'],
       tenderedAmount: json['tenderedAmount'],
       change: json['change'],

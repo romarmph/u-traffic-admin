@@ -1,5 +1,4 @@
 import 'package:u_traffic_admin/config/exports/exports.dart';
-import 'package:u_traffic_admin/model/payment_model.dart';
 
 class PaymentDatabase {
   const PaymentDatabase._();
@@ -30,6 +29,25 @@ class PaymentDatabase {
       await _firestore.collection('payments').add(
             payment.toJson(),
           );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Stream<List<PaymentDetail>> getAllPaymenDetailsAsStream() {
+    try {
+      return _firestore
+          .collection('payments')
+          .orderBy('processedAt', descending: true)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return PaymentDetail.fromJson(
+            doc.data(),
+            doc.id,
+          );
+        }).toList();
+      });
     } catch (e) {
       rethrow;
     }
