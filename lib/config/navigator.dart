@@ -27,23 +27,24 @@ void goToAndReplace(String route) {
   );
 }
 
-void goToTicketView(String id) {
+void goToTicketView(String id, String route) {
   Navigator.push(
     navigatorKey.currentContext!,
     PageRouteBuilder(
-      pageBuilder: (_, __, ___) => TicketView(
+      pageBuilder: (_, __, ___) => TicketDetailsPage(
+        route: route,
         ticketID: id,
       ),
     ),
   );
 }
 
-void goToPaymentView(String id) {
+void goToPaymentProcessPage(Ticket ticket) {
   Navigator.push(
     navigatorKey.currentContext!,
     PageRouteBuilder(
-      pageBuilder: (_, __, ___) => PaymentProcessPage(
-        ticketID: id,
+      pageBuilder: (_, __, ___) => PaymentProcessingPage(
+        ticket: ticket,
       ),
     ),
   );
