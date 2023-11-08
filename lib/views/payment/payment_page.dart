@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
+final tabController = StateProvider<TabController>((ref) {
+  return TabController(length: 2, vsync: ref.read(vsyncProvider));
+});
+
+final vsyncProvider = Provider<TickerProvider>((ref) {
+  return navigatorKey.currentState!;
+});
+
 class PaymentHomePage extends ConsumerStatefulWidget {
   const PaymentHomePage({super.key});
 
@@ -43,6 +51,21 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage> {
                       ),
                       child: Row(
                         children: [
+                          SizedBox(
+                            width: 400,
+                            child: TabBar(
+                              dividerColor: Colors.transparent,
+                              controller: ref.watch(tabController),
+                              tabs: const [
+                                Tab(
+                                  text: 'Tickets',
+                                ),
+                                Tab(
+                                  text: 'Payment History',
+                                ),
+                              ],
+                            ),
+                          ),
                           const Spacer(),
                           const StatusTypeDropDown(
                             statusList: [
@@ -95,24 +118,42 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage> {
                 const SizedBox(
                   height: 16,
                 ),
-                ref.watch(getAllTicketByStatusStream).when(
-                      data: (data) {
-                        final query = ref.watch(searchQueryProvider);
-                        return TicketDataGrid(
-                          currentRoute: Routes.payment,
-                          data: _searchTicket(data, query),
-                          constraints: constraints,
-                        );
-                      },
-                      error: (error, stackTrace) {
-                        return const Center(
-                          child: Text('Error'),
-                        );
-                      },
-                      loading: () => const Center(
-                        child: LinearProgressIndicator(),
+                SizedBox(
+                  height: constraints.maxHeight - 50 - 100,
+                  child: TabBarView(
+                    controller: ref.watch(tabController),
+                    children: [
+                      ref.watch(getAllTicketByStatusStream).when(
+                            data: (data) {
+                              final query = ref.watch(searchQueryProvider);
+                              return DataGridContainer(
+                                source: TicketDataGridSource(
+                                  ticketList: _searchTicket(data, query),
+                                  currentRoute: Routes.payment,
+                                ),
+                                dataCount: _searchTicket(data, query).length,
+                                gridColumns: ticketGridColumns,
+                                constraints: constraints,
+                              );
+                            },
+                            error: (error, stackTrace) {
+                              return const Center(
+                                child: Text('Error fetching tickets'),
+                              );
+                            },
+                            loading: () => SizedBox(
+                              height: constraints.maxHeight - 100 - 64,
+                              child: const Center(
+                                child: LinearProgressIndicator(),
+                              ),
+                            ),
+                          ),
+                      Container(
+                        color: Colors.red,
                       ),
-                    ),
+                    ],
+                  ),
+                )
               ],
             ),
           );

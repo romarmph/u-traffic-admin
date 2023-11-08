@@ -36,6 +36,7 @@ export 'package:u_traffic_admin/views/common/theme_toggle.dart';
 export 'package:u_traffic_admin/views/common/buttons/elevated_button.dart';
 export 'package:u_traffic_admin/views/common/buttons/back_button.dart';
 export 'package:u_traffic_admin/views/common/datagrid/ticket_data_grid_source.dart';
+export 'package:u_traffic_admin/views/common/datagrid/ticket_grid_columns.dart';
 export 'package:u_traffic_admin/views/common/widgets/data_grid.dart';
 export 'package:u_traffic_admin/views/common/widgets/ticket_status.dart';
 export 'package:u_traffic_admin/views/common/widgets/ticket_details.dart';

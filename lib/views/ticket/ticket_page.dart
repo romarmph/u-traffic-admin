@@ -95,34 +95,27 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                 ),
                 ref.watch(getAllTicketByStatusStream).when(
                       data: (data) {
-                        if (data.isEmpty) {
-                          return Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: UColors.white,
-                                borderRadius:
-                                    BorderRadius.circular(USpace.space16),
-                              ),
-                              height: constraints.maxHeight - 100 - 64 - 16,
-                              child: const Center(
-                                child: Text('No tickets found'),
-                              ),
-                            ),
-                          );
-                        }
-
-                        return TicketDataGrid(
-                          currentRoute: Routes.tickets,
-                          data: data,
+                        final query = ref.watch(searchQueryProvider);
+                        return DataGridContainer(
+                          source: TicketDataGridSource(
+                            ticketList: _searchTicket(data, query),
+                            currentRoute: Routes.payment,
+                          ),
+                          dataCount: _searchTicket(data, query).length,
+                          gridColumns: ticketGridColumns,
                           constraints: constraints,
                         );
                       },
-                      error: (error, stackTrace) => const Center(
-                        child: Text('Error'),
-                      ),
-                      loading: () => const Center(
-                        child: LinearProgressIndicator(),
+                      error: (error, stackTrace) {
+                        return const Center(
+                          child: Text('Error fetching tickets'),
+                        );
+                      },
+                      loading: () => SizedBox(
+                        height: constraints.maxHeight - 100 - 64,
+                        child: const Center(
+                          child: LinearProgressIndicator(),
+                        ),
                       ),
                     ),
               ],
@@ -131,5 +124,20 @@ class _TicketPageState extends ConsumerState<TicketPage> {
         },
       ),
     );
+  }
+
+  List<Ticket> _searchTicket(List<Ticket> tickets, String query) {
+    if (query.isNotEmpty) {
+      return tickets.where((ticket) {
+        query = query.toLowerCase();
+        return ticket.ticketNumber.toString().contains(query) ||
+            ticket.driverName!.toLowerCase().contains(query) ||
+            ticket.licenseNumber!.toLowerCase().contains(query) ||
+            ticket.enforcerName.toLowerCase().contains(query) ||
+            ticket.dateCreated.toAmericanDate.toLowerCase().contains(query) ||
+            ticket.ticketDueDate.toAmericanDate.toLowerCase().contains(query);
+      }).toList();
+    }
+    return tickets;
   }
 }

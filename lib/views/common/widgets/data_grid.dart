@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class TicketDataGrid extends ConsumerWidget {
-  const TicketDataGrid({
+class DataGridContainer extends ConsumerWidget {
+  const DataGridContainer({
     super.key,
     required this.constraints,
-    required this.data,
-    required this.currentRoute,
+    required this.source,
+    required this.gridColumns,
+    required this.dataCount,
   });
 
   final BoxConstraints constraints;
-  final List<Ticket> data;
-  final String currentRoute;
+  final DataGridSource source;
+  final List<GridColumn> gridColumns;
+  final int dataCount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appBarHeight = AppBar().preferredSize.height;
-    final TicketDataGridSource source = TicketDataGridSource(
-      ticketList: data,
-      currentRoute: currentRoute,
-    );
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
@@ -58,7 +56,7 @@ class TicketDataGrid extends ConsumerWidget {
               ),
               child: SfDataPager(
                 pageCount: pageCount(
-                  data.length,
+                  dataCount,
                   ref.watch(rowsPerPageProvider),
                 ),
                 delegate: source,
@@ -74,83 +72,5 @@ class TicketDataGrid extends ConsumerWidget {
     if (dataCount == 0) return 1;
 
     return (dataCount / rowsPerPage).ceilToDouble();
-  }
-
-  List<GridColumn> get gridColumns {
-    return [
-      GridColumn(
-        minimumWidth: 150,
-        columnWidthMode: ColumnWidthMode.fitByColumnName,
-        columnName: TicketGridFields.ticketNumber,
-        label: const Center(
-          child: Text(
-            'Ticket No.',
-          ),
-        ),
-      ),
-      GridColumn(
-        minimumWidth: 150,
-        columnName: TicketGridFields.licenseNumber,
-        label: const Center(
-          child: Text(
-            'License No.',
-          ),
-        ),
-      ),
-      GridColumn(
-        minimumWidth: 150,
-        columnName: TicketGridFields.driverName,
-        label: const Center(
-          child: Text(
-            'Driver Name',
-          ),
-        ),
-      ),
-      GridColumn(
-        minimumWidth: 150,
-        columnName: TicketGridFields.dateCreated,
-        label: const Center(
-          child: Text(
-            'Date Issued',
-          ),
-        ),
-      ),
-      GridColumn(
-        minimumWidth: 150,
-        columnName: TicketGridFields.dateCreated,
-        label: const Center(
-          child: Text(
-            'Due Date',
-          ),
-        ),
-      ),
-      GridColumn(
-        minimumWidth: 150,
-        columnName: TicketGridFields.totalFine,
-        label: const Center(
-          child: Text(
-            'Fina Amount',
-          ),
-        ),
-      ),
-      GridColumn(
-        minimumWidth: 150,
-        columnName: TicketGridFields.status,
-        label: const Center(
-          child: Text(
-            'Status',
-          ),
-        ),
-      ),
-      GridColumn(
-        minimumWidth: 150,
-        columnName: TicketGridFields.status,
-        label: const Center(
-          child: Text(
-            'Actions',
-          ),
-        ),
-      ),
-    ];
   }
 }
