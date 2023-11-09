@@ -75,6 +75,27 @@ class TicketDatabase {
     }
   }
 
+  Future<Ticket> getTicketByTicketNumber(int ticketNumber) async {
+    try {
+      const String collection = "tickets";
+      const String queryField = "ticketNumber";
+
+      final result = await _firestore
+          .collection(collection)
+          .where(queryField, isEqualTo: ticketNumber)
+          .get();
+
+      return Ticket.fromJson(
+        result.docs.first.data(),
+        result.docs.first.id,
+      );
+    } on FirebaseException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<int> getAllTicketCount() async {
     try {
       const String collection = "tickets";
@@ -89,7 +110,6 @@ class TicketDatabase {
     }
   }
 
-  // Update ticket status
   Future<void> updateTicketStatus({
     required String id,
     required TicketStatus status,

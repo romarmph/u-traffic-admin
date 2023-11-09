@@ -4,4 +4,5 @@ enum TicketStatus {
   cancelled,
   refunded,
   expired,
+  submitted,
 }

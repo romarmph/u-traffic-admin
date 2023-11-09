@@ -18,53 +18,48 @@ class DataGridContainer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appBarHeight = AppBar().preferredSize.height;
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            clipBehavior: Clip.antiAlias,
-            height: constraints.maxHeight - 60 - appBarHeight - 100 - 16,
-            decoration: BoxDecoration(
-              color: UColors.white,
-              borderRadius: BorderRadius.circular(USpace.space16),
-            ),
-            child: SfDataGridTheme(
-              data: SfDataGridThemeData(),
-              child: SfDataGrid(
-                rowsPerPage: 12,
-                highlightRowOnHover: true,
-                allowFiltering: true,
-                allowSorting: true,
-                columnWidthMode: ColumnWidthMode.fill,
-                source: source,
-                columns: gridColumns,
-              ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          clipBehavior: Clip.antiAlias,
+          height: constraints.maxHeight - 60 - appBarHeight - 100 - 16,
+          decoration: BoxDecoration(
+            color: UColors.white,
+            borderRadius: BorderRadius.circular(USpace.space16),
+          ),
+          child: SfDataGridTheme(
+            data: SfDataGridThemeData(),
+            child: SfDataGrid(
+              rowsPerPage: 12,
+              highlightRowOnHover: true,
+              allowFiltering: true,
+              allowSorting: true,
+              columnWidthMode: ColumnWidthMode.fill,
+              source: source,
+              columns: gridColumns,
             ),
           ),
-          const SizedBox(
-            height: 16,
-          ),
-          SizedBox(
-            height: 60,
-            child: SfDataPagerTheme(
-              data: SfDataPagerThemeData(
-                backgroundColor: UColors.white,
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        SizedBox(
+          height: 60,
+          child: SfDataPagerTheme(
+            data: SfDataPagerThemeData(
+              backgroundColor: UColors.white,
+            ),
+            child: SfDataPager(
+              pageCount: pageCount(
+                dataCount,
+                ref.watch(rowsPerPageProvider),
               ),
-              child: SfDataPager(
-                pageCount: pageCount(
-                  dataCount,
-                  ref.watch(rowsPerPageProvider),
-                ),
-                delegate: source,
-              ),
+              delegate: source,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

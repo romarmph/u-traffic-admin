@@ -49,3 +49,14 @@ void goToPaymentProcessPage(Ticket ticket) {
     ),
   );
 }
+
+void goToPaymentDetailsPage(String ticketID) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => PaymentDetailsPage(
+        ticketID: ticketID,
+      ),
+    ),
+  );
+}

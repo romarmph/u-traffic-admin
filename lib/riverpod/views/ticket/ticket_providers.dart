@@ -7,3 +7,11 @@ final rowsPerPageProvider = StateProvider<int>((ref) {
 final gridSearchProvider = StateProvider<String>((ref) {
   return '';
 });
+
+final ticketViewStatusQueryProvider = StateProvider<String>((ref) {
+  return 'all';
+});
+
+final ticketViewSearchQueryProvider = StateProvider<String>((ref) {
+  return '';
+});

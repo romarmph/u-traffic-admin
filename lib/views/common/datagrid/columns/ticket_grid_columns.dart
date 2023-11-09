@@ -42,6 +42,12 @@ List<GridColumn> ticketGridColumns = [
   GridColumn(
     minimumWidth: 150,
     columnName: TicketGridFields.dateCreated,
+    filterPopupMenuOptions: const FilterPopupMenuOptions(
+      filterMode: FilterMode.advancedFilter,
+      showColumnName: true,
+      canShowSortingOptions: true,
+    ),
+    allowEditing: true,
     label: const Center(
       child: Text(
         'Due Date',
@@ -67,6 +73,8 @@ List<GridColumn> ticketGridColumns = [
     ),
   ),
   GridColumn(
+    allowFiltering: false,
+    allowSorting: false,
     minimumWidth: 150,
     columnName: TicketGridFields.status,
     label: const Center(

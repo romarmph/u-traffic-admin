@@ -1,3 +1,5 @@
+import 'package:u_traffic_admin/config/exports/exports.dart';
+
 extension StringExtension on String {
   DateTime get toDateTime {
     return DateTime.parse(this);
@@ -6,4 +8,8 @@ extension StringExtension on String {
   String get capitalize {
     return split('').first.toUpperCase() + substring(1);
   }
+
+  String get formattedDate => toDateTime.toTimestamp.toAmericanDate;
+
+  String get enumValue => split('.').last;
 }

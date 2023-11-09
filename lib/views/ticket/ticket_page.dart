@@ -44,9 +44,23 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                         children: [
                           const Spacer(),
                           StatusTypeDropDown(
-                            statusList: TicketStatus.values
-                                .map((e) => e.toString().split('.').last)
-                                .toList(),
+                            value: ref.watch(
+                              ticketViewStatusQueryProvider,
+                            ),
+                            onChanged: (value) {
+                              ref
+                                  .read(ticketViewStatusQueryProvider.notifier)
+                                  .state = value!;
+                            },
+                            statusList: const [
+                              'all',
+                              'unpaid',
+                              'paid',
+                              'cancelled',
+                              'refunded',
+                              'submitted',
+                              'expired',
+                            ],
                           ),
                           const SizedBox(
                             width: 16,
@@ -56,8 +70,10 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                             child: TextField(
                               controller: searchController,
                               onChanged: (value) {
-                                ref.read(searchQueryProvider.notifier).state =
-                                    value;
+                                ref
+                                    .read(
+                                        ticketViewSearchQueryProvider.notifier)
+                                    .state = value;
                               },
                               decoration: InputDecoration(
                                 hintText: 'Search',
@@ -67,17 +83,19 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                   color: UColors.gray300,
                                 ),
                                 suffixIcon: Visibility(
-                                  visible:
-                                      ref.watch(searchQueryProvider).isNotEmpty,
+                                  visible: ref
+                                      .watch(ticketViewSearchQueryProvider)
+                                      .isNotEmpty,
                                   child: IconButton(
                                     onPressed: () {
                                       ref
-                                          .read(searchQueryProvider.notifier)
+                                          .read(ticketViewSearchQueryProvider
+                                              .notifier)
                                           .state = '';
                                       searchController.clear();
                                     },
                                     icon: const Icon(
-                                      Icons.filter_list,
+                                      Icons.close_rounded,
                                       color: UColors.gray300,
                                     ),
                                   ),
@@ -93,31 +111,37 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                 const SizedBox(
                   height: 16,
                 ),
-                ref.watch(getAllTicketByStatusStream).when(
-                      data: (data) {
-                        final query = ref.watch(searchQueryProvider);
-                        return DataGridContainer(
-                          source: TicketDataGridSource(
-                            ticketList: _searchTicket(data, query),
-                            currentRoute: Routes.payment,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  child: ref.watch(getAllTicketsForTicketPage).when(
+                        data: (data) {
+                          final query =
+                              ref.watch(ticketViewSearchQueryProvider);
+                          return DataGridContainer(
+                            source: TicketDataGridSource(
+                              ticketList: _searchTicket(data, query),
+                              currentRoute: Routes.payment,
+                            ),
+                            dataCount: _searchTicket(data, query).length,
+                            gridColumns: ticketGridColumns,
+                            constraints: constraints,
+                          );
+                        },
+                        error: (error, stackTrace) {
+                          return const Center(
+                            child: Text('Error fetching tickets'),
+                          );
+                        },
+                        loading: () => SizedBox(
+                          height: constraints.maxHeight - 100 - 64,
+                          child: const Center(
+                            child: LinearProgressIndicator(),
                           ),
-                          dataCount: _searchTicket(data, query).length,
-                          gridColumns: ticketGridColumns,
-                          constraints: constraints,
-                        );
-                      },
-                      error: (error, stackTrace) {
-                        return const Center(
-                          child: Text('Error fetching tickets'),
-                        );
-                      },
-                      loading: () => SizedBox(
-                        height: constraints.maxHeight - 100 - 64,
-                        child: const Center(
-                          child: LinearProgressIndicator(),
                         ),
                       ),
-                    ),
+                ),
               ],
             ),
           );

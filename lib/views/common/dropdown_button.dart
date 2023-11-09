@@ -5,9 +5,13 @@ class StatusTypeDropDown extends ConsumerWidget {
   const StatusTypeDropDown({
     super.key,
     required this.statusList,
+    required this.onChanged,
+    required this.value,
   });
 
   final List<String> statusList;
+  final void Function(String? value)? onChanged;
+  final String value;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,10 +30,8 @@ class StatusTypeDropDown extends ConsumerWidget {
       child: DropdownButton(
           underline: const SizedBox.shrink(),
           borderRadius: BorderRadius.circular(USpace.space8),
-          onChanged: (value) {
-            ref.read(statusQueryProvider.notifier).state = value!;
-          },
-          value: ref.watch(statusQueryProvider),
+          onChanged: onChanged,
+          value: value,
           isExpanded: true,
           items: statusList.map((e) {
             return DropdownMenuItem(
