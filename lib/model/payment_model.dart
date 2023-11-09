@@ -7,6 +7,7 @@ class PaymentDetail {
   final double tenderedAmount;
   final double change;
   final int ticketNumber;
+  final String ticketID;
   final String processedBy;
   final String processedByName;
   final Timestamp processedAt;
@@ -18,6 +19,7 @@ class PaymentDetail {
     required this.tenderedAmount,
     required this.change,
     required this.ticketNumber,
+    required this.ticketID,
     required this.processedBy,
     required this.processedAt,
     required this.processedByName,
@@ -30,6 +32,7 @@ class PaymentDetail {
       'tenderedAmount': tenderedAmount,
       'change': change,
       'ticketNumber': ticketNumber,
+      'ticketID': ticketID,
       'processedBy': processedBy,
       'processedAt': processedAt,
     };
@@ -45,6 +48,7 @@ class PaymentDetail {
       tenderedAmount: json['tenderedAmount'],
       change: json['change'],
       ticketNumber: json['ticketNumber'],
+      ticketID: json['ticketID'],
       processedBy: json['processedBy'],
       processedByName: json['processedByName'],
       processedAt: json['processedAt'],
@@ -58,6 +62,7 @@ class PaymentDetail {
     double? tenderedAmount,
     double? change,
     int? ticketNumber,
+    String? ticketID,
     String? processedBy,
     String? processedByName,
     Timestamp? processedAt,
@@ -71,6 +76,7 @@ class PaymentDetail {
       tenderedAmount: tenderedAmount ?? this.tenderedAmount,
       change: change ?? this.change,
       ticketNumber: ticketNumber ?? this.ticketNumber,
+      ticketID: ticketID ?? this.ticketID,
       processedBy: processedBy ?? this.processedBy,
       processedByName: processedByName ?? this.processedByName,
       processedAt: processedAt ?? this.processedAt,

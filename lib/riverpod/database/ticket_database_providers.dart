@@ -23,3 +23,8 @@ final getTicketByIdFutureProvider = FutureProvider.family<Ticket, String>(
     return TicketDatabase.instance.getTicketById(id);
   },
 );
+
+final getTicketByTicketNumberFutureProvider =
+    FutureProvider.family<Ticket, int>((ref, ticketNumber) {
+  return TicketDatabase.instance.getTicketByTicketNumber(ticketNumber);
+});

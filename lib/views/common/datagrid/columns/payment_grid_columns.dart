@@ -59,6 +59,8 @@ List<GridColumn> paymentGridColumn = [
     ),
   ),
   GridColumn(
+    allowFiltering: false,
+    allowSorting: false,
     minimumWidth: 150,
     columnName: PaymentGridFields.actions,
     label: const Center(

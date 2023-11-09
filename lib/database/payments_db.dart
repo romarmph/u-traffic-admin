@@ -18,6 +18,7 @@ class PaymentDatabase {
 
     final payment = PaymentDetail(
       ticketNumber: ticket.ticketNumber!,
+      ticketID: ticket.id!,
       tenderedAmount: amountTendered,
       change: change,
       processedAt: Timestamp.now(),
@@ -50,6 +51,22 @@ class PaymentDatabase {
           );
         }).toList();
       });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<PaymentDetail> getPaymentDetailByTicketID(String ticketID) async {
+    try {
+      final snapshot = await _firestore
+          .collection('payments')
+          .where('ticketID', isEqualTo: ticketID)
+          .get();
+
+      return PaymentDetail.fromJson(
+        snapshot.docs.first.data(),
+        snapshot.docs.first.id,
+      );
     } catch (e) {
       rethrow;
     }

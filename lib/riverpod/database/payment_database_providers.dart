@@ -10,3 +10,10 @@ final paymentStreamProvider = StreamProvider<List<PaymentDetail>>(
     return database.getAllPaymenDetailsAsStream();
   },
 );
+
+final getPaymentByTicketID = FutureProvider.family<PaymentDetail, String>(
+  (ref, ticketNumber) {
+    final database = ref.watch(paymentDatabaseProvider);
+    return database.getPaymentDetailByTicketID(ticketNumber);
+  },
+);

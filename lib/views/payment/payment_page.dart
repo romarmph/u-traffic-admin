@@ -81,7 +81,6 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                             child: StatusTypeDropDown(
                               value: ref.watch(paymentStatusQueryProvider),
                               onChanged: (value) {
-                                print(value);
                                 ref
                                     .read(paymentStatusQueryProvider.notifier)
                                     .state = value!;
@@ -222,6 +221,7 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                               );
                               return DataGridContainer(
                                 source: PaymentDataGridSource(
+                                  ref: ref,
                                   paymentList:
                                       _searchPaymentHistory(data, query),
                                   currentRoute: Routes.payment,

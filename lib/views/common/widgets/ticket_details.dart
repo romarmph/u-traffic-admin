@@ -57,11 +57,75 @@ class TicketDetails extends ConsumerWidget {
                     },
                     child: const Text("View Evidence"),
                   ),
+                  const SizedBox(
+                    width: USpace.space16,
+                  ),
                   Visibility(
                     visible: ticket.getStatus.toLowerCase() != "paid",
                     child: UElevatedButton(
-                      onPressed: () {},
-                      child: const Text("Edit Ticket"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: UColors.red500,
+                        foregroundColor: UColors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(USpace.space8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: USpace.space24,
+                          horizontal: USpace.space24,
+                        ),
+                        textStyle: const UTextStyle().textbasefontmedium,
+                      ),
+                      onPressed: () async {
+                        final bool value = await QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.confirm,
+                          title: "Cancel Ticket",
+                          text: "Are you sure you want to cancel this ticket?",
+                          onConfirmBtnTap: () async {
+                            Navigator.of(context).pop(true);
+                          },
+                          onCancelBtnTap: () {
+                            Navigator.of(context).pop(false);
+                          },
+                        );
+
+                        if (!value) {
+                          return;
+                        }
+
+                        QuickAlert.show(
+                          context: navigatorKey.currentContext!,
+                          type: QuickAlertType.loading,
+                          title: "Cancelling Ticket",
+                          text: "Please wait while we cancel the ticket.",
+                        );
+
+                        try {
+                          await TicketDatabase.instance.updateTicketStatus(
+                            id: ticket.id!,
+                            status: TicketStatus.cancelled,
+                          );
+                        } catch (e) {
+                          QuickAlert.show(
+                            context: navigatorKey.currentContext!,
+                            type: QuickAlertType.error,
+                            title: "Error",
+                            text: "An error occured while cancelling ticket.",
+                          );
+
+                          return;
+                        }
+
+                        Navigator.of(navigatorKey.currentContext!).pop();
+
+                        await QuickAlert.show(
+                          context: navigatorKey.currentContext!,
+                          type: QuickAlertType.success,
+                          title: "Success",
+                          text: "Ticket has been cancelled.",
+                        ).then((value) => Navigator.of(context).pop());
+                      },
+                      child: const Text("Cancel Ticket"),
                     ),
                   ),
                 ],

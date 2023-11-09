@@ -85,6 +85,7 @@ export 'package:u_traffic_admin/views/payment/widgets/evidence_drawer.dart';
 export 'package:u_traffic_admin/views/payment/widgets/evidence_card.dart';
 export 'package:u_traffic_admin/views/payment/widgets/numpad.dart';
 export 'package:u_traffic_admin/views/payment/widgets/numpad_button.dart';
+export 'package:u_traffic_admin/views/payment/payment_details_page.dart';
 
 // ?------------------------------------------------------Wrapper
 export 'package:u_traffic_admin/views/wrapper.dart';
