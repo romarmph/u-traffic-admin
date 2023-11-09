@@ -1,67 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-List<GridColumn> paymentGridColumn = [
+List<GridColumn> vehicleTypeColumns = [
   GridColumn(
     minimumWidth: 150,
-    columnWidthMode: ColumnWidthMode.fitByColumnName,
-    columnName: PaymentGridFields.ticketNumber,
+    columnName: VehicleTypeGridFields.vehicleType,
     label: const Center(
       child: Text(
-        'Ticket No.',
+        'Vehicle Type',
       ),
     ),
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: PaymentGridFields.fineAmount,
+    columnName: VehicleTypeGridFields.isPublic,
     label: const Center(
       child: Text(
-        'Fine Amount',
+        'Category',
       ),
     ),
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: PaymentGridFields.tenderedAmount,
+    columnName: VehicleTypeGridFields.isHidden,
     label: const Center(
       child: Text(
-        'Tendered Amount',
+        'Status',
       ),
     ),
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: PaymentGridFields.change,
+    columnName: VehicleTypeGridFields.dateCreated,
     label: const Center(
       child: Text(
-        'Change',
+        'Date Created',
       ),
     ),
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: PaymentGridFields.processedByName,
+    columnName: VehicleTypeGridFields.dateEdited,
     label: const Center(
       child: Text(
-        'Cashier',
+        'Date Edited',
       ),
     ),
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: PaymentGridFields.datePaid,
-    label: const Center(
-      child: Text(
-        'Date Paid',
-      ),
-    ),
-  ),
-  GridColumn(
     allowFiltering: false,
     allowSorting: false,
-    minimumWidth: 150,
-    columnName: PaymentGridFields.actions,
+    columnName: VehicleTypeGridFields.actions,
     label: const Center(
       child: Text(
         'Actions',

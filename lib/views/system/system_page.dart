@@ -11,6 +11,11 @@ class SystemPage extends ConsumerStatefulWidget {
 class _SystemPageState extends ConsumerState<SystemPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  final _vehicleTypeSearchController = TextEditingController();
+  final _violationSearchController = TextEditingController();
+  final _postSearchController = TextEditingController();
+
+  int _curentIndex = 0;
 
   @override
   void initState() {
@@ -18,6 +23,11 @@ class _SystemPageState extends ConsumerState<SystemPage>
       length: 3,
       vsync: this,
     );
+    _tabController.addListener(() {
+      setState(() {
+        _curentIndex = _tabController.index;
+      });
+    });
     super.initState();
   }
 
@@ -52,7 +62,8 @@ class _SystemPageState extends ConsumerState<SystemPage>
                       ),
                       child: Row(
                         children: [
-                          Expanded(
+                          SizedBox(
+                            width: 400,
                             child: TabBar(
                               dividerColor: Colors.transparent,
                               controller: _tabController,
@@ -69,39 +80,107 @@ class _SystemPageState extends ConsumerState<SystemPage>
                               ],
                             ),
                           ),
+                          const Spacer(),
                           const SizedBox(
                             width: 32,
                           ),
-                          SizedBox(
-                            width: 400,
-                            child: TextField(
-                              onChanged: (value) {},
-                              decoration: InputDecoration(
-                                hintText: 'Search',
-                                border: InputBorder.none,
-                                prefixIcon: const Icon(
-                                  Icons.search,
-                                  color: UColors.gray300,
-                                ),
-                                suffixIcon: Visibility(
-                                  visible: true,
-                                  child: IconButton(
-                                    onPressed: () {},
-                                    icon: const Icon(
-                                      Icons.close_rounded,
-                                      color: UColors.gray300,
+                          // Posts search field
+                          Visibility(
+                            visible: _curentIndex == 0,
+                            child: SizedBox(
+                              width: 400,
+                              child: TextField(
+                                onChanged: (value) {},
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  border: InputBorder.none,
+                                  prefixIcon: const Icon(
+                                    Icons.search,
+                                    color: UColors.gray300,
+                                  ),
+                                  suffixIcon: Visibility(
+                                    visible: true,
+                                    child: IconButton(
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        Icons.close_rounded,
+                                        color: UColors.gray300,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            width: 16,
+                          // Violations search field
+                          Visibility(
+                            visible: _curentIndex == 1,
+                            child: SizedBox(
+                              width: 400,
+                              child: TextField(
+                                onChanged: (value) {},
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  border: InputBorder.none,
+                                  prefixIcon: const Icon(
+                                    Icons.search,
+                                    color: UColors.gray300,
+                                  ),
+                                  suffixIcon: Visibility(
+                                    visible: true,
+                                    child: IconButton(
+                                      onPressed: () {},
+                                      icon: const Icon(
+                                        Icons.close_rounded,
+                                        color: UColors.gray300,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                          UElevatedButton(
-                            onPressed: () {},
-                            child: const Text('Add Enforcer'),
+                          // Vehicle tpyes search field
+                          Visibility(
+                            visible: _curentIndex == 2,
+                            child: SizedBox(
+                              width: 400,
+                              child: TextField(
+                                controller: _vehicleTypeSearchController,
+                                onChanged: (value) {
+                                  ref
+                                      .read(vehicleTypeSearchQueryProvider
+                                          .notifier)
+                                      .update((state) => value);
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  border: InputBorder.none,
+                                  prefixIcon: const Icon(
+                                    Icons.search,
+                                    color: UColors.gray300,
+                                  ),
+                                  suffixIcon: Visibility(
+                                    visible: ref.watch(
+                                            vehicleTypeSearchQueryProvider) !=
+                                        '',
+                                    child: IconButton(
+                                      onPressed: () {
+                                        _vehicleTypeSearchController.text = '';
+                                        ref
+                                            .read(vehicleTypeSearchQueryProvider
+                                                .notifier)
+                                            .update((state) => '');
+                                      },
+                                      icon: const Icon(
+                                        Icons.close_rounded,
+                                        color: UColors.gray300,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -116,7 +195,6 @@ class _SystemPageState extends ConsumerState<SystemPage>
                       right: 16,
                     ),
                     child: Container(
-                      // padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: UColors.white,
                         borderRadius: BorderRadius.circular(USpace.space12),
