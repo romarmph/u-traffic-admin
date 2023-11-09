@@ -42,7 +42,7 @@ List<GridColumn> paymentGridColumn = [
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: PaymentGridFields.processedBy,
+    columnName: PaymentGridFields.processedByName,
     label: const Center(
       child: Text(
         'Cashier',
@@ -55,6 +55,15 @@ List<GridColumn> paymentGridColumn = [
     label: const Center(
       child: Text(
         'Date Paid',
+      ),
+    ),
+  ),
+  GridColumn(
+    minimumWidth: 150,
+    columnName: PaymentGridFields.actions,
+    label: const Center(
+      child: Text(
+        'Actions',
       ),
     ),
   ),

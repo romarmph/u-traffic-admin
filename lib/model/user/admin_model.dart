@@ -1,30 +1,30 @@
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class Admin {
-  final String id;
+  final String? id;
   final String firstName;
   final String middleName;
   final String lastName;
   final String email;
-  final String roleID;
   final String createdBy;
-  final String editedBy;
-  final Timestamp dateCreated;
-  final Timestamp dateEdited;
+  final String updatedBy;
+  final Timestamp createdAt;
+  final Timestamp updatedAt;
   final bool isDisabled;
+  final List<AdminPermission> permissions;
 
   const Admin({
-    required this.id,
+    this.id,
     required this.firstName,
     required this.middleName,
     required this.lastName,
     required this.email,
-    required this.roleID,
     required this.createdBy,
-    required this.editedBy,
-    required this.dateCreated,
-    required this.dateEdited,
+    required this.updatedBy,
+    required this.createdAt,
+    required this.updatedAt,
     required this.isDisabled,
+    required this.permissions,
   });
 
   Map<String, dynamic> toJson() {
@@ -33,12 +33,12 @@ class Admin {
       "middleName": middleName,
       "lastName": lastName,
       "email": email,
-      "roleID": roleID,
       "createdBy": createdBy,
-      "editedBy": editedBy,
-      "dateCreated": dateCreated,
-      "dateEdited": dateEdited,
+      "updatedBy": updatedBy,
+      "createdAt": createdAt,
+      "updatedAt": updatedAt,
       "isDisabled": isDisabled,
+      "permissions": _toStringList(permissions),
     };
   }
 
@@ -49,17 +49,24 @@ class Admin {
       middleName: json["middleName"],
       lastName: json["lastName"],
       email: json['email'],
-      roleID: json['roleID'],
       createdBy: json['createdBy'],
-      editedBy: json['editedBy'],
-      dateCreated: json['dateCreated'],
-      dateEdited: json['dateEdited'],
+      updatedBy: json['updatedBy'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
       isDisabled: json['isDisabled'],
+      permissions: (json['permissions'] as List)
+          .map((e) => AdminPermission.values.firstWhere(
+              (element) => element.toString() == 'AdminPermission.$e'))
+          .toList(),
     );
   }
 
   @override
   String toString() {
-    return "Admin(id: $id, firstName: $firstName, middleName: $middleName, lastName: $lastName, email: $email, roleID: $roleID)";
+    return "Admin(id: $id, firstName: $firstName, middleName: $middleName, lastName: $lastName, email: $email, : $createdBy, updatedBy: $updatedBy, createdAt: $createdAt, updatedAt: $updatedAt, isDisabled: $isDisabled, permissions: $permissions)";
+  }
+
+  List<String> _toStringList(List<AdminPermission> permissions) {
+    return permissions.map((e) => e.toString().split('.').last).toList();
   }
 }

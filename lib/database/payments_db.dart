@@ -12,6 +12,7 @@ class PaymentDatabase {
     required Ticket ticket,
     required double amountTendered,
     required double change,
+    required String cashierName,
   }) async {
     final currentUser = FirebaseAuth.instance.currentUser;
 
@@ -21,6 +22,7 @@ class PaymentDatabase {
       change: change,
       processedAt: Timestamp.now(),
       processedBy: currentUser!.uid,
+      processedByName: cashierName,
       method: PaymentMethod.cash,
       fineAmount: ticket.totalFine,
     );

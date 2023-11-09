@@ -29,22 +29,22 @@ class AdminDatabase {
     return admin;
   }
 
-  Future<Admin?> getAdminByID(String id) async {
-    const String collection = "admins";
+  Future<Admin> getAdminById(String id) async {
+    try {
+      const String collection = "admins";
 
-    final DocumentSnapshot<Map<String, dynamic>> result =
-        await _firestore.collection(collection).doc(id).get();
+      final DocumentSnapshot<Map<String, dynamic>> result =
+          await _firestore.collection(collection).doc(id).get();
 
-    if (!result.exists) {
-      return null;
+      Admin admin = Admin.fromJson(
+        result.data()!,
+        result.id,
+      );
+
+      return admin;
+    } catch (e) {
+      rethrow;
     }
-
-    Admin admin = Admin.fromJson(
-      result.data()!,
-      result.id,
-    );
-
-    return admin;
   }
 
   Future<void> addAdmin(Admin admin) async {

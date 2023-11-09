@@ -13,12 +13,20 @@ class Wrapper extends ConsumerWidget {
           return const LoginPage();
         }
 
-        return const HomePage();
+        return ref.watch(getAdminByIdFutureProvider(user.uid)).when(
+              data: (admin) {
+                return const HomePage();
+              },
+              error: (error, stackTrace) {
+                return const LoginErrorPage();
+              },
+              loading: () => const LoginLoadingPage(),
+            );
       },
       error: (error, stackTrace) {
         return Text('Error: $error');
       },
-      loading: () => const CircularProgressIndicator(),
+      loading: () => const LoginLoadingPage(),
     );
   }
 }

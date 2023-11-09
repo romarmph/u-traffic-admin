@@ -78,8 +78,15 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                           const Spacer(),
                           Visibility(
                             visible: _currentTabIndex == 0,
-                            child: const StatusTypeDropDown(
-                              statusList: [
+                            child: StatusTypeDropDown(
+                              value: ref.watch(paymentStatusQueryProvider),
+                              onChanged: (value) {
+                                print(value);
+                                ref
+                                    .read(paymentStatusQueryProvider.notifier)
+                                    .state = value!;
+                              },
+                              statusList: const [
                                 'unpaid',
                                 'paid',
                               ],
@@ -95,8 +102,9 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                               child: TextField(
                                 controller: searchController,
                                 onChanged: (value) {
-                                  ref.read(searchQueryProvider.notifier).state =
-                                      value;
+                                  ref
+                                      .read(paymentSearchQueryProvider.notifier)
+                                      .state = value;
                                 },
                                 decoration: InputDecoration(
                                   hintText: 'Search',
@@ -107,17 +115,58 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                                   ),
                                   suffixIcon: Visibility(
                                     visible: ref
-                                        .watch(searchQueryProvider)
+                                        .watch(paymentSearchQueryProvider)
                                         .isNotEmpty,
                                     child: IconButton(
                                       onPressed: () {
                                         ref
-                                            .read(searchQueryProvider.notifier)
+                                            .read(paymentSearchQueryProvider
+                                                .notifier)
                                             .state = '';
                                         searchController.clear();
                                       },
                                       icon: const Icon(
-                                        Icons.filter_list,
+                                        Icons.close_rounded,
+                                        color: UColors.gray300,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Visibility(
+                            visible: _currentTabIndex == 1,
+                            child: SizedBox(
+                              width: 300,
+                              child: TextField(
+                                controller: searchController,
+                                onChanged: (value) {
+                                  ref
+                                      .read(paymentSearchQueryProvider.notifier)
+                                      .state = value;
+                                },
+                                decoration: InputDecoration(
+                                  hintText: 'Search',
+                                  border: InputBorder.none,
+                                  prefixIcon: const Icon(
+                                    Icons.search,
+                                    color: UColors.gray300,
+                                  ),
+                                  suffixIcon: Visibility(
+                                    visible: ref
+                                        .watch(paymentSearchQueryProvider)
+                                        .isNotEmpty,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        ref
+                                            .read(paymentSearchQueryProvider
+                                                .notifier)
+                                            .state = '';
+                                        searchController.clear();
+                                      },
+                                      icon: const Icon(
+                                        Icons.close_rounded,
                                         color: UColors.gray300,
                                       ),
                                     ),
@@ -139,9 +188,11 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      ref.watch(getAllTicketByStatusStream).when(
+                      ref.watch(getAllTicketsForPaymentPage).when(
                             data: (data) {
-                              final query = ref.watch(searchQueryProvider);
+                              final query = ref.watch(
+                                paymentSearchQueryProvider,
+                              );
                               return DataGridContainer(
                                 source: TicketDataGridSource(
                                   ticketList: _searchTicket(data, query),
@@ -166,7 +217,9 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                           ),
                       ref.watch(paymentStreamProvider).when(
                             data: (data) {
-                              final query = ref.watch(searchQueryProvider);
+                              final query = ref.watch(
+                                paymentSearchQueryProvider,
+                              );
                               return DataGridContainer(
                                 source: PaymentDataGridSource(
                                   paymentList:

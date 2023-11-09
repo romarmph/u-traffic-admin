@@ -8,6 +8,7 @@ class PaymentDetail {
   final double change;
   final int ticketNumber;
   final String processedBy;
+  final String processedByName;
   final Timestamp processedAt;
 
   const PaymentDetail({
@@ -19,6 +20,7 @@ class PaymentDetail {
     required this.ticketNumber,
     required this.processedBy,
     required this.processedAt,
+    required this.processedByName,
   });
 
   Map<String, dynamic> toJson() {
@@ -44,6 +46,7 @@ class PaymentDetail {
       change: json['change'],
       ticketNumber: json['ticketNumber'],
       processedBy: json['processedBy'],
+      processedByName: json['processedByName'],
       processedAt: json['processedAt'],
     );
   }
@@ -56,6 +59,7 @@ class PaymentDetail {
     double? change,
     int? ticketNumber,
     String? processedBy,
+    String? processedByName,
     Timestamp? processedAt,
     String? editedBy,
     Timestamp? editedAt,
@@ -68,6 +72,7 @@ class PaymentDetail {
       change: change ?? this.change,
       ticketNumber: ticketNumber ?? this.ticketNumber,
       processedBy: processedBy ?? this.processedBy,
+      processedByName: processedByName ?? this.processedByName,
       processedAt: processedAt ?? this.processedAt,
     );
   }

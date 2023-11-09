@@ -21,14 +21,32 @@ class PaymentDataGridSource extends DataGridSource {
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
-      cells: row.getCells().map<Widget>((dataGridCell) {
+      cells: row.getCells().map<Widget>((cell) {
+        if (cell.columnName == PaymentGridFields.datePaid) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            alignment: Alignment.center,
+            child: Text(
+              cell.value.toString().formattedDate,
+            ),
+          );
+        }
+
+        if (cell.columnName == PaymentGridFields.processedByName) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            alignment: Alignment.center,
+            child: Text(
+              cell.value.toString().capitalize,
+            ),
+          );
+        }
+
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           alignment: Alignment.center,
           child: Text(
-            dataGridCell.value.toString().isEmpty
-                ? '-'
-                : dataGridCell.value.toString(),
+            cell.value.toString().isEmpty ? '-' : cell.value.toString(),
           ),
         );
       }).toList(),
@@ -56,12 +74,16 @@ class PaymentDataGridSource extends DataGridSource {
             value: payment.change,
           ),
           DataGridCell<String>(
-            columnName: PaymentGridFields.processedBy,
-            value: payment.processedBy,
+            columnName: PaymentGridFields.processedByName,
+            value: payment.processedByName,
           ),
           DataGridCell<DateTime>(
             columnName: PaymentGridFields.datePaid,
             value: payment.processedAt.toDate(),
+          ),
+          DataGridCell<int>(
+            columnName: PaymentGridFields.ticketNumber,
+            value: payment.ticketNumber,
           ),
         ],
       );
