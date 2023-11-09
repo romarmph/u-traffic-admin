@@ -50,4 +50,44 @@ class VehicleTypeDatabase {
       rethrow;
     }
   }
+
+  Future<void> addVehicleType(VehicleType vehicleType) async {
+    try {
+      const String collection = "vehicleTypes";
+
+      await _firestore.collection(collection).add(
+            vehicleType.toJson(),
+          );
+    } on FirebaseException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateVehicleType(VehicleType vehicleType) async {
+    try {
+      const String collection = "vehicleTypes";
+
+      await _firestore.collection(collection).doc(vehicleType.id).update(
+            vehicleType.toJson(),
+          );
+    } on FirebaseException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteVehicleType(String id) async {
+    try {
+      const String collection = "vehicleTypes";
+
+      await _firestore.collection(collection).doc(id).delete();
+    } on FirebaseException {
+      rethrow;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

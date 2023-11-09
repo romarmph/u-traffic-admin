@@ -75,6 +75,11 @@ export 'package:u_traffic_admin/views/complaints/complaints_page.dart';
 // ?------------------------------------------------------System
 export 'package:u_traffic_admin/views/system/system_page.dart';
 
+// * ---- tab views
+export 'package:u_traffic_admin/views/system/tab_views/vehicle_types_tab.dart';
+export 'package:u_traffic_admin/views/system/tab_views/violations_tab.dart';
+export 'package:u_traffic_admin/views/system/tab_views/posts_tab.dart';
+
 // ?------------------------------------------------------Settings
 export 'package:u_traffic_admin/views/settings/settings_page.dart';
 

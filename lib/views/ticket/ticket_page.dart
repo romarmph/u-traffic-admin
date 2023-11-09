@@ -111,31 +111,37 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                 const SizedBox(
                   height: 16,
                 ),
-                ref.watch(getAllTicketsForTicketPage).when(
-                      data: (data) {
-                        final query = ref.watch(ticketViewSearchQueryProvider);
-                        return DataGridContainer(
-                          source: TicketDataGridSource(
-                            ticketList: _searchTicket(data, query),
-                            currentRoute: Routes.payment,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
+                  child: ref.watch(getAllTicketsForTicketPage).when(
+                        data: (data) {
+                          final query =
+                              ref.watch(ticketViewSearchQueryProvider);
+                          return DataGridContainer(
+                            source: TicketDataGridSource(
+                              ticketList: _searchTicket(data, query),
+                              currentRoute: Routes.payment,
+                            ),
+                            dataCount: _searchTicket(data, query).length,
+                            gridColumns: ticketGridColumns,
+                            constraints: constraints,
+                          );
+                        },
+                        error: (error, stackTrace) {
+                          return const Center(
+                            child: Text('Error fetching tickets'),
+                          );
+                        },
+                        loading: () => SizedBox(
+                          height: constraints.maxHeight - 100 - 64,
+                          child: const Center(
+                            child: LinearProgressIndicator(),
                           ),
-                          dataCount: _searchTicket(data, query).length,
-                          gridColumns: ticketGridColumns,
-                          constraints: constraints,
-                        );
-                      },
-                      error: (error, stackTrace) {
-                        return const Center(
-                          child: Text('Error fetching tickets'),
-                        );
-                      },
-                      loading: () => SizedBox(
-                        height: constraints.maxHeight - 100 - 64,
-                        child: const Center(
-                          child: LinearProgressIndicator(),
                         ),
                       ),
-                    ),
+                ),
               ],
             ),
           );

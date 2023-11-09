@@ -182,7 +182,10 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                 const SizedBox(
                   height: 16,
                 ),
-                SizedBox(
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                  ),
                   height: constraints.maxHeight - 50 - 100,
                   child: TabBarView(
                     controller: _tabController,
