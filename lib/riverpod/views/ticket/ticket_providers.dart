@@ -9,7 +9,7 @@ final gridSearchProvider = StateProvider<String>((ref) {
 });
 
 final ticketViewStatusQueryProvider = StateProvider<String>((ref) {
-  return 'unpaid';
+  return 'all';
 });
 
 final ticketViewSearchQueryProvider = StateProvider<String>((ref) {

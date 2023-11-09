@@ -36,10 +36,18 @@ class TicketDataGridSource extends DataGridSource {
           _isUnpaid = false;
 
           return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _renderViewButton(dataGridCell.value, isUnpaid),
-              _renderPayButton(dataGridCell.value, isUnpaid)
+              Visibility(
+                visible: !isUnpaid,
+                maintainSize: false,
+                child: _renderViewButton(dataGridCell.value),
+              ),
+              Visibility(
+                maintainSize: false,
+                visible: isUnpaid,
+                child: _renderPayButton(dataGridCell.value),
+              )
             ],
           );
         }
@@ -135,46 +143,42 @@ class TicketDataGridSource extends DataGridSource {
         .toList();
   }
 
-  Widget _renderViewButton(String id, bool isUnpaid) {
-    return !isUnpaid
-        ? OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                vertical: USpace.space8,
-                horizontal: USpace.space16,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(USpace.space8),
-              ),
-              side: const BorderSide(color: UColors.blue600),
-            ),
-            onPressed: () {
-              goToTicketView(id, currentRoute);
-            },
-            child: const Text('View'),
-          )
-        : const SizedBox.shrink();
+  Widget _renderViewButton(String id) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          vertical: USpace.space8,
+          horizontal: USpace.space16,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(USpace.space8),
+        ),
+        side: const BorderSide(color: UColors.blue600),
+      ),
+      onPressed: () {
+        goToTicketView(id, currentRoute);
+      },
+      child: const Text('View'),
+    );
   }
 
-  Widget _renderPayButton(String id, bool isUnpaid) {
-    return isUnpaid
-        ? ElevatedButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: UColors.green400,
-              foregroundColor: UColors.white,
-              padding: const EdgeInsets.symmetric(
-                vertical: USpace.space8,
-                horizontal: USpace.space16,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(USpace.space8),
-              ),
-            ),
-            onPressed: () {
-              goToTicketView(id, currentRoute);
-            },
-            child: const Text('Pay'),
-          )
-        : const SizedBox.shrink();
+  Widget _renderPayButton(String id) {
+    return ElevatedButton(
+      style: FilledButton.styleFrom(
+        backgroundColor: UColors.green400,
+        foregroundColor: UColors.white,
+        padding: const EdgeInsets.symmetric(
+          vertical: USpace.space8,
+          horizontal: USpace.space16,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(USpace.space8),
+        ),
+      ),
+      onPressed: () {
+        goToTicketView(id, currentRoute);
+      },
+      child: const Text('Pay'),
+    );
   }
 }

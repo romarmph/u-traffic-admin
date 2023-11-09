@@ -61,7 +61,7 @@ class TicketDetails extends ConsumerWidget {
                     width: USpace.space16,
                   ),
                   Visibility(
-                    visible: ticket.getStatus.toLowerCase() != "paid",
+                    visible: ticket.getStatus.toLowerCase() == "unpaid",
                     child: UElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: UColors.red500,

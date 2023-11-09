@@ -10,11 +10,15 @@ final getTicketCountProvider = FutureProvider<int>((ref) async {
 
 final getAllTicketsForTicketPage = StreamProvider<List<Ticket>>((ref) {
   final status = ref.watch(ticketViewStatusQueryProvider);
+  if (status == 'all') {
+    return TicketDatabase.instance.getAllTicketsAsStream();
+  }
   return TicketDatabase.instance.getTicketsByStatus(status);
 });
 
 final getAllTicketsForPaymentPage = StreamProvider<List<Ticket>>((ref) {
   final status = ref.watch(paymentStatusQueryProvider);
+
   return TicketDatabase.instance.getTicketsByStatus(status);
 });
 

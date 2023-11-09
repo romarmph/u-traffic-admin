@@ -52,9 +52,15 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                   .read(ticketViewStatusQueryProvider.notifier)
                                   .state = value!;
                             },
-                            statusList: TicketStatus.values
-                                .map((e) => e.toString().split('.').last)
-                                .toList(),
+                            statusList: const [
+                              'all',
+                              'unpaid',
+                              'paid',
+                              'cancelled',
+                              'refunded',
+                              'submitted',
+                              'expired',
+                            ],
                           ),
                           const SizedBox(
                             width: 16,
