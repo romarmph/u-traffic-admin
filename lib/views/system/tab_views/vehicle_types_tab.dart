@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
-import 'package:u_traffic_admin/views/common/datagrid/columns/vehicle_types_grid_columns.dart';
-import 'package:u_traffic_admin/views/common/datagrid/vehicle_type_data_grid_srouce.dart';
 
 class VehicleTypesTab extends ConsumerStatefulWidget {
   const VehicleTypesTab({
@@ -26,6 +24,7 @@ class _VehicleTypesTabState extends ConsumerState<VehicleTypesTab> {
           constraints: widget.constraints,
           source: VehicleDataGridSource(
             _searchType(data, query),
+            ref,
           ),
           gridColumns: vehicleTypeColumns,
           dataCount: _searchType(data, query).length,

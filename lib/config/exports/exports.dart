@@ -27,6 +27,20 @@ export 'package:cached_network_image/cached_network_image.dart';
 
 //
 // ?------------------------------------------------------Data Grid Source
+export 'package:u_traffic_admin/datagrids/ticket_data_grid_source.dart';
+export 'package:u_traffic_admin/datagrids/vehicle_type_data_grid_source.dart';
+export 'package:u_traffic_admin/datagrids/payment_data_grid_source.dart';
+
+// * ---- data grid columns
+export 'package:u_traffic_admin/datagrids/columns/ticket_grid_columns.dart';
+export 'package:u_traffic_admin/datagrids/columns/payment_grid_columns.dart';
+export 'package:u_traffic_admin/datagrids/columns/vehicle_types_grid_columns.dart';
+
+// * ---- data grid fields
+export 'package:u_traffic_admin/datagrids/column_names/ticket_grid_fields.dart';
+export 'package:u_traffic_admin/datagrids/column_names/vehicle_type_grid_fields.dart';
+export 'package:u_traffic_admin/datagrids/column_names/violation_grid_fields.dart';
+export 'package:u_traffic_admin/datagrids/column_names/payment_grid_fields.dart';
 
 // ?------------------------------------------------------Common
 export 'package:u_traffic_admin/views/common/page_container.dart';
@@ -35,10 +49,7 @@ export 'package:u_traffic_admin/views/common/alert_dialogs.dart';
 export 'package:u_traffic_admin/views/common/theme_toggle.dart';
 export 'package:u_traffic_admin/views/common/buttons/elevated_button.dart';
 export 'package:u_traffic_admin/views/common/buttons/back_button.dart';
-export 'package:u_traffic_admin/views/common/datagrid/ticket_data_grid_source.dart';
-export 'package:u_traffic_admin/views/common/datagrid/payment_data_grid_source.dart';
-export 'package:u_traffic_admin/views/common/datagrid/columns/ticket_grid_columns.dart';
-export 'package:u_traffic_admin/views/common/datagrid/columns/payment_grid_columns.dart';
+
 export 'package:u_traffic_admin/views/common/widgets/data_grid.dart';
 export 'package:u_traffic_admin/views/common/widgets/ticket_status.dart';
 export 'package:u_traffic_admin/views/common/widgets/ticket_details.dart';
@@ -155,10 +166,11 @@ export 'package:u_traffic_admin/model/location/province.dart';
 export 'package:u_traffic_admin/model/license_detail_model.dart';
 export 'package:u_traffic_admin/model/ticket_model.dart';
 export 'package:u_traffic_admin/model/vehicle_type.dart';
-export 'package:u_traffic_admin/model/violation_model.dart';
 export 'package:u_traffic_admin/model/evidence_model.dart';
 export 'package:u_traffic_admin/model/payment_model.dart';
 export 'package:u_traffic_admin/model/notification.dart';
+export 'package:u_traffic_admin/model/violations/violation_model.dart';
+export 'package:u_traffic_admin/model/violations/violation_offense.dart';
 
 /**
  * 
@@ -195,7 +207,6 @@ export 'package:u_traffic_admin/config/extensions/flutter/validators.dart';
 export 'package:u_traffic_admin/config/exceptions/custom_exception.dart';
 
 // ?------------------------------------------------------Data Source
-// export 'package:u_traffic_admin/views/ticket/datagrid/data_grid_source.dart';
 
 // ?------------------------------------------------------Enums
 export 'package:u_traffic_admin/config/enums/ticket_status.dart';
@@ -214,6 +225,3 @@ export 'package:u_traffic_admin/config/navigator.dart';
 
 // ?------------------------------------------------------Constants
 export 'package:u_traffic_admin/config/constants/constants.dart';
-export 'package:u_traffic_admin/config/constants/ticket_grid_fields.dart';
-export 'package:u_traffic_admin/config/constants/payment_grid_fields.dart';
-export 'package:u_traffic_admin/config/constants/vehicle_type_grid_fields.dart';

@@ -29,7 +29,12 @@ class DataGridContainer extends ConsumerWidget {
             borderRadius: BorderRadius.circular(USpace.space16),
           ),
           child: SfDataGridTheme(
-            data: SfDataGridThemeData(),
+            data: SfDataGridThemeData(
+              gridLineColor: UColors.gray100,
+              gridLineStrokeWidth: 1,
+              rowHoverColor: UColors.gray100,
+              headerHoverColor: UColors.gray100,
+            ),
             child: SfDataGrid(
               rowsPerPage: 12,
               highlightRowOnHover: true,
@@ -38,6 +43,9 @@ class DataGridContainer extends ConsumerWidget {
               columnWidthMode: ColumnWidthMode.fill,
               source: source,
               columns: gridColumns,
+              footer: dataCount == 0
+                  ? const Center(child: Text('No data found'))
+                  : null,
             ),
           ),
         ),
@@ -53,7 +61,7 @@ class DataGridContainer extends ConsumerWidget {
             child: SfDataPager(
               pageCount: pageCount(
                 dataCount,
-                ref.watch(rowsPerPageProvider),
+                12,
               ),
               delegate: source,
             ),

@@ -4,10 +4,11 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 class VehicleDataGridSource extends DataGridSource {
   VehicleDataGridSource(
     this.vehicleTypes,
+    this.ref,
   ) {
     _buildDataGridRows();
   }
-
+  WidgetRef ref;
   List<VehicleType> vehicleTypes = [];
   List<DataGridRow> _vehicleTypeRows = [];
 
