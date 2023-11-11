@@ -20,7 +20,7 @@ class TicketDataGridSource extends DataGridSource {
   List<DataGridRow> get rows => _ticketRows;
 
   @override
-  DataGridRowAdapter? buildRow(DataGridRow row) {
+  DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
         cells: row.getCells().map<Widget>(
       (dataGridCell) {

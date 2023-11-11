@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-List<GridColumn> vehicleTypeColumns = [
+final List<GridColumn> trafficPostColumns = [
   GridColumn(
     minimumWidth: 150,
-    columnName: VehicleTypeGridFields.vehicleType,
+    columnName: TrafficPostFields.name,
     label: const Center(
       child: Text(
-        'Vehicle Type',
+        'Post Name',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+    ),
+  ),
+  GridColumn(
+    minimumWidth: 400,
+    columnName: TrafficPostFields.location,
+    label: const Center(
+      child: Text(
+        'Location',
         style: TextStyle(
           color: UColors.gray500,
           fontWeight: FontWeight.w600,
@@ -18,35 +32,7 @@ List<GridColumn> vehicleTypeColumns = [
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: VehicleTypeGridFields.isPublic,
-    label: const Center(
-      child: Text(
-        'Category',
-        style: TextStyle(
-          color: UColors.gray500,
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
-      ),
-    ),
-  ),
-  GridColumn(
-    minimumWidth: 150,
-    columnName: VehicleTypeGridFields.isHidden,
-    label: const Center(
-      child: Text(
-        'Status',
-        style: TextStyle(
-          color: UColors.gray500,
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
-      ),
-    ),
-  ),
-  GridColumn(
-    minimumWidth: 150,
-    columnName: VehicleTypeGridFields.dateCreated,
+    columnName: TrafficPostFields.createdAt,
     label: const Center(
       child: Text(
         'Date Created',
@@ -60,10 +46,10 @@ List<GridColumn> vehicleTypeColumns = [
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: VehicleTypeGridFields.dateEdited,
+    columnName: TrafficPostFields.updatedAt,
     label: const Center(
       child: Text(
-        'Date Edited',
+        'Date Updated',
         style: TextStyle(
           color: UColors.gray500,
           fontWeight: FontWeight.w600,
@@ -74,9 +60,7 @@ List<GridColumn> vehicleTypeColumns = [
   ),
   GridColumn(
     minimumWidth: 150,
-    allowFiltering: false,
-    allowSorting: false,
-    columnName: VehicleTypeGridFields.actions,
+    columnName: TrafficPostFields.action,
     label: const Center(
       child: Text(
         'Actions',
