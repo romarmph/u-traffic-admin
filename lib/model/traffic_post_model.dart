@@ -3,7 +3,7 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 class TrafficPost {
   final String? id;
   final String name;
-  final String location;
+  final ULocation location;
   final String createdBy;
   final String updatedBy;
   final Timestamp createdAt;
@@ -22,7 +22,7 @@ class TrafficPost {
   Map<String, dynamic> toJson() {
     return {
       'name': name,
-      'location': location,
+      'location': location.toJson(),
       'createdBy': createdBy,
       'updatedBy': updatedBy,
       'createdAt': createdAt,
@@ -34,7 +34,7 @@ class TrafficPost {
     return TrafficPost(
       id: docId,
       name: json['name'],
-      location: json['location'],
+      location: ULocation.fromJson(json['location']),
       createdBy: json['createdBy'],
       updatedBy: json['updatedBy'],
       createdAt: json['createdAt'],
@@ -45,7 +45,7 @@ class TrafficPost {
   TrafficPost copyWith({
     String? id,
     String? name,
-    String? location,
+    ULocation? location,
     String? createdBy,
     String? updatedBy,
     Timestamp? createdAt,

@@ -68,7 +68,7 @@ class TrafficPostDataGridSource extends DataGridSource {
         ),
         DataGridCell<String>(
           columnName: TrafficPostFields.location,
-          value: dataGridRow.location,
+          value: dataGridRow.location.address,
         ),
         DataGridCell<DateTime>(
           columnName: TrafficPostFields.createdAt,

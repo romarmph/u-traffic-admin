@@ -217,7 +217,7 @@ class _NumPadState extends ConsumerState<NumPad> {
               foregroundColor: UColors.white,
             ),
             onPressed: () async {
-              if (_change < 0) {
+              if (_change < 0 || _numPadScreenController.text == "0") {
                 QuickAlert.show(
                   context: context,
                   type: QuickAlertType.error,

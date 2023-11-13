@@ -52,7 +52,7 @@ class _SystemTrafficPostPageState extends ConsumerState<SystemTrafficPostPage> {
                             source: TrafficPostDataGridSource(
                               _searchType(data, query),
                             ),
-                            gridColumns: violationColumns,
+                            gridColumns: trafficPostColumns,
                             dataCount: _searchType(data, query).length,
                           );
                         },
