@@ -124,7 +124,7 @@ class TicketDataGridSource extends DataGridSource {
                 ),
                 DataGridCell<DateTime>(
                   columnName: TicketGridFields.ticketDueDate,
-                  value: ticket.dateCreated.addSevenDays.toDate(),
+                  value: ticket.ticketDueDate.toDate(),
                 ),
                 DataGridCell<double>(
                   columnName: TicketGridFields.totalFine,

@@ -8,6 +8,7 @@ class Admin {
   final String email;
   final String createdBy;
   final String updatedBy;
+  final String employeeNo;
   final Timestamp createdAt;
   final Timestamp updatedAt;
   final bool isDisabled;
@@ -25,6 +26,7 @@ class Admin {
     required this.updatedAt,
     required this.isDisabled,
     required this.permissions,
+    required this.employeeNo,
   });
 
   Map<String, dynamic> toJson() {
@@ -38,6 +40,7 @@ class Admin {
       "createdAt": createdAt,
       "updatedAt": updatedAt,
       "isDisabled": isDisabled,
+      "employeeNo": employeeNo,
       "permissions": _toStringList(permissions),
     };
   }
@@ -53,6 +56,7 @@ class Admin {
       updatedBy: json['updatedBy'],
       createdAt: json['createdAt'],
       updatedAt: json['updatedAt'],
+      employeeNo: json['employeeNo'],
       isDisabled: json['isDisabled'],
       permissions: (json['permissions'] as List)
           .map((e) => AdminPermission.values.firstWhere(
@@ -63,7 +67,7 @@ class Admin {
 
   @override
   String toString() {
-    return "Admin(id: $id, firstName: $firstName, middleName: $middleName, lastName: $lastName, email: $email, : $createdBy, updatedBy: $updatedBy, createdAt: $createdAt, updatedAt: $updatedAt, isDisabled: $isDisabled, permissions: $permissions)";
+    return "Admin(id: $id, firstName: $firstName, middleName: $middleName, lastName: $lastName, email: $email, : $createdBy, updatedBy: $updatedBy, createdAt: $createdAt, updatedAt: $updatedAt, isDisabled: $isDisabled, permissions: $permissions), employeeNo: $employeeNo";
   }
 
   List<String> _toStringList(List<AdminPermission> permissions) {

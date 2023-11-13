@@ -1,3 +1,8 @@
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
@@ -10,6 +15,7 @@ class TicketPage extends ConsumerStatefulWidget {
 
 class _TicketPageState extends ConsumerState<TicketPage> {
   final searchController = TextEditingController();
+  final _key = GlobalKey<SfDataGridState>();
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +109,19 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                               ),
                             ),
                           ),
+                          UElevatedButton(
+                            onPressed: () async {
+                              final admin = ref.watch(currentAdminProvider);
+                              await _createExcel(
+                                '${admin.firstName} ${admin.lastName}',
+                                admin.employeeNo,
+                                admin.id!,
+                              );
+                            },
+                            child: const Text(
+                              'Export Data',
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -120,6 +139,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                           final query =
                               ref.watch(ticketViewSearchQueryProvider);
                           return DataGridContainer(
+                            dataGridKey: _key,
                             source: TicketDataGridSource(
                               ticketList: _searchTicket(data, query),
                               currentRoute: Routes.payment,
@@ -163,5 +183,84 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       }).toList();
     }
     return tickets;
+  }
+
+  void _showExportDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+              child: const Text('Excel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _createExcel(
+    String creatorName,
+    String employeeNo,
+    String uid,
+  ) async {
+    final workbook = _key.currentState!.exportToExcelWorkbook();
+
+    final List<int> bytes = workbook.saveSync();
+    workbook.dispose();
+
+    final userName = creatorName.toLowerCase().replaceAll(' ', '-');
+    final date = DateTime.now().millisecondsSinceEpoch;
+    final fileName = "$userName-$employeeNo-$date.xlsx";
+
+    AnchorElement(
+        href:
+            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
+      ..setAttribute("download", fileName)
+      ..click();
+
+    final storageRef = FirebaseStorage.instance.ref();
+    final fileRef = storageRef.child("exports/$fileName");
+    final Uint8List data = Uint8List.fromList(bytes);
+    final uploadTask = fileRef.putData(data);
+    await uploadTask.whenComplete(() async {
+      final downloadUrl = await fileRef.getDownloadURL();
+
+      final firestoreInstance = FirebaseFirestore.instance;
+      await firestoreInstance.collection('files').add(
+            DataExports(
+              fileName: fileName,
+              url: downloadUrl,
+              creatorName: creatorName,
+              createdAt: Timestamp.now(),
+              createdBy: uid,
+            ).toJson(),
+          );
+    });
+  }
+
+  Future<void> _createPdf() async {
+    final PdfDocument pdfDocument = _key.currentState!.exportToPdfDocument();
+
+    final List<int> bytes = pdfDocument.saveSync();
+    pdfDocument.dispose();
+
+    final fileName = DateTime.now().toIso8601String().replaceAll('.', '-');
+
+    AnchorElement(
+        href:
+            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
+      ..setAttribute("download", "export-$fileName.pdf")
+      ..click();
   }
 }

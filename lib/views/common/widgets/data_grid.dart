@@ -8,12 +8,14 @@ class DataGridContainer extends ConsumerWidget {
     required this.source,
     required this.gridColumns,
     required this.dataCount,
+    this.dataGridKey,
   });
 
   final BoxConstraints constraints;
   final DataGridSource source;
   final List<GridColumn> gridColumns;
   final int dataCount;
+  final GlobalKey<SfDataGridState>? dataGridKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,6 +38,7 @@ class DataGridContainer extends ConsumerWidget {
               headerHoverColor: UColors.gray100,
             ),
             child: SfDataGrid(
+              key: dataGridKey,
               rowsPerPage: 12,
               highlightRowOnHover: true,
               allowFiltering: true,
@@ -73,6 +76,10 @@ class DataGridContainer extends ConsumerWidget {
 
   double pageCount(int dataCount, int rowsPerPage) {
     if (dataCount == 0) return 1;
+
+    if (source.filterConditions.isNotEmpty) {
+      return (source.effectiveRows.length / rowsPerPage).ceilToDouble();
+    }
 
     return (dataCount / rowsPerPage).ceilToDouble();
   }

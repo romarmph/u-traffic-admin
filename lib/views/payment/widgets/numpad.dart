@@ -235,8 +235,7 @@ class _NumPadState extends ConsumerState<NumPad> {
 
               _showLoading();
               try {
-                final currentuser = FirebaseAuth.instance.currentUser;
-                final admin = ref.watch(adminByIdProvider(currentuser!.uid));
+                final admin = ref.watch(currentAdminProvider);
                 await PaymentDatabase.instance.payTicket(
                   ticket: widget.ticket,
                   amountTendered: double.parse(_numPadScreenController.text),

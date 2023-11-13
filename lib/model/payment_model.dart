@@ -35,6 +35,7 @@ class PaymentDetail {
       'ticketID': ticketID,
       'processedBy': processedBy,
       'processedAt': processedAt,
+      'processedByName': processedByName,
     };
   }
 
