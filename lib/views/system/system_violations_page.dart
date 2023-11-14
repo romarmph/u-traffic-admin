@@ -12,9 +12,12 @@ class _SystemPageState extends ConsumerState<SystemPage> {
   @override
   Widget build(BuildContext context) {
     return PageContainer(
-      route: Routes.system,
+      route: Routes.systemViolations,
       appBar: AppBar(
         title: const Text("System"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -27,7 +30,7 @@ class _SystemPageState extends ConsumerState<SystemPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const SystemMenu(
-                  screen: 'violations',
+                  route: Routes.systemViolations,
                 ),
                 Expanded(
                   child: Padding(
@@ -44,15 +47,15 @@ class _SystemPageState extends ConsumerState<SystemPage> {
                       ),
                       child: ref.watch(violationsStreamProvider).when(
                         data: (data) {
-                          final query =
-                              ref.watch(vehicleTypeSearchQueryProvider);
+                          final query = ref.watch(violationSearchQueryProvider);
+                          data = _searchType(data, query);
                           return DataGridContainer(
                             constraints: constraints,
                             source: ViolationsDataGridSource(
-                              _searchType(data, query),
+                              data,
                             ),
                             gridColumns: violationColumns,
-                            dataCount: _searchType(data, query).length,
+                            dataCount: data.length,
                           );
                         },
                         error: (error, stackTrace) {

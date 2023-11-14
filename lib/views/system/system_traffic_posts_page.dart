@@ -13,9 +13,12 @@ class _SystemTrafficPostPageState extends ConsumerState<SystemTrafficPostPage> {
   @override
   Widget build(BuildContext context) {
     return PageContainer(
-      route: Routes.system,
+      route: Routes.systemTrafficPosts,
       appBar: AppBar(
         title: const Text("System"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -28,7 +31,7 @@ class _SystemTrafficPostPageState extends ConsumerState<SystemTrafficPostPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const SystemMenu(
-                  screen: 'traffic_posts',
+                  route: Routes.systemTrafficPosts,
                 ),
                 Expanded(
                   child: Padding(

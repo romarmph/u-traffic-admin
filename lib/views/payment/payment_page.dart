@@ -35,6 +35,9 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
       route: Routes.payment,
       appBar: AppBar(
         title: const Text("Payment"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

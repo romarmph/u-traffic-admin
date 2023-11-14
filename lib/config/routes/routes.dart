@@ -27,8 +27,10 @@ class Routes {
   // System routes
   static const String system = '/system';
   static const String systemViolations = '/system/violations';
-  static const String systemRoles = '/system/roles';
   static const String systemVehicleTypes = '/system/vehicle-types';
+  static const String systemTrafficPosts = '/system/traffic-posts';
+  static const String systemEnforcerSchedule = '/system/enforcer-schedule';
+  static const String systemFiles = '/system/files';
 
   // Settings routes
   static const String settings = '/settings';

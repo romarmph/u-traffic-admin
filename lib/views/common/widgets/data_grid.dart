@@ -77,10 +77,6 @@ class DataGridContainer extends ConsumerWidget {
   double pageCount(int dataCount, int rowsPerPage) {
     if (dataCount == 0) return 1;
 
-    if (source.filterConditions.isNotEmpty) {
-      return (source.effectiveRows.length / rowsPerPage).ceilToDouble();
-    }
-
     return (dataCount / rowsPerPage).ceilToDouble();
   }
 }

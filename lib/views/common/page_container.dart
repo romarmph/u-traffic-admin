@@ -91,6 +91,28 @@ class _PageContainerState extends ConsumerState<PageContainer> {
             title: "System",
             route: Routes.system,
             icon: Icons.settings_applications_rounded,
+            children: [
+              AdminMenuItem(
+                title: 'Violations',
+                route: Routes.systemViolations,
+                icon: Icons.line_style_rounded,
+              ),
+              AdminMenuItem(
+                title: 'Vehicle Types',
+                route: Routes.systemVehicleTypes,
+                icon: Icons.car_rental_rounded,
+              ),
+              AdminMenuItem(
+                title: 'Traffic Posts',
+                route: Routes.systemTrafficPosts,
+                icon: Icons.traffic_rounded,
+              ),
+              AdminMenuItem(
+                title: 'Enforcer Schedule',
+                route: Routes.systemEnforcerSchedule,
+                icon: Icons.calendar_month_rounded,
+              ),
+            ],
           ),
           AdminMenuItem(
             title: "Settings",

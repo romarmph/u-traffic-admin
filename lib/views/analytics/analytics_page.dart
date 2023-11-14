@@ -10,6 +10,9 @@ class AnalyticsPage extends ConsumerWidget {
       route: Routes.analytics,
       appBar: AppBar(
         title: const Text("Analytics"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: const Placeholder(),
     );

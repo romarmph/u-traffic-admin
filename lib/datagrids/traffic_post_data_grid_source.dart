@@ -62,6 +62,10 @@ class TrafficPostDataGridSource extends DataGridSource {
   void _buildDataGridRows() {
     _trafficRows = trafficPost.map<DataGridRow>((dataGridRow) {
       return DataGridRow(cells: [
+        DataGridCell<int>(
+          columnName: TrafficPostFields.number,
+          value: dataGridRow.number,
+        ),
         DataGridCell<String>(
           columnName: TrafficPostFields.name,
           value: dataGridRow.name,

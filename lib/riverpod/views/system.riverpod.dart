@@ -11,3 +11,11 @@ final violationSearchQueryProvider = StateProvider<String>((ref) {
 final postSearchQueryProvider = StateProvider<String>((ref) {
   return '';
 });
+
+final enforcerScheduleSearchQueryProvider = StateProvider<String>((ref) {
+  return '';
+});
+
+final fileSearchQueryProvider = StateProvider<String>((ref) {
+  return '';
+});

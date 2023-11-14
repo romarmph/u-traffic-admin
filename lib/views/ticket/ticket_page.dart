@@ -23,6 +23,9 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       route: Routes.tickets,
       appBar: AppBar(
         title: const Text('Tickets'),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -109,14 +112,13 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                               ),
                             ),
                           ),
+                          const SizedBox(
+                            width: 16,
+                          ),
                           UElevatedButton(
                             onPressed: () async {
                               final admin = ref.watch(currentAdminProvider);
-                              await _createExcel(
-                                '${admin.firstName} ${admin.lastName}',
-                                admin.employeeNo,
-                                admin.id!,
-                              );
+                              _showExportDialog();
                             },
                             child: const Text(
                               'Export Data',
@@ -157,7 +159,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                         loading: () => SizedBox(
                           height: constraints.maxHeight - 100 - 64,
                           child: const Center(
-                            child: LinearProgressIndicator(),
+                            child: CircularProgressIndicator(),
                           ),
                         ),
                       ),
@@ -189,19 +191,82 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     showDialog(
       context: context,
       builder: (context) {
+        String exportType = 'excel';
         return AlertDialog(
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
+          content: const Text(
+            'Export current data',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
             ),
-            FilledButton(
-              onPressed: () async {
-                Navigator.pop(context);
-              },
-              child: const Text('Excel'),
+          ),
+          actions: [
+            Row(
+              children: [
+                Expanded(
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: UColors.blue600,
+                      foregroundColor: UColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          USpace.space8,
+                        ),
+                      ),
+                      padding: const EdgeInsets.all(USpace.space16),
+                    ),
+                    onPressed: () async {
+                      final admin = ref.watch(currentAdminProvider);
+                      if (exportType == 'excel') {
+                        await _createDocument(
+                          admin,
+                          'pdf',
+                        );
+                      }
+                    },
+                    child: const Text('PDF'),
+                  ),
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                Expanded(
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      backgroundColor: UColors.green600,
+                      foregroundColor: UColors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          USpace.space8,
+                        ),
+                      ),
+                      padding: const EdgeInsets.all(USpace.space16),
+                    ),
+                    onPressed: () async {
+                      final admin = ref.watch(currentAdminProvider);
+                      if (exportType == 'excel') {
+                        await _createDocument(
+                          admin,
+                          'excel',
+                        );
+                      }
+                    },
+                    child: const Text('Excel'),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text('Cancel'),
+              ),
             ),
           ],
         );
@@ -209,19 +274,31 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     );
   }
 
-  Future<void> _createExcel(
-    String creatorName,
-    String employeeNo,
-    String uid,
+  Future<void> _createDocument(
+    Admin admin,
+    String type,
   ) async {
-    final workbook = _key.currentState!.exportToExcelWorkbook();
+    final creatorName = '${admin.firstName} ${admin.lastName}';
+    final employeeNo = admin.employeeNo;
+    final uid = admin.id!;
+    dynamic workbook = _key.currentState!.exportToExcelWorkbook(
+      excludeColumns: ['actions', 'status'],
+    );
+
+    if (type == 'pdf') {
+      workbook = _key.currentState!.exportToPdfDocument(
+        excludeColumns: ['actions', 'status'],
+      );
+    }
 
     final List<int> bytes = workbook.saveSync();
     workbook.dispose();
 
+    final fileType = type == 'excel' ? 'xlsx' : 'pdf';
+
     final userName = creatorName.toLowerCase().replaceAll(' ', '-');
     final date = DateTime.now().millisecondsSinceEpoch;
-    final fileName = "$userName-$employeeNo-$date.xlsx";
+    final fileName = "$userName-$employeeNo-$date.$fileType";
 
     AnchorElement(
         href:
@@ -247,20 +324,5 @@ class _TicketPageState extends ConsumerState<TicketPage> {
             ).toJson(),
           );
     });
-  }
-
-  Future<void> _createPdf() async {
-    final PdfDocument pdfDocument = _key.currentState!.exportToPdfDocument();
-
-    final List<int> bytes = pdfDocument.saveSync();
-    pdfDocument.dispose();
-
-    final fileName = DateTime.now().toIso8601String().replaceAll('.', '-');
-
-    AnchorElement(
-        href:
-            "data:application/octet-stream;charset=utf-16le;base64,${base64.encode(bytes)}")
-      ..setAttribute("download", "export-$fileName.pdf")
-      ..click();
   }
 }

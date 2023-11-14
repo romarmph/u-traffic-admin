@@ -21,8 +21,8 @@ class _TicketViewState extends ConsumerState<TicketView> {
       route: widget.route,
       appBar: AppBar(
         title: const Text("View Ticket"),
-        actions: [
-          Container(),
+        actions: const [
+          CurrenAdminButton(),
         ],
       ),
       endDrawer: Drawer(

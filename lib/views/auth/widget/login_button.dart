@@ -67,6 +67,11 @@ class LoginButton extends ConsumerWidget {
               text: e.message,
             );
           }
+        } on Exception {
+          CustomAlerts.showError(
+            title: 'Login Error',
+            text: 'An unknown error occurred, please try again later.',
+          );
         }
 
         setLoading(false);

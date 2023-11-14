@@ -21,7 +21,7 @@ class AuthService {
       throw CustomExceptions.adminNotFound;
     }
 
-    if (admin.isDisabled) {
+    if (admin.status == EmployeeStatus.suspended) {
       throw CustomExceptions.adminDisabled;
     }
 

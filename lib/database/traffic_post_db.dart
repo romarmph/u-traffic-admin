@@ -11,10 +11,7 @@ class TrafficPostDatabase {
   static final _collectionRef = _firestore.collection('trafficPosts');
 
   Stream<List<TrafficPost>> getAllTrafficPostStream() {
-    return _collectionRef
-        .orderBy('name', descending: true)
-        .snapshots()
-        .map((snapshot) {
+    return _collectionRef.orderBy('number').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         return TrafficPost.fromJson(doc.data(), doc.id);
       }).toList();

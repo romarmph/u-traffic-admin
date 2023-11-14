@@ -10,6 +10,9 @@ class ComplaintsPage extends ConsumerWidget {
       route: Routes.complaints,
       appBar: AppBar(
         title: const Text("Complaints"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: const Placeholder(),
     );

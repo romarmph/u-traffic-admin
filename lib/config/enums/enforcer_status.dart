@@ -1,4 +1,4 @@
-enum EnforcerStatus {
+enum EmployeeStatus {
   active,
   onDuty,
   onLeave,

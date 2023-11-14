@@ -16,6 +16,9 @@ class PaymentDetailsPage extends ConsumerWidget {
       route: Routes.payment,
       appBar: AppBar(
         title: const Text('Payment Details'),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

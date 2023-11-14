@@ -13,6 +13,12 @@ class PaymentProcessingPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PageContainer(
       route: Routes.payment,
+      appBar: AppBar(
+        title: const Text('Payment Processing'),
+        actions: const [
+          CurrenAdminButton(),
+        ],
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Padding(

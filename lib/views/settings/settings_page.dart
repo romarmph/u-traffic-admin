@@ -10,6 +10,9 @@ class SettingsPage extends ConsumerWidget {
       route: Routes.settings,
       appBar: AppBar(
         title: const Text("Settings"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: const Placeholder(),
     );

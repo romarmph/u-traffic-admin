@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class SystemEncforcerSchedulePage extends ConsumerStatefulWidget {
-  const SystemEncforcerSchedulePage({super.key});
+class SystemEnforcerSchedulePage extends ConsumerStatefulWidget {
+  const SystemEnforcerSchedulePage({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _SystemEncforcerSchedulePageState();
+      _SystemEnforcerSchedulePageState();
 }
 
-class _SystemEncforcerSchedulePageState
-    extends ConsumerState<SystemEncforcerSchedulePage> {
+class _SystemEnforcerSchedulePageState
+    extends ConsumerState<SystemEnforcerSchedulePage> {
   @override
   Widget build(BuildContext context) {
     return PageContainer(
-      route: Routes.system,
+      route: Routes.systemEnforcerSchedule,
       appBar: AppBar(
         title: const Text("System"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -29,7 +32,7 @@ class _SystemEncforcerSchedulePageState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const SystemMenu(
-                  screen: 'enforcer_schedule',
+                  route: Routes.systemEnforcerSchedule,
                 ),
                 Expanded(
                   child: Padding(

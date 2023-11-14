@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class SystemMenu extends StatelessWidget {
+class SystemMenu extends ConsumerStatefulWidget {
   const SystemMenu({
     super.key,
-    required this.screen,
+    required this.route,
   });
 
-  final String screen;
+  final String route;
+
+  @override
+  ConsumerState<SystemMenu> createState() => _SystemMenuState();
+}
+
+class _SystemMenuState extends ConsumerState<SystemMenu> {
+  final _searchControler = TextEditingController();
+
+  bool isSearchClearIconVisible = false;
+
+  @override
+  void initState() {
+    _searchControler.addListener(() {
+      setState(() {
+        isSearchClearIconVisible = _searchControler.text.isNotEmpty;
+      });
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,76 +45,36 @@ class SystemMenu extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: SystemMenuButton(
-                  icon: Icons.rule_rounded,
-                  title: "Violations",
-                  onTap: () {
-                    Navigator.push(
-                      navigatorKey.currentContext!,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const SystemPage(),
+              const Spacer(),
+              SizedBox(
+                width: 300,
+                child: TextField(
+                  controller: _searchControler,
+                  onChanged: _onChanged,
+                  decoration: InputDecoration(
+                    hintText: "Quick Search",
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(USpace.space8),
+                    ),
+                    suffixIcon: Visibility(
+                      visible: _searchControler.text.isNotEmpty,
+                      child: IconButton(
+                        onPressed: _onClear,
+                        icon: const Icon(Icons.close),
                       ),
-                    );
-                  },
-                  isActive: screen == 'violations',
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(
                 width: 16,
               ),
-              Expanded(
-                child: SystemMenuButton(
-                  icon: Icons.car_repair_rounded,
-                  title: "Vehicle Types",
-                  onTap: () {
-                    Navigator.push(
-                      navigatorKey.currentContext!,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) =>
-                            const SystemVehicleTypePage(),
-                      ),
-                    );
-                  },
-                  isActive: screen == 'vehicle_types',
-                ),
-              ),
-              const SizedBox(
-                width: 16,
-              ),
-              Expanded(
-                child: SystemMenuButton(
-                  icon: Icons.traffic_rounded,
-                  title: "Traffic Posts",
-                  onTap: () {
-                    Navigator.push(
-                      navigatorKey.currentContext!,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) =>
-                            const SystemTrafficPostPage(),
-                      ),
-                    );
-                  },
-                  isActive: screen == 'traffic_posts',
-                ),
-              ),
-              const SizedBox(
-                width: 16,
-              ),
-              Expanded(
-                child: SystemMenuButton(
-                  icon: Icons.calendar_month_rounded,
-                  title: "Enforcer Schedule",
-                  onTap: () {
-                    Navigator.push(
-                      navigatorKey.currentContext!,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) =>
-                            const SystemEncforcerSchedulePage(),
-                      ),
-                    );
-                  },
-                  isActive: screen == 'enforcer_schedule',
+              Visibility(
+                visible: widget.route != Routes.systemFiles,
+                child: UElevatedButton(
+                  onPressed: () {},
+                  child: Text(_buttonTitle(widget.route)),
                 ),
               ),
             ],
@@ -103,5 +82,63 @@ class SystemMenu extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onClear() {
+    _searchControler.clear();
+    ref.read(violationSearchQueryProvider.notifier).state = "";
+    ref.read(vehicleTypeSearchQueryProvider.notifier).state = "";
+    ref.read(postSearchQueryProvider.notifier).state = "";
+    ref.read(enforcerScheduleSearchQueryProvider.notifier).state = "";
+    ref.read(fileSearchQueryProvider.notifier).state = "";
+  }
+
+  void _onChanged(value) {
+    if (widget.route == Routes.systemViolations) {
+      ref
+          .read(
+            violationSearchQueryProvider.notifier,
+          )
+          .state = value;
+    } else if (widget.route == Routes.systemVehicleTypes) {
+      ref
+          .read(
+            vehicleTypeSearchQueryProvider.notifier,
+          )
+          .state = value;
+    } else if (widget.route == Routes.systemTrafficPosts) {
+      ref
+          .read(
+            postSearchQueryProvider.notifier,
+          )
+          .state = value;
+    } else if (widget.route == Routes.systemEnforcerSchedule) {
+      ref
+          .read(
+            enforcerScheduleSearchQueryProvider.notifier,
+          )
+          .state = value;
+    } else {
+      ref
+          .read(
+            fileSearchQueryProvider.notifier,
+          )
+          .state = value;
+    }
+  }
+
+  String _buttonTitle(String route) {
+    switch (route) {
+      case Routes.systemViolations:
+        return "Add Violation";
+      case Routes.systemEnforcerSchedule:
+        return "Add Enforcer Schedule";
+      case Routes.systemTrafficPosts:
+        return "Add Posts";
+      case Routes.systemVehicleTypes:
+        return "Add Vehicle Types";
+      default:
+        return "Add Violations";
+    }
   }
 }

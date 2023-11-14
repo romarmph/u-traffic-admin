@@ -13,9 +13,12 @@ class SystemVehicleTypePageState extends ConsumerState<SystemVehicleTypePage> {
   @override
   Widget build(BuildContext context) {
     return PageContainer(
-      route: Routes.system,
+      route: Routes.systemVehicleTypes,
       appBar: AppBar(
         title: const Text("System"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -28,7 +31,7 @@ class SystemVehicleTypePageState extends ConsumerState<SystemVehicleTypePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const SystemMenu(
-                  screen: 'vehicle_types',
+                  route: Routes.systemVehicleTypes,
                 ),
                 Expanded(
                   child: Padding(

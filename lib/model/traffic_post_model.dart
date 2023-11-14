@@ -3,6 +3,7 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 class TrafficPost {
   final String? id;
   final String name;
+  final int number;
   final ULocation location;
   final String createdBy;
   final String updatedBy;
@@ -12,6 +13,7 @@ class TrafficPost {
   const TrafficPost({
     this.id,
     required this.name,
+    required this.number,
     required this.location,
     required this.createdBy,
     required this.updatedBy,
@@ -34,6 +36,7 @@ class TrafficPost {
     return TrafficPost(
       id: docId,
       name: json['name'],
+      number: json['number'],
       location: ULocation.fromJson(json['location']),
       createdBy: json['createdBy'],
       updatedBy: json['updatedBy'],
@@ -45,6 +48,7 @@ class TrafficPost {
   TrafficPost copyWith({
     String? id,
     String? name,
+    int? number,
     ULocation? location,
     String? createdBy,
     String? updatedBy,
@@ -54,6 +58,7 @@ class TrafficPost {
     return TrafficPost(
       id: id ?? this.id,
       name: name ?? this.name,
+      number: number ?? this.number,
       location: location ?? this.location,
       createdBy: createdBy ?? this.createdBy,
       updatedBy: updatedBy ?? this.updatedBy,

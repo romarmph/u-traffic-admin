@@ -27,6 +27,9 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage>
       route: Routes.enforcers,
       appBar: AppBar(
         title: const Text("Enforcers"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
