@@ -23,7 +23,7 @@ class Ticket {
   final Timestamp dateCreated;
   final Timestamp ticketDueDate;
   final Timestamp violationDateTime;
-  final List<String?> violationsID;
+  final List<IssuedViolation> issuedViolations;
   final ULocation violationPlace;
   final TicketStatus status;
 
@@ -51,7 +51,7 @@ class Ticket {
     required this.ticketDueDate,
     required this.violationDateTime,
     required this.violationPlace,
-    required this.violationsID,
+    required this.issuedViolations,
     required this.totalFine,
   });
 
@@ -82,7 +82,11 @@ class Ticket {
       ticketDueDate: json['ticketDueDate'],
       violationDateTime: json['violationDateTime'],
       violationPlace: ULocation.fromJson(json['violationPlace']),
-      violationsID: List<String?>.from(json['violationsID'] ?? []),
+      issuedViolations: List<IssuedViolation>.from(
+        json['issuedViolations'].map(
+          (e) => IssuedViolation.fromJson(e),
+        ),
+      ),
       totalFine: json['totalFine'].toDouble(),
     );
   }
@@ -111,7 +115,7 @@ class Ticket {
       'ticketDueDate': ticketDueDate,
       'violationDateTime': violationDateTime,
       'violationPlace': violationPlace.toJson(),
-      'violationsID': violationsID,
+      'issuedViolations': issuedViolations,
       'totalFine': totalFine,
     };
   }
@@ -157,7 +161,7 @@ class Ticket {
     Timestamp? ticketDueDate,
     Timestamp? violationDateTime,
     ULocation? violationPlace,
-    List<String?>? violationsID,
+    List<IssuedViolation>? issuedViolations,
     double? totalFine,
   }) {
     return Ticket(
@@ -185,7 +189,7 @@ class Ticket {
       ticketDueDate: ticketDueDate ?? this.ticketDueDate,
       violationDateTime: violationDateTime ?? this.violationDateTime,
       violationPlace: violationPlace ?? this.violationPlace,
-      violationsID: violationsID ?? this.violationsID,
+      issuedViolations: issuedViolations ?? this.issuedViolations,
       totalFine: totalFine ?? this.totalFine,
     );
   }

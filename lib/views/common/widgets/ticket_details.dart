@@ -355,7 +355,7 @@ class TicketDetails extends ConsumerWidget {
                           children: [
                             Expanded(
                               child: ListView(
-                                children: _buildViolationsList(ref),
+                                children: _buildViolationsList(),
                               ),
                             ),
                             Visibility(
@@ -377,15 +377,65 @@ class TicketDetails extends ConsumerWidget {
     );
   }
 
-  List<Widget> _buildViolationsList(WidgetRef ref) {
-    final violations = ref.watch(violationsProvider);
+  List<Widget> _buildViolationsList() {
     List<Widget> ticketViolations = [];
 
-    for (var element in ticket.violationsID) {
-      final violation = violations.where((e) => e.id == element).first;
+    for (var violation in ticket.issuedViolations) {
       ticketViolations.add(
         ListTile(
-          title: Text(violation.name),
+          title: Text(
+            violation.violation,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: UColors.gray500,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Column(
+            children: [
+              Text(
+                violation.penalty,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: UColors.gray500,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(
+                height: USpace.space4,
+              ),
+              Row(
+                children: [
+                  Text(
+                    violation.isBigVehicle
+                        ? "Big Vehicle"
+                        : "Tricycle/Motorcycle",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: UColors.gray500,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    violation.offense == 1
+                        ? '1st Offense'
+                        : violation.offense == 2
+                            ? '2nd Offense'
+                            : '3rd Offense',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: violation.offense == 1
+                          ? UColors.green500
+                          : violation.offense == 2
+                              ? UColors.yellow500
+                              : UColors.red500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
           trailing: Text(
             "${violation.fine} PHP",
             style: const TextStyle(

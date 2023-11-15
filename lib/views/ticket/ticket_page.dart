@@ -117,7 +117,6 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                           ),
                           UElevatedButton(
                             onPressed: () async {
-                              final admin = ref.watch(currentAdminProvider);
                               _showExportDialog();
                             },
                             child: const Text(

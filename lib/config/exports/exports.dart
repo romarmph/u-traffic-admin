@@ -181,8 +181,9 @@ export 'package:u_traffic_admin/model/payment_model.dart';
 export 'package:u_traffic_admin/model/notification.dart';
 export 'package:u_traffic_admin/model/violations/violation_model.dart';
 export 'package:u_traffic_admin/model/violations/violation_offense.dart';
+export 'package:u_traffic_admin/model/violations/issued_violations.dart';
 export 'package:u_traffic_admin/model/traffic_post_model.dart';
-export 'package:u_traffic_admin/model/exports.dart';
+export 'package:u_traffic_admin/model/data_exports.dart';
 
 /**
  * 
