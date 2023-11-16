@@ -76,6 +76,18 @@ class _PageContainerState extends ConsumerState<PageContainer> {
             title: "Enforcers",
             route: Routes.enforcers,
             icon: Icons.security_rounded,
+            children: [
+              AdminMenuItem(
+                title: 'View',
+                route: Routes.enforcersView,
+                icon: Icons.view_list_rounded,
+              ),
+              AdminMenuItem(
+                title: 'Schedule',
+                route: Routes.enforcerSchedules,
+                icon: Icons.calendar_month_rounded,
+              ),
+            ],
           ),
           AdminMenuItem(
             title: "Admin Staffs",
@@ -106,11 +118,6 @@ class _PageContainerState extends ConsumerState<PageContainer> {
                 title: 'Traffic Posts',
                 route: Routes.systemTrafficPosts,
                 icon: Icons.traffic_rounded,
-              ),
-              AdminMenuItem(
-                title: 'Enforcer Schedule',
-                route: Routes.systemEnforcerSchedule,
-                icon: Icons.calendar_month_rounded,
               ),
             ],
           ),

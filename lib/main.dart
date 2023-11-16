@@ -51,9 +51,13 @@ class UTrafficAdmin extends ConsumerWidget {
             return PageRouteBuilder(
               pageBuilder: (_, __, ___) => const AdminPage(),
             );
-          case Routes.enforcers:
+          case Routes.enforcersView:
             return PageRouteBuilder(
               pageBuilder: (_, __, ___) => const EnforcerPage(),
+            );
+          case Routes.enforcerSchedules:
+            return PageRouteBuilder(
+              pageBuilder: (_, __, ___) => const EnforcerSchedulePage(),
             );
           case Routes.tickets:
             return PageRouteBuilder(

@@ -24,7 +24,7 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage>
   @override
   Widget build(BuildContext context) {
     return PageContainer(
-      route: Routes.enforcers,
+      route: Routes.enforcersView,
       appBar: AppBar(
         title: const Text("Enforcers"),
         actions: const [

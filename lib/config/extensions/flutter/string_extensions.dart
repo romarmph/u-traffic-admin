@@ -12,4 +12,17 @@ extension StringExtension on String {
   String get formattedDate => toDateTime.toTimestamp.toAmericanDate;
 
   String get enumValue => split('.').last;
+
+  ShiftPeriod get toShiftPeriod {
+    switch (this) {
+      case 'morning':
+        return ShiftPeriod.morning;
+      case 'afternoon':
+        return ShiftPeriod.afternoon;
+      case 'night':
+        return ShiftPeriod.night;
+      default:
+        return ShiftPeriod.morning;
+    }
+  }
 }
