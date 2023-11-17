@@ -25,4 +25,21 @@ extension StringExtension on String {
         return ShiftPeriod.morning;
     }
   }
+
+  EmployeeStatus get toEmployeeStatus {
+    switch (this) {
+      case 'active':
+        return EmployeeStatus.active;
+      case 'onduty':
+        return EmployeeStatus.onduty;
+      case 'onleave':
+        return EmployeeStatus.onleave;
+      case 'suspended':
+        return EmployeeStatus.suspended;
+      case 'terminated':
+        return EmployeeStatus.terminated;
+      default:
+        return EmployeeStatus.active;
+    }
+  }
 }

@@ -24,6 +24,25 @@ class EnforcerScheduleDatabse {
     }
   }
 
+  Stream<EnforcerSchedule> getEnforcerSchedById(String id) {
+    try {
+      return _enforcerSchedRef
+          .where(
+            'enforcerId',
+            isEqualTo: id,
+          )
+          .snapshots()
+          .map((snapshot) {
+        return EnforcerSchedule.fromJson(
+          snapshot.docs.first.data(),
+          snapshot.docs.first.id,
+        );
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> addEnforcerSched(EnforcerSchedule enforcerSched) async {
     try {
       await _enforcerSchedRef.add(enforcerSched.toJson());

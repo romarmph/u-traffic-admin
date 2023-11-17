@@ -52,14 +52,13 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
                             constraints: constraints,
                             source: EnforcerScheduleDataGridSource(
                               data,
+                              ref,
                             ),
                             gridColumns: enforcerSchedGridColumns,
                             dataCount: data.length,
                           );
                         },
                         error: (error, stackTrace) {
-                          print(error);
-                          print(stackTrace);
                           return const Center(
                             child: Text(
                               'Error fetching enforcer schedules',

@@ -8,19 +8,7 @@ class EnforcerPage extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _EnforcerPageState();
 }
 
-class _EnforcerPageState extends ConsumerState<EnforcerPage>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    _tabController = TabController(
-      length: 3,
-      vsync: this,
-    );
-    super.initState();
-  }
-
+class _EnforcerPageState extends ConsumerState<EnforcerPage> {
   @override
   Widget build(BuildContext context) {
     return PageContainer(
@@ -55,25 +43,19 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage>
                       ),
                       child: Row(
                         children: [
-                          Expanded(
-                            child: TabBar(
-                              dividerColor: Colors.transparent,
-                              controller: _tabController,
-                              tabs: const [
-                                Tab(
-                                  text: 'Morning Shift',
-                                ),
-                                Tab(
-                                  text: 'Afternoon Shift',
-                                ),
-                                Tab(
-                                  text: 'Night Shift',
-                                ),
-                              ],
-                            ),
+                          const Spacer(),
+                          StatusTypeDropDown(
+                            value: 'all',
+                            onChanged: (value) {},
+                            statusList: const [
+                              'all',
+                              'morning',
+                              'afternoon',
+                              'night',
+                            ],
                           ),
                           const SizedBox(
-                            width: 32,
+                            width: 16,
                           ),
                           SizedBox(
                             width: 400,
@@ -111,28 +93,36 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage>
                     ),
                   ),
                 ),
-                Container(
-                  height: constraints.maxHeight - 100 - 32,
-                  padding: const EdgeInsets.only(
-                    top: 16,
-                    left: 16,
-                    right: 16,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
                   ),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: UColors.white,
-                      borderRadius: BorderRadius.circular(USpace.space12),
-                    ),
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        Column(),
-                        Column(),
-                        Column(),
-                      ],
-                    ),
-                  ),
+                  child: ref.watch(getAllEnforcerStream).when(
+                        data: (data) {
+                          return DataGridContainer(
+                            source: EnforcerDataGridSource(
+                              data,
+                              ref,
+                            ),
+                            dataCount: data.length,
+                            gridColumns: enforcerGridColumns,
+                            constraints: constraints,
+                          );
+                        },
+                        error: (error, stackTrace) {
+                          print(error);
+                          print(stackTrace);
+                          return const Center(
+                            child: Text('Error fetching tickets'),
+                          );
+                        },
+                        loading: () => SizedBox(
+                          height: constraints.maxHeight - 100 - 64,
+                          child: const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ),
                 ),
               ],
             ),

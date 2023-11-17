@@ -1,7 +1,8 @@
 enum EmployeeStatus {
   active,
-  onDuty,
-  onLeave,
+  onduty,
+  offduty,
+  onleave,
   suspended,
   terminated,
 }

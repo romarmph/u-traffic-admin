@@ -15,3 +15,7 @@ final enforcerSchedProvider = Provider<List<EnforcerSchedule>>((ref) {
         loading: () => [],
       );
 });
+
+final enforcerSchedByIdStream = StreamProvider.family<EnforcerSchedule, String>((ref, id) {
+  return ref.watch(enforcerSchedDatabaseProvider).getEnforcerSchedById(id);
+});
