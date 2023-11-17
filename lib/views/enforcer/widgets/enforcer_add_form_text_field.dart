@@ -7,8 +7,10 @@ class EnforcerFormField extends StatelessWidget {
     required this.controller,
     required this.label,
     required this.hintText,
+    this.suffixIcon,
     this.validator,
     this.enabled,
+    this.obscureText = false,
   });
 
   final TextEditingController controller;
@@ -16,6 +18,8 @@ class EnforcerFormField extends StatelessWidget {
   final String hintText;
   final String? Function(String?)? validator;
   final bool? enabled;
+  final Widget? suffixIcon;
+  final bool obscureText;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +36,11 @@ class EnforcerFormField extends StatelessWidget {
         ),
         const SizedBox(width: USpace.space8),
         TextFormField(
+          obscureText: obscureText,
           controller: controller,
           decoration: InputDecoration(
             hintText: hintText,
+            suffixIcon: suffixIcon,
           ),
           validator: validator,
           enabled: enabled,

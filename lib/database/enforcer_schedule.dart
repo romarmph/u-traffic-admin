@@ -89,4 +89,17 @@ class EnforcerScheduleDatabse {
       rethrow;
     }
   }
+
+  Future<void> setEnforcerToSchedule({
+    required String enforcerId,
+    required String scheduleId,
+  }) async {
+    try {
+      await _enforcerSchedRef.doc(scheduleId).update({
+        'enforcerId': enforcerId,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

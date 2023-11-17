@@ -37,9 +37,9 @@ class EnforcerDatabase {
     }
   }
 
-  Future<void> addEnforcer(Enforcer enforcer) async {
+  Future<void> addEnforcer(Enforcer enforcer, String uid) async {
     try {
-      await _enforcerRef.add(enforcer.toJson());
+      await _enforcerRef.doc(uid).set(enforcer.toJson());
     } catch (e) {
       rethrow;
     }
