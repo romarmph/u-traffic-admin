@@ -159,7 +159,8 @@ class EnforcerDataGridSource extends DataGridSource {
           ),
           DataGridCell<String>(
             columnName: EnforcerGridFields.name,
-            value: '${enforcer.firstName} ${enforcer.lastName}',
+            value:
+                '${enforcer.firstName} ${enforcer.middleName.substring(0, 1)}. ${enforcer.lastName} ${enforcer.suffix}',
           ),
           DataGridCell<String>(
             columnName: EnforcerGridFields.email,

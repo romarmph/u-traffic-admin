@@ -5,6 +5,7 @@ class Enforcer {
   final String firstName;
   final String middleName;
   final String lastName;
+  final String suffix;
   final String email;
   final EmployeeStatus status;
   final String photoUrl;
@@ -19,6 +20,7 @@ class Enforcer {
     required this.firstName,
     required this.middleName,
     required this.lastName,
+    this.suffix = "",
     required this.email,
     this.status = EmployeeStatus.active,
     required this.photoUrl,
@@ -34,6 +36,7 @@ class Enforcer {
       "firstName": firstName,
       "middleName": middleName,
       "lastName": lastName,
+      "suffix": suffix,
       "email": email,
       "status": status.toString().toEmployeeStatus,
       "photoUrl": photoUrl,
@@ -51,6 +54,7 @@ class Enforcer {
       firstName: json["firstName"],
       middleName: json["middleName"],
       lastName: json["lastName"],
+      suffix: json["suffix"],
       email: json['email'],
       status: EmployeeStatus.values.firstWhere(
         (element) => element.toString().contains(json['status']),
@@ -66,6 +70,6 @@ class Enforcer {
 
   @override
   String toString() {
-    return "Enforcer(id: $id, firstName: $firstName, middleName: $middleName, lastName: $lastName)";
+    return "Enforcer(id: $id, firstName: $firstName, middleName: $middleName, lastName: $lastName), suffix: $suffix, email: $email, status: $status, photoUrl: $photoUrl, employeeNumber: $employeeNumber, createdBy: $createdBy, updatedBy: $updatedBy, createdAt: $createdAt, updatedAt: $updatedAt)";
   }
 }

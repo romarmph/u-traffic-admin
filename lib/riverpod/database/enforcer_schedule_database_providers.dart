@@ -16,6 +16,20 @@ final enforcerSchedProvider = Provider<List<EnforcerSchedule>>((ref) {
       );
 });
 
-final enforcerSchedByIdStream = StreamProvider.family<EnforcerSchedule, String>((ref, id) {
+final getUnassignedEnforcerSchedStream =
+    StreamProvider<List<EnforcerSchedule>>((ref) {
+  return ref.watch(enforcerSchedDatabaseProvider).getAllUnassignedSchedules();
+});
+
+final unassignedEnforcerSchedProvider = Provider<List<EnforcerSchedule>>((ref) {
+  return ref.watch(getUnassignedEnforcerSchedStream).when(
+        data: (data) => data,
+        error: (error, stackTrace) => [],
+        loading: () => [],
+      );
+});
+
+final enforcerSchedByIdStream =
+    StreamProvider.family<EnforcerSchedule, String>((ref, id) {
   return ref.watch(enforcerSchedDatabaseProvider).getEnforcerSchedById(id);
 });

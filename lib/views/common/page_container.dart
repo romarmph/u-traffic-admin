@@ -83,6 +83,11 @@ class _PageContainerState extends ConsumerState<PageContainer> {
                 icon: Icons.view_list_rounded,
               ),
               AdminMenuItem(
+                title: 'Create Enfocer',
+                route: Routes.enforcersCreate,
+                icon: Icons.person_add_rounded,
+              ),
+              AdminMenuItem(
                 title: 'Schedule',
                 route: Routes.enforcerSchedules,
                 icon: Icons.calendar_month_rounded,

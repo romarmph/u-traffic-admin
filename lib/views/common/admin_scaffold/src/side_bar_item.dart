@@ -90,8 +90,11 @@ class SideBarItem extends StatelessWidget {
     }).toList();
 
     return Theme(
-      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      data: Theme.of(context).copyWith(
+        dividerColor: Colors.transparent,
+      ),
       child: ExpansionTile(
+        expandedCrossAxisAlignment: CrossAxisAlignment.stretch,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),

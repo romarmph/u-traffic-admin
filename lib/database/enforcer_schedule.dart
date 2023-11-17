@@ -24,6 +24,27 @@ class EnforcerScheduleDatabse {
     }
   }
 
+  Stream<List<EnforcerSchedule>> getAllUnassignedSchedules() {
+    try {
+      return _enforcerSchedRef
+          .where(
+            'enforcerId',
+            isEqualTo: '',
+          )
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return EnforcerSchedule.fromJson(
+            doc.data(),
+            doc.id,
+          );
+        }).toList();
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Stream<EnforcerSchedule> getEnforcerSchedById(String id) {
     try {
       return _enforcerSchedRef
