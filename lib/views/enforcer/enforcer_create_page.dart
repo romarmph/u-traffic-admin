@@ -92,9 +92,11 @@ class _EnforcerCreatePageState extends ConsumerState<EnforcerCreatePage> {
         uid,
       );
       await EnforcerScheduleDatabse.instance.setEnforcerToSchedule(
-        enforcerId: uid,
-        scheduleId: form.scheduleId,
-      );
+          enforcerId: uid,
+          scheduleId: form.scheduleId,
+          adminId: currentAdmin.id!,
+          enforcerName:
+              '${enforcer.firstName} ${enforcer.middleName.initial} ${enforcer.lastName}');
     } catch (e) {
       _showEnforcerCreateError(-1);
       return;

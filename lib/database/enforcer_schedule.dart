@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class EnforcerScheduleDatabse {
@@ -93,10 +95,15 @@ class EnforcerScheduleDatabse {
   Future<void> setEnforcerToSchedule({
     required String enforcerId,
     required String scheduleId,
+    required String adminId,
+    required String enforcerName,
   }) async {
     try {
       await _enforcerSchedRef.doc(scheduleId).update({
         'enforcerId': enforcerId,
+        'enforcerName': enforcerName,
+        'updatedBy': adminId,
+        'updatedAt': Timestamp.now(),
       });
     } catch (e) {
       rethrow;

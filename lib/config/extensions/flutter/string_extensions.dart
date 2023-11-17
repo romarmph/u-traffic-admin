@@ -13,6 +13,8 @@ extension StringExtension on String {
 
   String get enumValue => split('.').last;
 
+  String get initial => split('').first.toUpperCase();
+
   ShiftPeriod get toShiftPeriod {
     switch (this) {
       case 'morning':
