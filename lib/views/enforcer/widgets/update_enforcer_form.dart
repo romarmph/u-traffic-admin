@@ -173,12 +173,13 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
     }
 
     Navigator.of(navigatorKey.currentContext!).pop();
-    QuickAlert.show(
+    await QuickAlert.show(
       context: navigatorKey.currentContext!,
       type: QuickAlertType.success,
       title: 'Enforcer Updated',
       text: 'The enforcer account has been updated',
     );
+    Navigator.of(navigatorKey.currentContext!).pop();
   }
 
   Future<String?> _uploadProfile() async {
