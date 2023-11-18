@@ -46,6 +46,54 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                       child: Row(
                         children: [
                           const Spacer(),
+                          Visibility(
+                            visible: true,
+                            child: InkWell(
+                              onTap: () {},
+                              child: Container(
+                                height: 48,
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: UColors.red200,
+                                  borderRadius: BorderRadius.circular(
+                                    USpace.space8,
+                                  ),
+                                  border: Border.all(
+                                    color: UColors.red300,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.warning_rounded,
+                                      color: UColors.red300,
+                                    ),
+                                    Text(
+                                      "Warning!",
+                                      style: TextStyle(
+                                        color: UColors.red300,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Text(
+                                      'View',
+                                      style: TextStyle(
+                                        color: UColors.red300,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
                           StatusTypeDropDown(
                             value: ref.watch(enforcerStatusQueryProvider),
                             onChanged: (value) {
