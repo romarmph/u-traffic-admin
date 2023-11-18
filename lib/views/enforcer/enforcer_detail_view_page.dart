@@ -153,7 +153,17 @@ class EnforcersViewPage extends ConsumerWidget {
                                           const SizedBox(width: USpace.space12),
                                           Expanded(
                                             flex: 3,
-                                            child: Container(),
+                                            child: PreviewListTile(
+                                              title: enforcer.status.name
+                                                  .toUpperCase(),
+                                              subtitle: 'Status',
+                                              titleStyle: TextStyle(
+                                                color: _statusColor(
+                                                  enforcer.status,
+                                                ),
+                                                fontWeight: FontWeight.w900,
+                                              ),
+                                            ),
                                           ),
                                           const SizedBox(width: USpace.space12),
                                           Expanded(
@@ -253,6 +263,25 @@ class EnforcersViewPage extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  Color _statusColor(EmployeeStatus status) {
+    switch (status) {
+      case EmployeeStatus.active:
+        return UColors.blue500;
+      case EmployeeStatus.offduty:
+        return UColors.gray500;
+      case EmployeeStatus.onduty:
+        return UColors.green500;
+      case EmployeeStatus.onleave:
+        return UColors.yellow500;
+      case EmployeeStatus.suspended:
+        return UColors.red500;
+      case EmployeeStatus.terminated:
+        return UColors.red500;
+      default:
+        return UColors.gray400;
+    }
   }
 }
 
