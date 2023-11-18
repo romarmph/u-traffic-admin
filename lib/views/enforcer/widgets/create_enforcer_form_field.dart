@@ -11,12 +11,14 @@ class EnforcerFormField extends StatelessWidget {
     this.validator,
     this.enabled,
     this.obscureText = false,
+    this.onChanged,
   });
 
   final TextEditingController controller;
   final String label;
   final String hintText;
   final String? Function(String?)? validator;
+  final void Function(String value)? onChanged;
   final bool? enabled;
   final Widget? suffixIcon;
   final bool obscureText;
@@ -44,6 +46,7 @@ class EnforcerFormField extends StatelessWidget {
           ),
           validator: validator,
           enabled: enabled,
+          onChanged: onChanged,
         ),
       ],
     );

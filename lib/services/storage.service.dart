@@ -12,8 +12,13 @@ class StorageService {
     final fileName = image.fileName;
     final fileType = fileName!.split('.').last;
 
+    final MediaInfo newImage = MediaInfo(
+      data: image.data,
+      fileName: '$uid.$fileType',
+    );
+
     final ref = _firebaseStorage.ref('profileImage').child('$uid.$fileType');
-    final uploadTask = ref.putData(image.data!);
+    final uploadTask = ref.putData(newImage.data!);
     final snapshot = await uploadTask.whenComplete(() => null);
     final url = await snapshot.ref.getDownloadURL();
     return url;

@@ -5,5 +5,5 @@ final authStateChangesProvider = StreamProvider<User?>((ref) {
 });
 
 final authServiceProvider = Provider<AuthService>((ref) {
-  return AuthService(ref);
+  return AuthService();
 });

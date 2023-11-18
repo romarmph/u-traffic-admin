@@ -45,40 +45,20 @@ class EnforcerDataGridSource extends DataGridSource {
           );
         }
 
-        if (cell.columnName == EnforcerGridFields.shift) {
-          return ref.watch(enforcerSchedByIdStream(cell.value)).when(
-                data: (data) {
-                  return Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ),
-                    child: Text(
-                      data.shift.name.capitalize,
-                      style: const TextStyle(
-                        color: UColors.black,
-                        fontSize: 14,
-                      ),
-                    ),
-                  );
-                },
-                error: (error, stackTrace) {
-                  return Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ),
-                    child: const Text(
-                      'Error fetching shift data',
-                      style: TextStyle(
-                        color: UColors.black,
-                        fontSize: 14,
-                      ),
-                    ),
-                  );
-                },
-                loading: () => const CircularProgressIndicator(),
-              );
+        if (cell.columnName == EnforcerGridFields.employeeNo) {
+          return Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+            ),
+            child: Text(
+              cell.value,
+              style: const TextStyle(
+                color: UColors.black,
+                fontSize: 14,
+              ),
+            ),
+          );
         }
 
         if (cell.columnName == EnforcerGridFields.status) {
@@ -120,6 +100,23 @@ class EnforcerDataGridSource extends DataGridSource {
           );
         }
 
+        if (cell.columnName == EnforcerGridFields.createdAt) {
+          final date = cell.value as DateTime;
+          return Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+            ),
+            child: Text(
+              date.toTimestamp.toAmericanDate,
+              style: const TextStyle(
+                color: UColors.black,
+                fontSize: 14,
+              ),
+            ),
+          );
+        }
+
         if (cell.columnName == EnforcerGridFields.photo) {
           return Container(
             alignment: Alignment.center,
@@ -151,6 +148,8 @@ class EnforcerDataGridSource extends DataGridSource {
 
   void _buildRows() {
     _enforcerRows = enforcers.map<DataGridRow>((enforcer) {
+      final name =
+          '${enforcer.firstName} ${enforcer.middleName} ${enforcer.lastName} ${enforcer.suffix}';
       return DataGridRow(
         cells: [
           DataGridCell<String>(
@@ -158,21 +157,24 @@ class EnforcerDataGridSource extends DataGridSource {
             value: enforcer.photoUrl,
           ),
           DataGridCell<String>(
+            columnName: EnforcerGridFields.employeeNo,
+            value: enforcer.employeeNumber,
+          ),
+          DataGridCell<String>(
             columnName: EnforcerGridFields.name,
-            value:
-                '${enforcer.firstName} ${enforcer.middleName.substring(0, 1)}. ${enforcer.lastName} ${enforcer.suffix}',
+            value: name,
           ),
           DataGridCell<String>(
             columnName: EnforcerGridFields.email,
             value: enforcer.email,
           ),
           DataGridCell<String>(
-            columnName: EnforcerGridFields.shift,
-            value: enforcer.id,
-          ),
-          DataGridCell<String>(
             columnName: EnforcerGridFields.status,
             value: enforcer.status.name.capitalize,
+          ),
+          DataGridCell<DateTime>(
+            columnName: EnforcerGridFields.createdAt,
+            value: enforcer.createdAt.toDate(),
           ),
           DataGridCell<String>(
             columnName: EnforcerGridFields.action,

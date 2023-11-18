@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 class EnforcerHTTPSerivice {
@@ -15,10 +17,10 @@ class EnforcerHTTPSerivice {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: {
+        body: jsonEncode({
           'email': email,
           'password': password,
-        },
+        }),
       );
 
       if (response.statusCode == 200) {

@@ -11,7 +11,7 @@ class EnforcerDatabase {
 
   Stream<List<Enforcer>> getAllEnforcers() {
     try {
-      return _enforcerRef.snapshots().map((snapshot) {
+      return _enforcerRef.orderBy('employeeNumber').snapshots().map((snapshot) {
         return snapshot.docs.map((doc) {
           return Enforcer.fromJson(
             doc.data(),

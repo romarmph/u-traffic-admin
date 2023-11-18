@@ -9,6 +9,8 @@ class EnforcerPage extends ConsumerStatefulWidget {
 }
 
 class _EnforcerPageState extends ConsumerState<EnforcerPage> {
+  final _searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return PageContainer(
@@ -45,13 +47,20 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                         children: [
                           const Spacer(),
                           StatusTypeDropDown(
-                            value: 'all',
-                            onChanged: (value) {},
+                            value: ref.watch(enforcerStatusQueryProvider),
+                            onChanged: (value) {
+                              ref
+                                  .read(enforcerStatusQueryProvider.notifier)
+                                  .state = value!;
+                            },
                             statusList: const [
                               'all',
-                              'morning',
-                              'afternoon',
-                              'night',
+                              'active',
+                              'onduty',
+                              'offduty',
+                              'onleave',
+                              'suspended',
+                              'terminated',
                             ],
                           ),
                           const SizedBox(
@@ -60,7 +69,12 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                           SizedBox(
                             width: 400,
                             child: TextField(
-                              onChanged: (value) {},
+                              controller: _searchController,
+                              onChanged: (value) {
+                                ref
+                                    .read(enforcerSearchQueryProvider.notifier)
+                                    .state = value;
+                              },
                               decoration: InputDecoration(
                                 hintText: 'Search',
                                 border: InputBorder.none,
@@ -69,9 +83,15 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                                   color: UColors.gray300,
                                 ),
                                 suffixIcon: Visibility(
-                                  visible: true,
+                                  visible: _searchController.text.isNotEmpty,
                                   child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      _searchController.clear();
+                                      ref
+                                          .read(enforcerSearchQueryProvider
+                                              .notifier)
+                                          .state = '';
+                                    },
                                     icon: const Icon(
                                       Icons.close_rounded,
                                       color: UColors.gray300,
@@ -85,7 +105,11 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                             width: 16,
                           ),
                           UElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pushReplacementNamed(
+                                Routes.enforcersCreate,
+                              );
+                            },
                             child: const Text('Add Enforcer'),
                           ),
                         ],
@@ -99,6 +123,14 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                   ),
                   child: ref.watch(getAllEnforcerStream).when(
                         data: (data) {
+                          final query = ref.watch(enforcerSearchQueryProvider);
+                          final status = ref.watch(enforcerStatusQueryProvider);
+                          if (status != 'all') {
+                            data = data.where((enforcer) {
+                              return enforcer.status.name == status;
+                            }).toList();
+                          }
+                          data = _searchEnforcer(data, query);
                           return DataGridContainer(
                             source: EnforcerDataGridSource(
                               data,
@@ -110,8 +142,6 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                           );
                         },
                         error: (error, stackTrace) {
-                          print(error);
-                          print(stackTrace);
                           return const Center(
                             child: Text('Error fetching tickets'),
                           );
@@ -130,5 +160,21 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
         },
       ),
     );
+  }
+
+  List<Enforcer> _searchEnforcer(List<Enforcer> list, String query) {
+    if (query.isEmpty) {
+      return list;
+    }
+
+    return list.where((enforcer) {
+      query = query.toLowerCase();
+      return enforcer.firstName.toLowerCase().contains(query) ||
+          enforcer.middleName.toLowerCase().contains(query) ||
+          enforcer.lastName.toLowerCase().contains(query) ||
+          enforcer.employeeNumber.toLowerCase().contains(query) ||
+          enforcer.email.toLowerCase().contains(query) ||
+          enforcer.createdAt.toAmericanDate.toLowerCase().contains(query);
+    }).toList();
   }
 }

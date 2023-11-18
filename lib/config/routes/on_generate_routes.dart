@@ -19,13 +19,13 @@ PageRouteBuilder onGenerateRoute(settings) {
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const EnforcerPage(),
       );
+    case Routes.enforcersCreate:
+      return PageRouteBuilder(
+        pageBuilder: (_, __, ___) => const CreateEnforcerForm(),
+      );
     case Routes.enforcerSchedules:
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const EnforcerSchedulePage(),
-      );
-    case Routes.enforcersCreate:
-      return PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const EnforcerCreatePage(),
       );
     case Routes.tickets:
       return PageRouteBuilder(

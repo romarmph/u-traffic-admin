@@ -178,9 +178,6 @@ class _NumPadState extends ConsumerState<NumPad> {
               ],
             ),
           ),
-          const SizedBox(
-            height: USpace.space16,
-          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -209,7 +206,7 @@ class _NumPadState extends ConsumerState<NumPad> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              padding: const EdgeInsets.all(USpace.space24),
+              padding: const EdgeInsets.all(USpace.space20),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(USpace.space8),
               ),
@@ -267,7 +264,7 @@ class _NumPadState extends ConsumerState<NumPad> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              padding: const EdgeInsets.all(USpace.space24),
+              padding: const EdgeInsets.all(USpace.space20),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(USpace.space8),
               ),
@@ -290,7 +287,7 @@ class _NumPadState extends ConsumerState<NumPad> {
     );
   }
 
-  Future<bool> _confirmPayment() async {
+  Future<bool?> _confirmPayment() async {
     return await QuickAlert.show(
       context: context,
       type: QuickAlertType.custom,
@@ -344,6 +341,9 @@ class _NumPadState extends ConsumerState<NumPad> {
       cancelBtnText: 'Cancel',
       onConfirmBtnTap: () {
         Navigator.of(context).pop(true);
+      },
+      onCancelBtnTap: () {
+        Navigator.of(context).pop(false);
       },
     );
   }
