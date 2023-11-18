@@ -33,7 +33,7 @@ class EnforcerHTTPSerivice {
     }
   }
 
-  Future<bool> resetEnforcerPassword(
+  Future<bool> updateEnforcerAccount(
     String uid,
     String email,
     String newPassword,
@@ -41,16 +41,16 @@ class EnforcerHTTPSerivice {
     try {
       final response = await http.post(
         Uri.parse(
-          'http://localhost:3000/enforcer/reset-password',
+          'http://localhost:3000/enforcer/update',
         ),
         headers: {
           'Content-Type': 'application/json',
         },
-        body: {
+        body: jsonEncode({
           'uid': uid,
           'email': email,
           'password': newPassword,
-        },
+        }),
       );
 
       if (response.statusCode == 200) {

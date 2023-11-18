@@ -4,7 +4,7 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 class EnforcerFormField extends StatelessWidget {
   const EnforcerFormField({
     super.key,
-    required this.controller,
+    this.controller,
     required this.label,
     required this.hintText,
     this.suffixIcon,
@@ -12,9 +12,10 @@ class EnforcerFormField extends StatelessWidget {
     this.enabled,
     this.obscureText = false,
     this.onChanged,
+    this.initialValue,
   });
 
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String label;
   final String hintText;
   final String? Function(String?)? validator;
@@ -22,6 +23,7 @@ class EnforcerFormField extends StatelessWidget {
   final bool? enabled;
   final Widget? suffixIcon;
   final bool obscureText;
+  final String? initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class EnforcerFormField extends StatelessWidget {
         ),
         const SizedBox(width: USpace.space8),
         TextFormField(
+          initialValue: initialValue,
           obscureText: obscureText,
           controller: controller,
           decoration: InputDecoration(

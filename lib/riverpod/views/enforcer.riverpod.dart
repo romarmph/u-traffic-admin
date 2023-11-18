@@ -11,3 +11,7 @@ final enforcerSearchQueryProvider = StateProvider<String>((ref) {
 final profilePhotoStateProvider = StateProvider<MediaInfo?>((ref) {
   return null;
 });
+
+final updateStatusProvider = StateProvider<EmployeeStatus?>((ref) {
+  return null;
+});

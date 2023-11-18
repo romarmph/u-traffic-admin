@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
+final fetchedEnforcer = StateProvider<Enforcer?>((ref) {
+  return null;
+});
+
 class EnforcersViewPage extends ConsumerWidget {
   const EnforcersViewPage({
     super.key,
@@ -24,19 +28,19 @@ class EnforcersViewPage extends ConsumerWidget {
             child: SizedBox(
               width: constraints.maxWidth,
               height: constraints.maxHeight,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    height: constraints.maxHeight - 100 - 48,
-                    padding: const EdgeInsets.all(USpace.space16),
-                    decoration: BoxDecoration(
-                      color: UColors.white,
-                      borderRadius: BorderRadius.circular(USpace.space16),
-                    ),
-                    child: ref.watch(getEnforcerById(enforcerId)).when(
-                      data: (enforcer) {
-                        return Column(
+              child: ref.watch(getEnforcerById(enforcerId)).when(
+                data: (enforcer) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        height: constraints.maxHeight - 100 - 48,
+                        padding: const EdgeInsets.all(USpace.space16),
+                        decoration: BoxDecoration(
+                          color: UColors.white,
+                          borderRadius: BorderRadius.circular(USpace.space16),
+                        ),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             const Text(
@@ -185,78 +189,74 @@ class EnforcersViewPage extends ConsumerWidget {
                               updatedAt: enforcer.updatedAt,
                             ),
                           ],
-                        );
-                      },
-                      error: (error, stackTrace) {
-                        return Center(
-                          child: Text(
-                            error.toString(),
-                            style: const TextStyle(
-                              color: UColors.gray400,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        );
-                      },
-                      loading: () {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: USpace.space16,
-                  ),
-                  Container(
-                    height: 100,
-                    padding: const EdgeInsets.all(USpace.space16),
-                    decoration: BoxDecoration(
-                      color: UColors.white,
-                      borderRadius: BorderRadius.circular(USpace.space16),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: USpace.space32,
-                              vertical: USpace.space24,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                USpace.space8,
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.of(navigatorKey.currentContext!).pop();
-                          },
-                          child: const Text('Back'),
                         ),
-                        const SizedBox(width: USpace.space16),
-                        FilledButton.icon(
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: USpace.space32,
-                              vertical: USpace.space24,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                USpace.space8,
-                              ),
-                            ),
-                          ),
-                          onPressed: () {},
-                          label: const Text('Update'),
-                          icon: const Icon(Icons.edit_rounded),
+                      ),
+                      const SizedBox(
+                        height: USpace.space16,
+                      ),
+                      Container(
+                        height: 100,
+                        padding: const EdgeInsets.all(USpace.space16),
+                        decoration: BoxDecoration(
+                          color: UColors.white,
+                          borderRadius: BorderRadius.circular(USpace.space16),
                         ),
-                      ],
-                    ),
-                  )
-                ],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: USpace.space32,
+                                  vertical: USpace.space24,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    USpace.space8,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(navigatorKey.currentContext!)
+                                    .pop();
+                              },
+                              child: const Text('Back'),
+                            ),
+                            const SizedBox(width: USpace.space16),
+                            FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: USpace.space32,
+                                  vertical: USpace.space24,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    USpace.space8,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                goToEnforcerUpdatePage(
+                                  enforcer,
+                                );
+                              },
+                              label: const Text('Update'),
+                              icon: const Icon(Icons.edit_rounded),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                },
+                error: (error, stackTrace) {
+                  return const SizedBox();
+                },
+                loading: () {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
               ),
             ),
           );

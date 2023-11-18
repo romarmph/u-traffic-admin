@@ -96,6 +96,7 @@ export 'package:u_traffic_admin/views/enforcer/enforcer_detail_view_page.dart';
 
 // * ---- widgets
 export 'package:u_traffic_admin/views/enforcer/widgets/create_enforcer_form.dart';
+export 'package:u_traffic_admin/views/enforcer/widgets/update_enforcer_form.dart';
 export 'package:u_traffic_admin/views/enforcer/widgets/create_enforcer_form_field.dart';
 
 // ?------------------------------------------------------Ticket

@@ -56,8 +56,8 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                             statusList: const [
                               'all',
                               'active',
-                              'onduty',
-                              'offduty',
+                              // 'onduty',
+                              // 'offduty',
                               'onleave',
                               'suspended',
                               'terminated',

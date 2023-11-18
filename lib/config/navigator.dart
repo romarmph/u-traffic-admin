@@ -71,3 +71,14 @@ void goToEnforcerDetailsPage(String uid) {
     ),
   );
 }
+
+void goToEnforcerUpdatePage(Enforcer enforcer) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => UpdateEnforcerForm(
+        enforcer: enforcer,
+      ),
+    ),
+  );
+}

@@ -38,7 +38,7 @@ class Enforcer {
       "lastName": lastName,
       "suffix": suffix,
       "email": email,
-      "status": status.toString().toEmployeeStatus,
+      "status": status.name,
       "photoUrl": photoUrl,
       "employeeNumber": employeeNumber,
       "createdBy": createdBy,
