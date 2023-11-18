@@ -190,8 +190,8 @@ class TicketDetails extends ConsumerWidget {
                       child: PreviewListTile(
                         title: ticket.getStatus.toUpperCase(),
                         subtitle: 'Status',
-                        titleStyle: const TextStyle(
-                          color: UColors.red400,
+                        titleStyle: TextStyle(
+                          color: _statusColor(ticket.getStatus),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -375,6 +375,25 @@ class TicketDetails extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Color _statusColor(String status) {
+    switch (status.toLowerCase()) {
+      case "unpaid":
+        return UColors.red500;
+      case "paid":
+        return UColors.green500;
+      case "cancelled":
+        return UColors.gray500;
+      case "refunded":
+        return UColors.yellow500;
+      case "submitted":
+        return UColors.blue500;
+      case "expired":
+        return UColors.red500;
+      default:
+        return UColors.red500;
+    }
   }
 
   List<Widget> _buildViolationsList() {

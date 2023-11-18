@@ -369,6 +369,7 @@ class _NumPadState extends ConsumerState<NumPad> {
       text:
           "The payment has been successfully processed.\n Please check the Admin Mobile to print the receipt.",
       onConfirmBtnTap: () {
+        ref.invalidate(getTicketByIdFutureProvider(widget.ticket.id!));
         Navigator.of(context).pushReplacementNamed(
           Routes.payment,
         );
