@@ -60,3 +60,14 @@ void goToPaymentDetailsPage(String ticketID) {
     ),
   );
 }
+
+void goToEnforcerDetailsPage(String uid) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => EnforcersViewPage(
+        enforcerId: uid,
+      ),
+    ),
+  );
+}

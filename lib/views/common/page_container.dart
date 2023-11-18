@@ -79,7 +79,7 @@ class _PageContainerState extends ConsumerState<PageContainer> {
             children: [
               AdminMenuItem(
                 title: 'View',
-                route: Routes.enforcersView,
+                route: Routes.enforcers,
                 icon: Icons.view_list_rounded,
               ),
               AdminMenuItem(

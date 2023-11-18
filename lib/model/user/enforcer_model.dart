@@ -13,7 +13,7 @@ class Enforcer {
   final String createdBy;
   final String updatedBy;
   final Timestamp createdAt;
-  final Timestamp updatedAt;
+  final Timestamp? updatedAt;
 
   const Enforcer({
     this.id,
@@ -26,9 +26,9 @@ class Enforcer {
     required this.photoUrl,
     required this.employeeNumber,
     required this.createdBy,
-    required this.updatedBy,
+    this.updatedBy = "",
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   Map<String, dynamic> toJson() {

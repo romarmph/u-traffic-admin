@@ -106,9 +106,7 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
       photoUrl: url!,
       employeeNumber: _employeeNoController.text,
       createdBy: currentAdmin.id!,
-      updatedBy: currentAdmin.id!,
       createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
     );
 
     try {
@@ -172,228 +170,292 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
       route: Routes.enforcersCreate,
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final double imageWidth = constraints.maxWidth * 0.25 < 256
-              ? 256
-              : constraints.maxWidth * 0.25;
           return Padding(
             padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Container(
-                width: constraints.maxWidth,
-                height: constraints.maxHeight,
-                padding: const EdgeInsets.all(USpace.space16),
-                decoration: BoxDecoration(
-                  color: UColors.white,
-                  borderRadius: BorderRadius.circular(USpace.space16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const Text(
-                      'Enforcer Information',
-                      style: TextStyle(
-                        color: UColors.gray400,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                      ),
+            child: SizedBox(
+              width: constraints.maxWidth,
+              height: constraints.maxHeight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    height: constraints.maxHeight - 100 - 48,
+                    padding: const EdgeInsets.all(USpace.space16),
+                    decoration: BoxDecoration(
+                      color: UColors.white,
+                      borderRadius: BorderRadius.circular(USpace.space16),
                     ),
-                    const SizedBox(
-                      height: USpace.space16,
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: Container(
-                                  width: imageWidth,
-                                  height: imageWidth,
-                                  padding: const EdgeInsets.all(USpace.space4),
-                                  decoration: BoxDecoration(
-                                    color: UColors.gray100,
-                                    borderRadius:
-                                        BorderRadius.circular(USpace.space16),
+                        const Text(
+                          'Enforcer Information',
+                          style: TextStyle(
+                            color: UColors.gray400,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: USpace.space16,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: Container(
+                                    width: 256,
+                                    height: 256,
+                                    padding:
+                                        const EdgeInsets.all(USpace.space4),
+                                    decoration: BoxDecoration(
+                                      color: UColors.gray100,
+                                      borderRadius:
+                                          BorderRadius.circular(USpace.space16),
+                                    ),
+                                    child: profilePhoto != null
+                                        ? Image.memory(profilePhoto.data!)
+                                        : const Center(
+                                            child: Icon(
+                                              Icons.add_a_photo_rounded,
+                                              size: 64,
+                                              color: UColors.gray300,
+                                            ),
+                                          ),
                                   ),
-                                  child: profilePhoto != null
-                                      ? Image.memory(profilePhoto.data!)
-                                      : const Center(
-                                          child: Icon(
-                                            Icons.add_a_photo_rounded,
-                                            size: 64,
-                                            color: UColors.gray300,
+                                ),
+                                const SizedBox(height: USpace.space16),
+                                TextButton.icon(
+                                  style: TextButton.styleFrom(
+                                    padding:
+                                        const EdgeInsets.all(USpace.space16),
+                                  ),
+                                  onPressed: _pickImageButtonTap,
+                                  icon: const Icon(Icons.add_a_photo_rounded),
+                                  label: const Text('Upload Photo'),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: USpace.space16),
+                            Expanded(
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          flex: 3,
+                                          child: EnforcerFormField(
+                                            controller: _firstNameController,
+                                            label: 'First Name',
+                                            hintText: 'Ex. Juan',
+                                            validator:
+                                                _validator.validateFirstName,
                                           ),
                                         ),
-                                ),
-                              ),
-                              const SizedBox(height: USpace.space16),
-                              TextButton.icon(
-                                style: TextButton.styleFrom(
-                                  padding: const EdgeInsets.all(USpace.space16),
-                                ),
-                                onPressed: _pickImageButtonTap,
-                                icon: const Icon(Icons.add_a_photo_rounded),
-                                label: const Text('Upload Photo'),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: USpace.space16),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              EnforcerFormField(
-                                controller: _firstNameController,
-                                label: 'First Name',
-                                hintText: 'Ex. Juan',
-                                validator: _validator.validateFirstName,
-                              ),
-                              const SizedBox(height: USpace.space12),
-                              EnforcerFormField(
-                                controller: _middleNameController,
-                                label: 'Middle Name',
-                                hintText: 'Ex. Andres',
-                              ),
-                              const SizedBox(height: USpace.space12),
-                              EnforcerFormField(
-                                controller: _lastNameController,
-                                hintText: 'Ex. Dela Cruz',
-                                label: 'Last Name',
-                                validator: _validator.validateLastName,
-                              ),
-                              const SizedBox(height: USpace.space12),
-                              EnforcerFormField(
-                                controller: _suffixController,
-                                hintText: 'Ex. Jr.',
-                                label: 'Suffix',
-                              ),
-                              const SizedBox(height: USpace.space12),
-                              Form(
-                                key: _emailFormKey,
-                                child: EnforcerFormField(
-                                  controller: _emailController,
-                                  hintText: 'Ex. example@mail.com',
-                                  label: 'Email',
-                                  validator: (value) {
-                                    if (_emailExists) {
-                                      return 'Email already in use';
-                                    }
-                                    return _validator.validateEmail(value);
-                                  },
-                                ),
-                              ),
-                              const SizedBox(height: USpace.space12),
-                              Form(
-                                key: _employeeNumberFormKey,
-                                child: EnforcerFormField(
-                                  controller: _employeeNoController,
-                                  hintText: '',
-                                  label: 'Employee No.',
-                                  onChanged: (value) async {
-                                    _employeeNumberFormKey.currentState!
-                                        .validate();
-                                  },
-                                  validator: (value) {
-                                    final employeeNoExist =
-                                        ref.watch(findEnforcerWithEmployeeNo(
-                                      value!,
-                                    ));
+                                        const SizedBox(width: USpace.space12),
+                                        Expanded(
+                                          flex: 3,
+                                          child: EnforcerFormField(
+                                            controller: _middleNameController,
+                                            label: 'Middle Name',
+                                            hintText: 'Ex. Andres',
+                                          ),
+                                        ),
+                                        const SizedBox(width: USpace.space12),
+                                        Expanded(
+                                          flex: 3,
+                                          child: EnforcerFormField(
+                                            controller: _lastNameController,
+                                            hintText: 'Ex. Dela Cruz',
+                                            label: 'Last Name',
+                                            validator:
+                                                _validator.validateLastName,
+                                          ),
+                                        ),
+                                        const SizedBox(width: USpace.space12),
+                                        Expanded(
+                                          flex: 1,
+                                          child: EnforcerFormField(
+                                            controller: _suffixController,
+                                            hintText: 'Ex. Jr.',
+                                            label: 'Suffix',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: USpace.space12),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          flex: 3,
+                                          child: Form(
+                                            key: _employeeNumberFormKey,
+                                            child: EnforcerFormField(
+                                              controller: _employeeNoController,
+                                              hintText: '',
+                                              label: 'Employee No.',
+                                              onChanged: (value) async {
+                                                _employeeNumberFormKey
+                                                    .currentState!
+                                                    .validate();
+                                              },
+                                              validator: (value) {
+                                                final employeeNoExist = ref.watch(
+                                                    findEnforcerWithEmployeeNo(
+                                                  value!,
+                                                ));
 
-                                    if (!employeeNoExist) {
-                                      return 'Employee No. already exist';
-                                    }
+                                                if (!employeeNoExist) {
+                                                  return 'Employee No. already exist';
+                                                }
 
-                                    return _validator.validateEmployeeNo(value);
-                                  },
+                                                return _validator
+                                                    .validateEmployeeNo(value);
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: USpace.space12),
+                                        Expanded(
+                                          flex: 3,
+                                          child: Form(
+                                            key: _emailFormKey,
+                                            child: EnforcerFormField(
+                                              controller: _emailController,
+                                              hintText: 'Ex. example@mail.com',
+                                              label: 'Email',
+                                              suffixIcon: const Tooltip(
+                                                message:
+                                                    'Will be used to login',
+                                                child: Icon(
+                                                  Icons.info_rounded,
+                                                  color: UColors.gray400,
+                                                ),
+                                              ),
+                                              validator: (value) {
+                                                if (_emailExists) {
+                                                  return 'Email already in use';
+                                                }
+                                                return _validator
+                                                    .validateEmail(value);
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: USpace.space12),
+                                        Expanded(
+                                          flex: 3,
+                                          child: EnforcerFormField(
+                                            controller: _passwordController,
+                                            hintText: '',
+                                            label: 'Password',
+                                            obscureText: !_isPasswordVisible,
+                                            suffixIcon: IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  _isPasswordVisible =
+                                                      !_isPasswordVisible;
+                                                });
+                                              },
+                                              icon: Icon(
+                                                _isPasswordVisible
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off,
+                                                color: _isPasswordVisible
+                                                    ? UColors.blue400
+                                                    : UColors.gray400,
+                                              ),
+                                            ),
+                                            validator:
+                                                _validator.validatePassword,
+                                          ),
+                                        ),
+                                        const SizedBox(width: USpace.space12),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Container(),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
-                              const SizedBox(height: USpace.space12),
-                              EnforcerFormField(
-                                controller: _passwordController,
-                                hintText: '',
-                                label: 'Password',
-                                obscureText: !_isPasswordVisible,
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _isPasswordVisible = !_isPasswordVisible;
-                                    });
-                                  },
-                                  icon: Icon(
-                                    _isPasswordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: _isPasswordVisible
-                                        ? UColors.blue400
-                                        : UColors.gray400,
-                                  ),
-                                ),
-                                validator: _validator.validatePassword,
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const Spacer(),
-                    Row(
+                  ),
+                  const SizedBox(
+                    height: USpace.space16,
+                  ),
+                  Container(
+                    height: 100,
+                    padding: const EdgeInsets.all(USpace.space16),
+                    decoration: BoxDecoration(
+                      color: UColors.white,
+                      borderRadius: BorderRadius.circular(USpace.space16),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Expanded(
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: USpace.space32,
-                                vertical: USpace.space24,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  USpace.space8,
-                                ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: USpace.space32,
+                              vertical: USpace.space24,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                USpace.space8,
                               ),
                             ),
-                            onPressed: () {
-                              ref
-                                  .watch(profilePhotoStateProvider.notifier)
-                                  .state = null;
-                              Navigator.of(navigatorKey.currentContext!)
-                                  .pushReplacement(
-                                PageRouteBuilder(
-                                  pageBuilder: (_, __, ___) {
-                                    return const EnforcerPage();
-                                  },
-                                ),
-                              );
-                            },
-                            child: const Text('Cancel'),
                           ),
+                          onPressed: () {
+                            ref
+                                .watch(profilePhotoStateProvider.notifier)
+                                .state = null;
+                            Navigator.of(navigatorKey.currentContext!)
+                                .pushReplacement(
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) {
+                                  return const EnforcerPage();
+                                },
+                              ),
+                            );
+                          },
+                          child: const Text('Cancel'),
                         ),
                         const SizedBox(width: USpace.space16),
-                        Expanded(
-                          child: FilledButton.icon(
-                            style: FilledButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: USpace.space32,
-                                vertical: USpace.space24,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(
-                                  USpace.space8,
-                                ),
+                        FilledButton.icon(
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: USpace.space32,
+                              vertical: USpace.space24,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                USpace.space8,
                               ),
                             ),
-                            onPressed: _onSaveButtonTap,
-                            label: const Text('Save'),
-                            icon: const Icon(Icons.save_rounded),
                           ),
+                          onPressed: _onSaveButtonTap,
+                          label: const Text('Create Enforcer'),
+                          icon: const Icon(Icons.save_rounded),
                         ),
                       ],
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
             ),
           );

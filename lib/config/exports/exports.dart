@@ -92,6 +92,7 @@ export 'package:u_traffic_admin/views/admin/admin_page.dart';
 // ?------------------------------------------------------Enforcer
 export 'package:u_traffic_admin/views/enforcer/enforcer_page.dart';
 export 'package:u_traffic_admin/views/enforcer/enforcer_schedule_page.dart';
+export 'package:u_traffic_admin/views/enforcer/enforcer_detail_view_page.dart';
 
 // * ---- widgets
 export 'package:u_traffic_admin/views/enforcer/widgets/create_enforcer_form.dart';

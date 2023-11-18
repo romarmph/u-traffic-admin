@@ -5,12 +5,13 @@ class Admin {
   final String firstName;
   final String middleName;
   final String lastName;
+  final String suffix;
   final String email;
   final String createdBy;
   final String updatedBy;
   final String employeeNo;
   final Timestamp createdAt;
-  final Timestamp updatedAt;
+  final Timestamp? updatedAt;
   final String photoUrl;
   final EmployeeStatus status;
   final List<AdminPermission> permissions;
@@ -18,13 +19,14 @@ class Admin {
   const Admin({
     this.id,
     required this.firstName,
-    required this.middleName,
+    this.middleName = "",
     required this.lastName,
+    this.suffix = "",
     required this.email,
     required this.createdBy,
-    required this.updatedBy,
+    this.updatedBy = "",
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
     required this.photoUrl,
     required this.permissions,
     required this.employeeNo,
@@ -36,6 +38,7 @@ class Admin {
       "firstName": firstName,
       "middleName": middleName,
       "lastName": lastName,
+      "suffix": suffix,
       "email": email,
       "createdBy": createdBy,
       "updatedBy": updatedBy,
@@ -54,6 +57,7 @@ class Admin {
       firstName: json["firstName"],
       middleName: json["middleName"],
       lastName: json["lastName"],
+      suffix: json["suffix"],
       email: json['email'],
       createdBy: json['createdBy'],
       updatedBy: json['updatedBy'],
@@ -72,7 +76,7 @@ class Admin {
 
   @override
   String toString() {
-    return "Admin(id: $id, firstName: $firstName, middleName: $middleName, lastName: $lastName, email: $email, : $createdBy, updatedBy: $updatedBy, createdAt: $createdAt, updatedAt: $updatedAt, photoUrl: $photoUrl, permissions: $permissions), employeeNo: $employeeNo";
+    return "Admin(id: $id, firstName: $firstName, middleName: $middleName, lastName: $lastName, suffix: $suffix, email: $email, : $createdBy, updatedBy: $updatedBy, createdAt: $createdAt, updatedAt: $updatedAt, photoUrl: $photoUrl, permissions: $permissions), employeeNo: $employeeNo";
   }
 
   List<String> _toStringList(List<AdminPermission> permissions) {

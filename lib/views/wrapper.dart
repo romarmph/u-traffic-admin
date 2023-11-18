@@ -18,6 +18,8 @@ class Wrapper extends ConsumerWidget {
                 return const HomePage();
               },
               error: (error, stackTrace) {
+                print(error);
+                print(stackTrace);
                 return const LoginErrorPage();
               },
               loading: () => const LoginLoadingPage(),

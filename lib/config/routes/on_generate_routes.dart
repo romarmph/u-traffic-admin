@@ -15,7 +15,7 @@ PageRouteBuilder onGenerateRoute(settings) {
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const AdminPage(),
       );
-    case Routes.enforcersView:
+    case Routes.enforcers:
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const EnforcerPage(),
       );

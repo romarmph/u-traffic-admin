@@ -38,7 +38,9 @@ class EnforcerDataGridSource extends DataGridSource {
                   ),
                   padding: const EdgeInsets.all(4),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  goToEnforcerDetailsPage(cell.value);
+                },
                 child: const Text('View'),
               ),
             ),

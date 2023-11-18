@@ -15,3 +15,10 @@ final getCurrentAdmin = FutureProvider<Admin>(
 final currentAdminProvider = Provider((ref) {
   return ref.watch(getCurrentAdmin).asData!.value;
 });
+
+final getAdminById = FutureProvider.family<Admin, String>(
+  (ref, id) async {
+    final adminDatabase = ref.watch(adminDatabaseProvider);
+    return adminDatabase.getAdminById(id);
+  },
+);
