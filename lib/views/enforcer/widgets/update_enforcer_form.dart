@@ -411,7 +411,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                                               },
                                               validator: (value) {
                                                 final employeeNoExist = ref.watch(
-                                                    findEnforcerWithEmployeeNo(
+                                                    checkEmployeeNumberAvailable(
                                                   value!,
                                                 ));
 

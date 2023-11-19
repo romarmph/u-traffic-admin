@@ -34,7 +34,9 @@ class AdminDataGridSource extends DataGridSource {
                 ),
                 padding: const EdgeInsets.all(4),
               ),
-              onPressed: () {},
+              onPressed: () {
+                goToAdminDetailsPage(cell.value);
+              },
               child: const Text('View'),
             ),
           );

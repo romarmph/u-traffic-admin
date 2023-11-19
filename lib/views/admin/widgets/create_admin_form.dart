@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
@@ -20,8 +23,164 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
   final _emailController = TextEditingController();
   final _employeeNoController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _emailExists = false;
+
+  final _validator = EnforcerFormValidator();
 
   bool _isPasswordVisible = false;
+
+  Future<bool> _isFormValid() async {
+    final profilePhoto = ref.watch(profilePhotoStateProvider);
+    final selectedPermissions = ref.watch(selectedPermissionsProvider);
+    if (!_formKey.currentState!.validate()) {
+      !_emailFormKey.currentState!.validate();
+      !_employeeNumberFormKey.currentState!.validate();
+      return false;
+    }
+
+    if (!_emailFormKey.currentState!.validate()) {
+      return false;
+    }
+
+    if (!_employeeNumberFormKey.currentState!.validate()) {
+      return false;
+    }
+
+    final isEmailAvailable = await AuthService().isEmailAvailable(
+      _emailController.text,
+    );
+    setState(() {
+      _emailExists = !isEmailAvailable;
+    });
+
+    if (selectedPermissions.isEmpty) {
+      QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Permissions Missing',
+        text: 'Please select at least one permission',
+      );
+      return false;
+    }
+
+    if (profilePhoto == null) {
+      _showProfilePhotoMissingError();
+      return false;
+    }
+
+    return true;
+  }
+
+  void _pickImageButtonTap() async {
+    final image = await ImagePickerService.instance.pickImage();
+    if (image != null) {
+      ref.read(profilePhotoStateProvider.notifier).state = image;
+    }
+  }
+
+  void _onSaveButtonTap() async {
+    final isFormValid = await _isFormValid();
+    if (!isFormValid) {
+      return;
+    }
+
+    QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.loading,
+      title: 'Creating Enforcer',
+      text: 'Please wait...',
+    );
+
+    late String uid;
+
+    try {
+      final result = await AdminHTTPSerivice.instance.createAdminAccount(
+        _emailController.text,
+        _passwordController.text,
+      );
+
+      final data = jsonDecode(result);
+      uid = data['uid'];
+    } on TimeoutException {
+      Navigator.of(navigatorKey.currentContext!).pop();
+      QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Enforcer Create Error',
+        text: 'Connection timeout, please try again',
+      );
+      return;
+    } catch (e) {
+      _showAdminCreateError(-1);
+      return;
+    }
+
+    final currentAdmin = ref.watch(currentAdminProvider);
+
+    final url = await _uploadProfile(uid);
+
+    final enforcer = Admin(
+        firstName: _firstNameController.text,
+        middleName: _middleNameController.text,
+        lastName: _lastNameController.text,
+        suffix: _suffixController.text,
+        email: _emailController.text,
+        status: EmployeeStatus.active,
+        photoUrl: url!,
+        employeeNo: _employeeNoController.text,
+        createdBy: currentAdmin.id!,
+        createdAt: Timestamp.now(),
+        permissions: ref.watch(selectedPermissionsProvider));
+
+    try {
+      await AdminDatabase.instance.addAdmin(
+        enforcer,
+        uid,
+      );
+    } catch (e) {
+      _showAdminCreateError(-1);
+      return;
+    }
+
+    Navigator.pop(navigatorKey.currentContext!);
+
+    await QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.success,
+      title: 'Enforcer Created',
+      text: 'Enforcer account has been created',
+    );
+
+    ref.read(profilePhotoStateProvider.notifier).state = null;
+    Navigator.of(navigatorKey.currentContext!).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) {
+          return const AdminPage();
+        },
+      ),
+    );
+  }
+
+  Future<String?> _uploadProfile(String uid) async {
+    final profilePhoto = ref.watch(profilePhotoStateProvider);
+
+    try {
+      final url = await StorageService.instance.uploadImage(
+        profilePhoto!,
+        uid,
+      );
+
+      return url;
+    } catch (e) {
+      QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Profile Upload Error',
+        text: 'There was an error uploading the profile photo',
+      );
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +265,7 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
                                     padding:
                                         const EdgeInsets.all(USpace.space16),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: _pickImageButtonTap,
                                   icon: const Icon(Icons.add_a_photo_rounded),
                                   label: const Text('Upload Photo'),
                                 ),
@@ -130,6 +289,8 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
                                             controller: _firstNameController,
                                             label: 'First Name',
                                             hintText: 'Ex. Juan',
+                                            validator:
+                                                _validator.validateFirstName,
                                           ),
                                         ),
                                         const SizedBox(width: USpace.space12),
@@ -148,6 +309,8 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
                                             controller: _lastNameController,
                                             hintText: 'Ex. Dela Cruz',
                                             label: 'Last Name',
+                                            validator:
+                                                _validator.validateLastName,
                                           ),
                                         ),
                                         const SizedBox(width: USpace.space12),
@@ -179,6 +342,19 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
                                                     .currentState!
                                                     .validate();
                                               },
+                                              validator: (value) {
+                                                final employeeNoExist = ref.watch(
+                                                    checkEmployeeNumberAvailable(
+                                                  value!,
+                                                ));
+
+                                                if (!employeeNoExist) {
+                                                  return 'Employee No. already exist';
+                                                }
+
+                                                return _validator
+                                                    .validateEmployeeNo(value);
+                                              },
                                             ),
                                           ),
                                         ),
@@ -199,6 +375,13 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
                                                   color: UColors.gray400,
                                                 ),
                                               ),
+                                              validator: (value) {
+                                                if (_emailExists) {
+                                                  return 'Email already in use';
+                                                }
+                                                return _validator
+                                                    .validateEmail(value);
+                                              },
                                             ),
                                           ),
                                         ),
@@ -226,6 +409,8 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
                                                     : UColors.gray400,
                                               ),
                                             ),
+                                            validator:
+                                                _validator.validatePassword,
                                           ),
                                         ),
                                         const SizedBox(width: USpace.space12),
@@ -287,7 +472,7 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
                                 .pushReplacement(
                               PageRouteBuilder(
                                 pageBuilder: (_, __, ___) {
-                                  return const EnforcerPage();
+                                  return const AdminPage();
                                 },
                               ),
                             );
@@ -307,7 +492,7 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: _onSaveButtonTap,
                           label: const Text('Create Admin'),
                           icon: const Icon(Icons.save_rounded),
                         ),
@@ -321,5 +506,42 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
         },
       ),
     );
+  }
+
+  void _showProfilePhotoMissingError() {
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.error,
+      title: 'Profile Photo Missing',
+      text: 'Please upload a profile photo',
+    );
+  }
+
+  void _showAdminCreateError(int statuscode) {
+    if (statuscode == -1) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Enforcer Create Error',
+        text:
+            'There was an error creating the enforcer account. Please contact the system administrator',
+      );
+    }
+
+    if (statuscode >= 400 && statuscode < 500) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Enforcer Create Error',
+        text: 'Please check the enforcer information',
+      );
+    } else if (statuscode >= 500) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Enforcer Create Error',
+        text: 'Server error, please contact the system administrator',
+      );
+    }
   }
 }

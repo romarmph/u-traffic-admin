@@ -241,6 +241,7 @@ export 'package:u_traffic_admin/services/auth/auth.service.dart';
 
 // * ---- http
 export 'package:u_traffic_admin/services/http/enforcer.service.dart';
+export 'package:u_traffic_admin/services/http/admin.service.dart';
 
 export 'package:u_traffic_admin/services/image_picker.service.dart';
 export 'package:u_traffic_admin/services/storage.service.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/views/admin/admin_detail_view_page.dart';
 
 void goToRoute(String route) {
   Navigator.of(navigatorKey.currentContext!).pushNamed(
@@ -78,6 +79,17 @@ void goToEnforcerUpdatePage(Enforcer enforcer) {
     PageRouteBuilder(
       pageBuilder: (_, __, ___) => UpdateEnforcerForm(
         enforcer: enforcer,
+      ),
+    ),
+  );
+}
+
+void goToAdminDetailsPage(String uid) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => AdminDetailsPage(
+        adminId: uid,
       ),
     ),
   );

@@ -330,9 +330,8 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
                                               },
                                               validator: (value) {
                                                 final employeeNoExist = ref.watch(
-                                                    findEnforcerWithEmployeeNo(
-                                                  value!,
-                                                ));
+                                                    checkEmployeeNumberAvailable(
+                                                        value!));
 
                                                 if (!employeeNoExist) {
                                                   return 'Employee No. already exist';

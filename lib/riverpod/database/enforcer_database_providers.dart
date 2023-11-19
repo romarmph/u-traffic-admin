@@ -20,10 +20,15 @@ final getEnforcerById = StreamProvider.family<Enforcer, String>((ref, id) {
   return ref.watch(enforcerDatabaseProvider).getEnforcerById(id);
 });
 
-final findEnforcerWithEmployeeNo =
-    Provider.family<bool, String>((ref, employeeNo) {
-  return ref
-      .watch(enforcerProvider)
-      .where((enforcer) => enforcer.employeeNumber == employeeNo)
-      .isEmpty;
+final checkEmployeeNumberAvailable = Provider.family<bool, String>((
+  ref,
+  employeeNo,
+) {
+  final admins = ref.watch(adminProvider);
+  final enforcers = ref.watch(enforcerProvider);
+
+  return admins.where((admin) => admin.employeeNo == employeeNo).isEmpty &&
+      enforcers
+          .where((enforcer) => enforcer.employeeNumber == employeeNo)
+          .isEmpty;
 });

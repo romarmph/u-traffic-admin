@@ -29,3 +29,14 @@ final getAllAdminStream = StreamProvider<List<Admin>>(
     return adminDatabase.getAllAdminStream();
   },
 );
+
+final adminProvider = Provider<List<Admin>>(
+  (ref) {
+    return ref.watch(getAllAdminStream).when(
+          data: (data) => data,
+          error: (error, stackTrace) => [],
+          loading: () => [],
+        );
+  },
+);
+

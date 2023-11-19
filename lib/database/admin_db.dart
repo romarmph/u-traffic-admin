@@ -47,10 +47,10 @@ class AdminDatabase {
     }
   }
 
-  Future<void> addAdmin(Admin admin) async {
+  Future<void> addAdmin(Admin admin, String uid) async {
     const String collection = "admins";
 
-    await _firestore.collection(collection).add(admin.toJson());
+    await _firestore.collection(collection).doc(uid).set(admin.toJson());
   }
 
   Future<void> updateAdmin(Admin admin) async {
