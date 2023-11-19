@@ -68,12 +68,12 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                                   children: [
                                     Icon(
                                       Icons.warning_rounded,
-                                      color: UColors.red300,
+                                      color: UColors.red500,
                                     ),
                                     Text(
                                       "Warning!",
                                       style: TextStyle(
-                                        color: UColors.red300,
+                                        color: UColors.red500,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
@@ -83,7 +83,7 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                                     Text(
                                       'View',
                                       style: TextStyle(
-                                        color: UColors.red300,
+                                        color: UColors.red500,
                                       ),
                                     ),
                                   ],

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -88,7 +89,17 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
 
       final data = jsonDecode(result);
       uid = data['uid'];
-    } on Exception {
+    } on TimeoutException {
+      Navigator.of(navigatorKey.currentContext!).pop();
+      QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Enforcer Create Error',
+        text: 'Connection timeout, please try again',
+      );
+      return;
+    } catch (e) {
+      _showEnforcerCreateError(-1);
       return;
     }
 
@@ -217,7 +228,16 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
                                           BorderRadius.circular(USpace.space16),
                                     ),
                                     child: profilePhoto != null
-                                        ? Image.memory(profilePhoto.data!)
+                                        ? Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(12)),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: Image.memory(
+                                              profilePhoto.data!,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
                                         : const Center(
                                             child: Icon(
                                               Icons.add_a_photo_rounded,

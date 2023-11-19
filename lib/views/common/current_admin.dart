@@ -33,6 +33,25 @@ class CurrenAdminButton extends ConsumerWidget {
             ),
           ),
         ),
+        const SizedBox(
+          width: USpace.space12,
+        ),
+        IconButton(
+          onPressed: () {
+            SideSheet.right(
+              context: context,
+              width: MediaQuery.of(context).size.width * 0.3,
+              body: Text("Body"),
+            );
+          },
+          icon: const Badge(
+            label: Text('1'),
+            child: Icon(Icons.notifications),
+          ),
+        ),
+        const SizedBox(
+          width: USpace.space12,
+        ),
       ],
     );
   }

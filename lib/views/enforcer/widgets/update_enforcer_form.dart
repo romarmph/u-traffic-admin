@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
@@ -131,21 +133,33 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
     final newStatus = ref.watch(updateStatusProvider);
     final currentAdmin = ref.watch(currentAdminProvider);
 
-    try {
-      await EnforcerHTTPSerivice.instance.updateEnforcerAccount(
-        widget.enforcer.id!,
-        _emailController.text,
-        _passwordController.text,
-      );
-    } catch (e) {
-      if (e is int) {
-        _showEnforcerCreateError(e);
-      } else {
-        _showEnforcerCreateError(-1);
+    if (_emailController.text != widget.enforcer.email ||
+        (_passwordController.text.isNotEmpty &&
+            _passwordController.text.length >= 6)) {
+      try {
+        await EnforcerHTTPSerivice.instance.updateEnforcerAccount(
+          widget.enforcer.id!,
+          _emailController.text,
+          _passwordController.text,
+        );
+      } on TimeoutException {
+        Navigator.of(navigatorKey.currentContext!).pop();
+        QuickAlert.show(
+          context: navigatorKey.currentContext!,
+          type: QuickAlertType.error,
+          title: 'Enforcer Create Error',
+          text: 'Connection timeout, please try again',
+        );
+        return;
+      } catch (e) {
+        Navigator.of(navigatorKey.currentContext!).pop();
+        if (e is int) {
+          _showEnforcerCreateError(e);
+        } else {
+          _showEnforcerCreateError(-1);
+        }
+        return;
       }
-
-      Navigator.of(navigatorKey.currentContext!).pop();
-      return;
     }
 
     final enforcer = Enforcer(
@@ -154,7 +168,9 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
       middleName: _middleNameController.text,
       lastName: _lastNameController.text,
       suffix: _suffixController.text,
-      email: _emailController.text,
+      email: _emailController.text != widget.enforcer.email
+          ? _emailController.text
+          : widget.enforcer.email,
       employeeNumber: _employeeNoController.text,
       status: newStatus ?? widget.enforcer.status,
       photoUrl: newPhotoUrl ?? widget.enforcer.photoUrl,
@@ -657,26 +673,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
     return widget.enforcer.status;
   }
 
-  void _showProfilePhotoMissingError() {
-    QuickAlert.show(
-      context: context,
-      type: QuickAlertType.error,
-      title: 'Profile Photo Missing',
-      text: 'Please upload a profile photo',
-    );
-  }
-
   void _showEnforcerCreateError(int statuscode) {
-    if (statuscode == -1) {
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: 'Enforcer Update Error',
-        text:
-            'There was an error updating the enforcer account. Please contact the system administrator',
-      );
-    }
-
     if (statuscode >= 400 && statuscode < 500) {
       QuickAlert.show(
         context: context,
@@ -684,12 +681,22 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
         title: 'Enforcer Update Error',
         text: 'Please check the enforcer information',
       );
+      return;
     } else if (statuscode >= 500) {
       QuickAlert.show(
         context: context,
         type: QuickAlertType.error,
         title: 'Enforcer Update Error',
         text: 'Server error, please contact the system administrator',
+      );
+      return;
+    } else if (statuscode == -1) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Enforcer Update Error',
+        text:
+            'There was an error updating the enforcer account. Please contact the system administrator',
       );
     } else {
       QuickAlert.show(
@@ -698,6 +705,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
         title: 'Enforcer Update Error',
         text: 'There was an error creating the enforcer account',
       );
+      return;
     }
   }
 }

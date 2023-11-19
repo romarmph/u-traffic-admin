@@ -22,6 +22,7 @@ export 'package:cached_network_image/cached_network_image.dart';
 export 'package:syncfusion_flutter_datagrid_export/export.dart';
 export 'package:syncfusion_flutter_pdf/pdf.dart';
 export 'package:image_picker_web/image_picker_web.dart';
+export 'package:side_sheet/side_sheet.dart';
 
 /**
  * 
