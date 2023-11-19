@@ -41,7 +41,7 @@ class CurrenAdminButton extends ConsumerWidget {
             SideSheet.right(
               context: context,
               width: MediaQuery.of(context).size.width * 0.3,
-              body: Text("Body"),
+              body: const Text("Body"),
             );
           },
           icon: const Badge(
