@@ -12,6 +12,8 @@ class AdminDetailsPage extends ConsumerWidget {
   final String adminId;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentAdmin = ref.watch(currentAdminProvider);
+
     return PageContainer(
       appBar: AppBar(
         title: const Text('Create Admin'),
@@ -25,7 +27,7 @@ class AdminDetailsPage extends ConsumerWidget {
             child: SizedBox(
               width: constraints.maxWidth,
               height: constraints.maxHeight,
-              child: ref.watch(getAdminByIdStream(adminId)).when(
+              child: ref.watch(getAdminById(adminId)).when(
                 data: (admin) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -227,31 +229,34 @@ class AdminDetailsPage extends ConsumerWidget {
                               child: const Text('Back'),
                             ),
                             const SizedBox(width: USpace.space16),
-                            FilledButton.icon(
-                              style: FilledButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: USpace.space32,
-                                  vertical: USpace.space24,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    USpace.space8,
+                            Visibility(
+                              visible: currentAdmin.id != admin.id,
+                              child: FilledButton.icon(
+                                style: FilledButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: USpace.space32,
+                                    vertical: USpace.space24,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      USpace.space8,
+                                    ),
                                   ),
                                 ),
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    PageRouteBuilder(
+                                      pageBuilder: (_, __, ___) {
+                                        return UpdateAdminForm(
+                                          admin: admin,
+                                        );
+                                      },
+                                    ),
+                                  );
+                                },
+                                label: const Text('Update Admin'),
+                                icon: const Icon(Icons.save_rounded),
                               ),
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder: (_, __, ___) {
-                                      return UpdateAdminForm(
-                                        admin: admin,
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                              label: const Text('Update Admin'),
-                              icon: const Icon(Icons.save_rounded),
                             ),
                           ],
                         ),

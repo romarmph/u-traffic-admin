@@ -605,72 +605,7 @@ class _UpdateAdminFormState extends ConsumerState<UpdateAdminForm> {
                                                 child: const Text('Cancel'),
                                               ),
                                               FilledButton(
-                                                onPressed: () async {
-                                                  final selectedPermissions =
-                                                      ref.watch(
-                                                          selectedPermissionsProvider);
-
-                                                  final adminDb =
-                                                      AdminDatabase.instance;
-
-                                                  QuickAlert.show(
-                                                    context: context,
-                                                    type:
-                                                        QuickAlertType.loading,
-                                                    title:
-                                                        'Updating Permissions',
-                                                    text: 'Please wait...',
-                                                  );
-
-                                                  try {
-                                                    await adminDb
-                                                        .updateAdminPermission(
-                                                      widget.admin.id!,
-                                                      selectedPermissions,
-                                                    );
-                                                  } catch (e) {
-                                                    QuickAlert.show(
-                                                      context: navigatorKey
-                                                          .currentContext!,
-                                                      type:
-                                                          QuickAlertType.error,
-                                                      title:
-                                                          'Permission Update Error',
-                                                      text:
-                                                          'There was an error updating the permissions',
-                                                    );
-                                                    return;
-                                                  }
-
-                                                  Navigator.of(navigatorKey
-                                                          .currentContext!)
-                                                      .pop();
-
-                                                  QuickAlert.show(
-                                                    context: navigatorKey
-                                                        .currentContext!,
-                                                    type:
-                                                        QuickAlertType.success,
-                                                    title: 'Permission Update',
-                                                    text:
-                                                        'Permissions has been updated',
-                                                  );
-
-                                                  ref
-                                                      .read(isUpdateModeProvider
-                                                          .notifier)
-                                                      .state = false;
-
-                                                  ref
-                                                      .read(
-                                                          selectedPermissionsProvider
-                                                              .notifier)
-                                                      .state = [];
-
-                                                  Navigator.of(navigatorKey
-                                                          .currentContext!)
-                                                      .pop();
-                                                },
+                                                onPressed: _updatePermission,
                                                 child: const Text('Apply'),
                                               ),
                                             ],
@@ -786,6 +721,50 @@ class _UpdateAdminFormState extends ConsumerState<UpdateAdminForm> {
         },
       ),
     );
+  }
+
+  void _updatePermission() async {
+    final selectedPermissions = ref.watch(selectedPermissionsProvider);
+
+    final adminDb = AdminDatabase.instance;
+
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.loading,
+      title: 'Updating Permissions',
+      text: 'Please wait...',
+    );
+
+    try {
+      await adminDb.updateAdminPermission(
+        widget.admin.id!,
+        selectedPermissions,
+      );
+    } catch (e) {
+      QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Permission Update Error',
+        text: 'There was an error updating the permissions',
+      );
+      return;
+    }
+
+    Navigator.of(navigatorKey.currentContext!).pop();
+
+    await QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.success,
+      title: 'Permission Update',
+      text: 'Permissions has been updated',
+    );
+
+    ref.read(isUpdateModeProvider.notifier).state = false;
+
+    ref.read(selectedPermissionsProvider.notifier).state = [];
+    ref.invalidate(getAdminById(widget.admin.id!));
+
+    Navigator.of(navigatorKey.currentContext!).pop();
   }
 
   EmployeeStatus _dropDownValue() {
