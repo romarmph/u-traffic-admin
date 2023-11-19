@@ -11,15 +11,26 @@ class CreateEnforcerSchedForm extends ConsumerStatefulWidget {
 
 class CreateEnforcerSchedFormState
     extends ConsumerState<CreateEnforcerSchedForm> {
+  String _shiftPeriod = 'morning';
+  TimePeriod startTime = TimePeriod(
+    hour: 12,
+    minute: 0,
+    period: 'AM',
+  );
+  TimePeriod endTime = TimePeriod(
+    hour: 12,
+    minute: 0,
+    period: 'AM',
+  );
+
   @override
   Widget build(BuildContext context) {
-    final profilePhoto = ref.watch(profilePhotoStateProvider);
     return PageContainer(
       appBar: AppBar(
         title: const Text('Create Enforcer'),
         actions: const [CurrenAdminButton()],
       ),
-      route: Routes.enforcersCreate,
+      route: Routes.enforcerSchedulesCreate,
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Padding(
@@ -41,13 +52,14 @@ class CreateEnforcerSchedFormState
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Text(
-                          'Enforcer Information',
+                          'New Schedule',
                           style: TextStyle(
                             color: UColors.gray400,
                             fontSize: 18,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
+                        const Divider(),
                         const SizedBox(
                           height: USpace.space16,
                         ),
@@ -55,143 +67,213 @@ class CreateEnforcerSchedFormState
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Center(
-                                  child: Container(
-                                    width: 256,
-                                    height: 256,
-                                    padding:
-                                        const EdgeInsets.all(USpace.space4),
-                                    decoration: BoxDecoration(
-                                      color: UColors.gray100,
-                                      borderRadius:
-                                          BorderRadius.circular(USpace.space16),
-                                    ),
-                                    child: profilePhoto != null
-                                        ? Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(12)),
-                                            clipBehavior: Clip.antiAlias,
-                                            child: Image.memory(
-                                              profilePhoto.data!,
-                                              fit: BoxFit.cover,
-                                            ),
-                                          )
-                                        : const Center(
-                                            child: Icon(
-                                              Icons.add_a_photo_rounded,
-                                              size: 64,
-                                              color: UColors.gray300,
-                                            ),
-                                          ),
-                                  ),
-                                ),
-                                const SizedBox(height: USpace.space16),
-                                TextButton.icon(
-                                  style: TextButton.styleFrom(
-                                    padding:
-                                        const EdgeInsets.all(USpace.space16),
-                                  ),
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.add_a_photo_rounded),
-                                  label: const Text('Upload Photo'),
+                                const Text('Shift'),
+                                StatusTypeDropDown(
+                                  value: _shiftPeriod,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _shiftPeriod = value!;
+                                    });
+                                  },
+                                  statusList: const [
+                                    'morning',
+                                    'afternoon',
+                                    'night',
+                                  ],
                                 ),
                               ],
                             ),
-                            const SizedBox(width: USpace.space16),
+                            const SizedBox(
+                              width: USpace.space16,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Start Time'),
+                                Container(
+                                  width: 300,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: UColors.white,
+                                    borderRadius:
+                                        BorderRadius.circular(USpace.space8),
+                                    border: Border.all(
+                                      color: UColors.gray300,
+                                    ),
+                                  ),
+                                  child: ListTile(
+                                    onTap: () async {
+                                      final TimeOfDay? time =
+                                          await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay(
+                                          hour: endTime.hour,
+                                          minute: endTime.minute,
+                                        ),
+                                      );
+                                      if (time != null) {
+                                        setState(() {
+                                          startTime = TimePeriod(
+                                            hour: time.hourOfPeriod,
+                                            minute: time.minute,
+                                            period: time.period.index == 0
+                                                ? 'AM'
+                                                : 'PM',
+                                          );
+                                        });
+                                      }
+                                    },
+                                    title: Text(
+                                      '${startTime.hour.toString().padLeft(2, 0.toString())}:${startTime.minute.toString().padLeft(2, 0.toString())} ${startTime.period.toUpperCase()}',
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              width: USpace.space16,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('End Time'),
+                                Container(
+                                  width: 300,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: UColors.white,
+                                    borderRadius:
+                                        BorderRadius.circular(USpace.space8),
+                                    border: Border.all(
+                                      color: UColors.gray300,
+                                    ),
+                                  ),
+                                  child: ListTile(
+                                    onTap: () async {
+                                      final TimeOfDay? time =
+                                          await showTimePicker(
+                                        context: context,
+                                        initialTime: TimeOfDay(
+                                          hour: endTime.hour,
+                                          minute: endTime.minute,
+                                        ),
+                                      );
+                                      if (time != null) {
+                                        setState(() {
+                                          endTime = TimePeriod(
+                                            hour: time.hourOfPeriod,
+                                            minute: time.minute,
+                                            period: time.period.index == 0
+                                                ? 'AM'
+                                                : 'PM',
+                                          );
+                                        });
+                                      }
+                                    },
+                                    title: Text(
+                                      '${endTime.hour.toString().padLeft(2, 0.toString())}:${endTime.minute.toString().padLeft(2, 0.toString())} ${endTime.period.toUpperCase()}',
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              width: USpace.space16,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Duration'),
+                                Container(
+                                  width: 300,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: UColors.white,
+                                    borderRadius:
+                                        BorderRadius.circular(USpace.space8),
+                                    border: Border.all(
+                                      color: UColors.gray300,
+                                    ),
+                                  ),
+                                  child: ListTile(
+                                    title: Text(
+                                      _getDuration(),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: USpace.space16,
+                        ),
+                        Row(
+                          children: [
                             Expanded(
-                              child: Form(
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: EnforcerFormField(
-                                            label: 'First Name',
-                                            hintText: 'Ex. Juan',
-                                          ),
-                                        ),
-                                        const SizedBox(width: USpace.space12),
-                                        Expanded(
-                                          flex: 3,
-                                          child: EnforcerFormField(
-                                            label: 'Middle Name',
-                                            hintText: 'Ex. Andres',
-                                          ),
-                                        ),
-                                        const SizedBox(width: USpace.space12),
-                                        Expanded(
-                                          flex: 3,
-                                          child: EnforcerFormField(
-                                            hintText: 'Ex. Dela Cruz',
-                                            label: 'Last Name',
-                                          ),
-                                        ),
-                                        const SizedBox(width: USpace.space12),
-                                        Expanded(
-                                          flex: 1,
-                                          child: EnforcerFormField(
-                                            hintText: 'Ex. Jr.',
-                                            label: 'Suffix',
-                                          ),
-                                        ),
-                                      ],
+                              child: Text(
+                                'Assign Enforcer',
+                                style: const UTextStyle()
+                                    .textlgfontmedium
+                                    .copyWith(
+                                      color: UColors.gray500,
                                     ),
-                                    const SizedBox(height: USpace.space12),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Form(
-                                            child: EnforcerFormField(
-                                              hintText: '',
-                                              label: 'Employee No.',
-                                              onChanged: (value) async {},
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: USpace.space12),
-                                        Expanded(
-                                          flex: 3,
-                                          child: Form(
-                                            child: EnforcerFormField(
-                                              hintText: 'Ex. example@mail.com',
-                                              label: 'Email',
-                                              suffixIcon: const Tooltip(
-                                                message:
-                                                    'Will be used to login',
-                                                child: Icon(
-                                                  Icons.info_rounded,
-                                                  color: UColors.gray400,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: USpace.space12),
-                                        Expanded(
-                                          flex: 3,
-                                          child: Container(),
-                                        ),
-                                        const SizedBox(width: USpace.space12),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Container(),
-                                        ),
-                                      ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                'Assign Traffic Post',
+                                style: const UTextStyle()
+                                    .textlgfontmedium
+                                    .copyWith(
+                                      color: UColors.gray500,
                                     ),
-                                  ],
-                                ),
                               ),
                             ),
                           ],
+                        ),
+                        const SizedBox(
+                          height: USpace.space12,
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  height: constraints.maxHeight,
+                                  width: constraints.maxWidth,
+                                  decoration: BoxDecoration(
+                                    color: UColors.white,
+                                    border: Border.all(
+                                        color: UColors.gray200,
+                                        strokeAlign:
+                                            BorderSide.strokeAlignInside),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: constraints.maxHeight,
+                                  width: constraints.maxWidth,
+                                  decoration: BoxDecoration(
+                                    color: UColors.white,
+                                    border: Border.all(
+                                        color: UColors.gray200,
+                                        strokeAlign:
+                                            BorderSide.strokeAlignInside),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -221,19 +303,7 @@ class CreateEnforcerSchedFormState
                               ),
                             ),
                           ),
-                          onPressed: () {
-                            ref
-                                .watch(profilePhotoStateProvider.notifier)
-                                .state = null;
-                            Navigator.of(navigatorKey.currentContext!)
-                                .pushReplacement(
-                              PageRouteBuilder(
-                                pageBuilder: (_, __, ___) {
-                                  return const EnforcerPage();
-                                },
-                              ),
-                            );
-                          },
+                          onPressed: () {},
                           child: const Text('Cancel'),
                         ),
                         const SizedBox(width: USpace.space16),
@@ -250,7 +320,7 @@ class CreateEnforcerSchedFormState
                             ),
                           ),
                           onPressed: () {},
-                          label: const Text('Create Enforcer'),
+                          label: const Text('Save Schedule'),
                           icon: const Icon(Icons.save_rounded),
                         ),
                       ],
@@ -263,5 +333,12 @@ class CreateEnforcerSchedFormState
         },
       ),
     );
+  }
+
+  String _getDuration() {
+    final int duration = startTime.timeDifference(endTime).inMinutes;
+    final int hour = duration ~/ 60;
+    final int minute = duration % 60;
+    return '${hour.toString().padLeft(2, "0")}:${minute.toString().padLeft(2, "0")}';
   }
 }

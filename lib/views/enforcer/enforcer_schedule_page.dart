@@ -73,7 +73,16 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
                             width: 16,
                           ),
                           UElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  opaque: false,
+                                  pageBuilder: (BuildContext context, _, __) {
+                                    return const CreateEnforcerSchedForm();
+                                  },
+                                ),
+                              );
+                            },
                             child: const Text('Add Enforcer Schedule'),
                           ),
                         ],
