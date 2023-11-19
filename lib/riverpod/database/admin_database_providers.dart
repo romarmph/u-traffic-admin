@@ -40,3 +40,9 @@ final adminProvider = Provider<List<Admin>>(
   },
 );
 
+final getAdminByIdStream = StreamProvider.family<Admin, String>(
+  (ref, id) {
+    final adminDatabase = ref.watch(adminDatabaseProvider);
+    return adminDatabase.getAdminByIdStream(id);
+  },
+);

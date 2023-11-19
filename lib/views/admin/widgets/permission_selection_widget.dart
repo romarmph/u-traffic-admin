@@ -4,7 +4,12 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 class PermissionSelectionWidget extends ConsumerStatefulWidget {
   const PermissionSelectionWidget({
     super.key,
+    this.oldPermissions,
+    this.isUpdateMode = false,
   });
+
+  final List<AdminPermission>? oldPermissions;
+  final bool isUpdateMode;
 
   @override
   ConsumerState<PermissionSelectionWidget> createState() =>
@@ -15,7 +20,22 @@ class PermissionSelectionWidgetState
     extends ConsumerState<PermissionSelectionWidget> {
   @override
   Widget build(BuildContext context) {
-    final selected = ref.watch(selectedPermissionsProvider);
+    List<AdminPermission> selected = ref.watch(selectedPermissionsProvider);
+    if (widget.oldPermissions != null && selected.isEmpty) {
+      widget.oldPermissions!.sort(
+        (a, b) => a.name.compareTo(b.name),
+      );
+      selected = widget.oldPermissions!;
+    }
+
+    selected.sort(
+      (a, b) => a.name.compareTo(b.name),
+    );
+
+    if (selected == widget.oldPermissions) {
+      selected = widget.oldPermissions!;
+    }
+
     return Container(
       padding: const EdgeInsets.all(USpace.space16),
       decoration: BoxDecoration(
@@ -58,6 +78,7 @@ class PermissionSelectionWidgetState
               ),
             ),
             child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
               value: selected.contains(
                 AdminPermission.manageAdmins,
               ),
@@ -104,6 +125,7 @@ class PermissionSelectionWidgetState
               ),
             ),
             child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
               value: selected.contains(
                 AdminPermission.manageEnforcer,
               ),
@@ -150,6 +172,7 @@ class PermissionSelectionWidgetState
               ),
             ),
             child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
               value: selected.contains(
                 AdminPermission.manageTickets,
               ),
@@ -196,6 +219,7 @@ class PermissionSelectionWidgetState
               ),
             ),
             child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
               value: selected.contains(
                 AdminPermission.managePayment,
               ),
@@ -242,6 +266,7 @@ class PermissionSelectionWidgetState
               ),
             ),
             child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
               value: selected.contains(
                 AdminPermission.manageComplaints,
               ),
@@ -288,6 +313,7 @@ class PermissionSelectionWidgetState
               ),
             ),
             child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
               value: selected.contains(
                 AdminPermission.manageSystem,
               ),
@@ -334,6 +360,7 @@ class PermissionSelectionWidgetState
               ),
             ),
             child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
               value: selected.contains(
                 AdminPermission.viewAnalytics,
               ),
@@ -380,6 +407,7 @@ class PermissionSelectionWidgetState
               ),
             ),
             child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
               value: selected.contains(
                 AdminPermission.viewDashboard,
               ),

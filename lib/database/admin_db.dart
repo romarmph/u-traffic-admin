@@ -88,4 +88,30 @@ class AdminDatabase {
       rethrow;
     }
   }
+
+  Stream<Admin> getAdminByIdStream(String id) {
+    try {
+      const String collection = "admins";
+
+      return _firestore.collection(collection).doc(id).snapshots().map(
+        (snapshot) {
+          return Admin.fromJson(
+            snapshot.data()!,
+            snapshot.id,
+          );
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateAdminPermission(
+      String id, List<AdminPermission> permission) async {
+    const String collection = "admins";
+
+    await _firestore.collection(collection).doc(id).update({
+      'permissions': permission.map((e) => e.name).toList(),
+    });
+  }
 }

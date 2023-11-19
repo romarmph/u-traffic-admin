@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 import 'package:u_traffic_admin/views/admin/widgets/permission_view_widget.dart';
+import 'package:u_traffic_admin/views/admin/widgets/update_admin_form.dart';
 
 class AdminDetailsPage extends ConsumerWidget {
   const AdminDetailsPage({
@@ -24,7 +25,7 @@ class AdminDetailsPage extends ConsumerWidget {
             child: SizedBox(
               width: constraints.maxWidth,
               height: constraints.maxHeight,
-              child: ref.watch(getAdminById(adminId)).when(
+              child: ref.watch(getAdminByIdStream(adminId)).when(
                 data: (admin) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -238,7 +239,17 @@ class AdminDetailsPage extends ConsumerWidget {
                                   ),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    pageBuilder: (_, __, ___) {
+                                      return UpdateAdminForm(
+                                        admin: admin,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
                               label: const Text('Update Admin'),
                               icon: const Icon(Icons.save_rounded),
                             ),

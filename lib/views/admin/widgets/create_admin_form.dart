@@ -429,7 +429,9 @@ class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
                                         fontWeight: FontWeight.w900,
                                       ),
                                     ),
-                                    const PermissionSelectionWidget(),
+                                    const PermissionSelectionWidget(
+                                      isUpdateMode: true,
+                                    ),
                                   ],
                                 ),
                               ),

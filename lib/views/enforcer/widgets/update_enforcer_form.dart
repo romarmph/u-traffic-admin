@@ -20,7 +20,6 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailFormKey = GlobalKey<FormState>();
   final _employeeNumberFormKey = GlobalKey<FormState>();
-  bool _isPasswordVisible = false;
   final _firstNameController = TextEditingController();
   final _middleNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -31,6 +30,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
 
   final _validator = EnforcerFormValidator();
   bool _emailExists = false;
+  bool _isPasswordVisible = false;
 
   final _isChangesMadeProvider = StateProvider<bool>((ref) {
     final isProfilePhotoChanged = ref.watch(profilePhotoStateProvider) != null;
@@ -45,6 +45,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
 
   @override
   void initState() {
+    super.initState();
     _firstNameController.text = widget.enforcer.firstName;
     _middleNameController.text = widget.enforcer.middleName;
     _lastNameController.text = widget.enforcer.lastName;
@@ -80,7 +81,6 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
           _passwordController.text.isNotEmpty &&
               _passwordController.text.length >= 6;
     });
-    super.initState();
   }
 
   void _pickImageButtonTap() async {
