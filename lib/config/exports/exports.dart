@@ -100,7 +100,7 @@ export 'package:u_traffic_admin/views/admin/widgets/permission_selection_widget.
 export 'package:u_traffic_admin/views/enforcer/enforcer_page.dart';
 export 'package:u_traffic_admin/views/enforcer/enforcer_schedule_page.dart';
 export 'package:u_traffic_admin/views/enforcer/enforcer_detail_view_page.dart';
-
+export 'package:u_traffic_admin/views/enforcer/widgets/create_schedule_form.dart';
 // * ---- widgets
 export 'package:u_traffic_admin/views/enforcer/widgets/create_enforcer_form.dart';
 export 'package:u_traffic_admin/views/enforcer/widgets/update_enforcer_form.dart';

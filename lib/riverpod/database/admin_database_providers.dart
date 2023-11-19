@@ -4,11 +4,11 @@ final adminDatabaseProvider = Provider<AdminDatabase>((ref) {
   return AdminDatabase.instance;
 });
 
-final getCurrentAdmin = FutureProvider<Admin>(
-  (ref) async {
+final getCurrentAdmin = StreamProvider<Admin>(
+  (ref) {
     final adminDatabase = ref.watch(adminDatabaseProvider);
     final authProvider = ref.watch(authServiceProvider);
-    return adminDatabase.getAdminById(authProvider.currentUser!.uid);
+    return adminDatabase.getAdminByIdStream(authProvider.currentUser!.uid);
   },
 );
 

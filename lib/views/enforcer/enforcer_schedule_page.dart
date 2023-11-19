@@ -10,6 +10,8 @@ class EnforcerSchedulePage extends ConsumerStatefulWidget {
 }
 
 class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
+  final _searchControler = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return PageContainer(
@@ -30,8 +32,54 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const SystemMenu(
-                  route: Routes.systemEnforcerSchedule,
+                SizedBox(
+                  height: 100,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: UColors.white,
+                        borderRadius: BorderRadius.circular(USpace.space16),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Spacer(),
+                          SizedBox(
+                            width: 300,
+                            child: TextField(
+                              controller: _searchControler,
+                              decoration: InputDecoration(
+                                hintText: "Quick Search",
+                                prefixIcon: const Icon(Icons.search),
+                                border: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(USpace.space8),
+                                ),
+                                suffixIcon: Visibility(
+                                  visible: _searchControler.text.isNotEmpty,
+                                  child: IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(Icons.close),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          UElevatedButton(
+                            onPressed: () {},
+                            child: const Text('Add Enforcer Schedule'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
                 Expanded(
                   child: Padding(

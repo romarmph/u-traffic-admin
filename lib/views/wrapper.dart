@@ -15,11 +15,25 @@ class Wrapper extends ConsumerWidget {
 
         return ref.watch(getCurrentAdmin).when(
               data: (admin) {
+                if (admin.status == EmployeeStatus.suspended) {
+                  return const LoginErrorPage(
+                    title: 'Account Suspended',
+                    message:
+                        'Your account has been suspended. Please contact your administrator.',
+                  );
+                }
+
+                if (admin.status == EmployeeStatus.terminated) {
+                  return const LoginErrorPage(
+                    title: 'Account Terminated',
+                    message:
+                        'Your account has been terminated. Please contact your administrator.',
+                  );
+                }
+
                 return const HomePage();
               },
               error: (error, stackTrace) {
-                print(error);
-                print(stackTrace);
                 return const LoginErrorPage();
               },
               loading: () => const LoginLoadingPage(),

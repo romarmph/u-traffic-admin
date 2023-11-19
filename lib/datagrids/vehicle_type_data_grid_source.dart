@@ -33,9 +33,7 @@ class VehicleDataGridSource extends DataGridSource {
                   color: UColors.blue500,
                 ),
               ),
-              onPressed: () {
-                print(cell.value);
-              },
+              onPressed: () {},
               child: const Text('View'),
             ),
           );
