@@ -26,7 +26,7 @@ class EnforcerHTTPSerivice {
           )
           .timeout(const Duration(seconds: 30));
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return response.body;
       } else {
         throw response.statusCode;

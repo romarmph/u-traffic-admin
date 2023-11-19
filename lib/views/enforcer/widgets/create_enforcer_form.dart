@@ -98,7 +98,9 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
         text: 'Connection timeout, please try again',
       );
       return;
-    } catch (e) {
+    } catch (e, stackTrace) {
+      print(e);
+      print(stackTrace);
       _showEnforcerCreateError(-1);
       return;
     }
