@@ -8,12 +8,14 @@ class DataGridContainer extends ConsumerWidget {
     required this.source,
     required this.gridColumns,
     required this.dataCount,
+    this.dataGridKey,
   });
 
   final BoxConstraints constraints;
   final DataGridSource source;
   final List<GridColumn> gridColumns;
   final int dataCount;
+  final GlobalKey<SfDataGridState>? dataGridKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,8 +31,14 @@ class DataGridContainer extends ConsumerWidget {
             borderRadius: BorderRadius.circular(USpace.space16),
           ),
           child: SfDataGridTheme(
-            data: SfDataGridThemeData(),
+            data: SfDataGridThemeData(
+              gridLineColor: UColors.gray100,
+              gridLineStrokeWidth: 1,
+              rowHoverColor: UColors.gray100,
+              headerHoverColor: UColors.gray100,
+            ),
             child: SfDataGrid(
+              key: dataGridKey,
               rowsPerPage: 12,
               highlightRowOnHover: true,
               allowFiltering: true,
@@ -38,6 +46,9 @@ class DataGridContainer extends ConsumerWidget {
               columnWidthMode: ColumnWidthMode.fill,
               source: source,
               columns: gridColumns,
+              footer: dataCount == 0
+                  ? const Center(child: Text('No data found'))
+                  : null,
             ),
           ),
         ),
@@ -53,7 +64,7 @@ class DataGridContainer extends ConsumerWidget {
             child: SfDataPager(
               pageCount: pageCount(
                 dataCount,
-                ref.watch(rowsPerPageProvider),
+                12,
               ),
               delegate: source,
             ),

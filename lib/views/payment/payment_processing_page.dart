@@ -13,6 +13,12 @@ class PaymentProcessingPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PageContainer(
       route: Routes.payment,
+      appBar: AppBar(
+        title: const Text('Payment Processing'),
+        actions: const [
+          CurrenAdminButton(),
+        ],
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Padding(
@@ -79,40 +85,8 @@ class PaymentProcessingPage extends ConsumerWidget {
                           ),
                         ),
                         Expanded(
-                          child: ListView.separated(
-                            itemCount: ticket.violationsID.length,
-                            itemBuilder: (context, index) {
-                              final violationList = ref.watch(
-                                violationsProvider,
-                              );
-                              final violation = violationList.where(
-                                (element) =>
-                                    element.id == ticket.violationsID[index],
-                              );
-                              return ListTile(
-                                title: Text(
-                                  violation.first.name,
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: UColors.gray500,
-                                  ),
-                                ),
-                                trailing: Text(
-                                  violation.first.fine.toString(),
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w600,
-                                    color: UColors.red500,
-                                  ),
-                                ),
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                height: USpace.space16,
-                              );
-                            },
+                          child: ListView(
+                            children: _buildViolationsList(),
                           ),
                         ),
                       ],
@@ -132,5 +106,79 @@ class PaymentProcessingPage extends ConsumerWidget {
         },
       ),
     );
+  }
+
+  List<Widget> _buildViolationsList() {
+    List<Widget> ticketViolations = [];
+
+    for (var violation in ticket.issuedViolations) {
+      ticketViolations.add(
+        ListTile(
+          title: Text(
+            violation.violation,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: UColors.gray500,
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitle: Column(
+            children: [
+              Text(
+                violation.penalty,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: UColors.gray500,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(
+                height: USpace.space4,
+              ),
+              Row(
+                children: [
+                  Text(
+                    violation.isBigVehicle
+                        ? "Big Vehicle"
+                        : "Tricycle/Motorcycle",
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: UColors.gray500,
+                    ),
+                  ),
+                  const Spacer(),
+                  Text(
+                    violation.offense == 1
+                        ? '1st Offense'
+                        : violation.offense == 2
+                            ? '2nd Offense'
+                            : '3rd Offense',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: violation.offense == 1
+                          ? UColors.green500
+                          : violation.offense == 2
+                              ? UColors.yellow500
+                              : UColors.red500,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          trailing: Text(
+            "${violation.fine} PHP",
+            style: const TextStyle(
+              color: UColors.red400,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return ticketViolations;
   }
 }

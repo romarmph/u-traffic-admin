@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:u_traffic_admin/config/constants/payment_grid_fields.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 List<GridColumn> paymentGridColumn = [
@@ -10,6 +9,11 @@ List<GridColumn> paymentGridColumn = [
     label: const Center(
       child: Text(
         'Ticket No.',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -19,6 +23,11 @@ List<GridColumn> paymentGridColumn = [
     label: const Center(
       child: Text(
         'Fine Amount',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -28,6 +37,11 @@ List<GridColumn> paymentGridColumn = [
     label: const Center(
       child: Text(
         'Tendered Amount',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -37,6 +51,11 @@ List<GridColumn> paymentGridColumn = [
     label: const Center(
       child: Text(
         'Change',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -46,6 +65,11 @@ List<GridColumn> paymentGridColumn = [
     label: const Center(
       child: Text(
         'Cashier',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -55,6 +79,11 @@ List<GridColumn> paymentGridColumn = [
     label: const Center(
       child: Text(
         'Date Paid',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -66,6 +95,11 @@ List<GridColumn> paymentGridColumn = [
     label: const Center(
       child: Text(
         'Actions',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),

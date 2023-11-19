@@ -35,6 +35,9 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
       route: Routes.payment,
       appBar: AppBar(
         title: const Text("Payment"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -236,6 +239,8 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                               );
                             },
                             error: (error, stackTrace) {
+                              print(error);
+                              print(stackTrace);
                               return const Center(
                                 child: Text('Error fetching payment history'),
                               );

@@ -9,6 +9,11 @@ List<GridColumn> ticketGridColumns = [
     label: const Center(
       child: Text(
         'Ticket No.',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -18,6 +23,11 @@ List<GridColumn> ticketGridColumns = [
     label: const Center(
       child: Text(
         'License No.',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -27,6 +37,11 @@ List<GridColumn> ticketGridColumns = [
     label: const Center(
       child: Text(
         'Driver Name',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -36,6 +51,11 @@ List<GridColumn> ticketGridColumns = [
     label: const Center(
       child: Text(
         'Date Issued',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -51,6 +71,11 @@ List<GridColumn> ticketGridColumns = [
     label: const Center(
       child: Text(
         'Due Date',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -60,6 +85,11 @@ List<GridColumn> ticketGridColumns = [
     label: const Center(
       child: Text(
         'Fina Amount',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -69,6 +99,11 @@ List<GridColumn> ticketGridColumns = [
     label: const Center(
       child: Text(
         'Status',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),
@@ -80,6 +115,11 @@ List<GridColumn> ticketGridColumns = [
     label: const Center(
       child: Text(
         'Actions',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
       ),
     ),
   ),

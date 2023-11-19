@@ -76,6 +76,23 @@ class _PageContainerState extends ConsumerState<PageContainer> {
             title: "Enforcers",
             route: Routes.enforcers,
             icon: Icons.security_rounded,
+            children: [
+              AdminMenuItem(
+                title: 'View',
+                route: Routes.enforcers,
+                icon: Icons.view_list_rounded,
+              ),
+              AdminMenuItem(
+                title: 'Create Enfocer',
+                route: Routes.enforcersCreate,
+                icon: Icons.person_add_rounded,
+              ),
+              AdminMenuItem(
+                title: 'Schedule',
+                route: Routes.enforcerSchedules,
+                icon: Icons.calendar_month_rounded,
+              ),
+            ],
           ),
           AdminMenuItem(
             title: "Admin Staffs",
@@ -91,6 +108,23 @@ class _PageContainerState extends ConsumerState<PageContainer> {
             title: "System",
             route: Routes.system,
             icon: Icons.settings_applications_rounded,
+            children: [
+              AdminMenuItem(
+                title: 'Violations',
+                route: Routes.systemViolations,
+                icon: Icons.line_style_rounded,
+              ),
+              AdminMenuItem(
+                title: 'Vehicle Types',
+                route: Routes.systemVehicleTypes,
+                icon: Icons.car_rental_rounded,
+              ),
+              AdminMenuItem(
+                title: 'Traffic Posts',
+                route: Routes.systemTrafficPosts,
+                icon: Icons.traffic_rounded,
+              ),
+            ],
           ),
           AdminMenuItem(
             title: "Settings",

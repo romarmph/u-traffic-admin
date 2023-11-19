@@ -38,8 +38,8 @@ class _TicketDetailsPageState extends ConsumerState<TicketDetailsPage> {
       ),
       appBar: AppBar(
         title: const Text("Process Payment"),
-        actions: [
-          Container(),
+        actions: const [
+          CurrenAdminButton(),
         ],
       ),
       scaffoldKey: _scaffoldKey,

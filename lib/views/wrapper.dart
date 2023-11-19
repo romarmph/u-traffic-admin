@@ -13,11 +13,13 @@ class Wrapper extends ConsumerWidget {
           return const LoginPage();
         }
 
-        return ref.watch(getAdminByIdFutureProvider(user.uid)).when(
+        return ref.watch(getCurrentAdmin).when(
               data: (admin) {
                 return const HomePage();
               },
               error: (error, stackTrace) {
+                print(error);
+                print(stackTrace);
                 return const LoginErrorPage();
               },
               loading: () => const LoginLoadingPage(),

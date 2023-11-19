@@ -15,6 +15,9 @@ class _HomePageState extends ConsumerState<HomePage> {
       route: Routes.home,
       appBar: AppBar(
         title: const Text("Dashboard"),
+        actions: [
+          CurrenAdminButton(),
+        ],
       ),
       body: const Placeholder(),
     );

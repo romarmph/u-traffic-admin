@@ -1,17 +1,17 @@
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class AuthService {
-  final ProviderRef ref;
-
-  AuthService(this.ref);
+  AuthService();
 
   static final _firebaseAuth = FirebaseAuth.instance;
+
+  User? get currentUser => _firebaseAuth.currentUser;
 
   Future<void> login({
     required String email,
     required String password,
   }) async {
-    final adminDb = ref.watch(adminDatabaseProvider);
+    final adminDb = AdminDatabase.instance;
 
     final admin = await adminDb.getAdminByEmail(email);
 
@@ -19,7 +19,7 @@ class AuthService {
       throw CustomExceptions.adminNotFound;
     }
 
-    if (admin.isDisabled) {
+    if (admin.status == EmployeeStatus.suspended) {
       throw CustomExceptions.adminDisabled;
     }
 
@@ -45,5 +45,15 @@ class AuthService {
 
   Future<void> logout() async {
     await _firebaseAuth.signOut();
+  }
+
+  Future<bool> isEmailAvailable(String email) async {
+    try {
+      List<String> userSignInMethods =
+          await _firebaseAuth.fetchSignInMethodsForEmail(email);
+      return userSignInMethods.isEmpty;
+    } catch (e) {
+      rethrow;
+    }
   }
 }

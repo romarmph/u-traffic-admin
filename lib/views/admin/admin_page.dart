@@ -9,7 +9,10 @@ class AdminPage extends ConsumerWidget {
     return PageContainer(
       route: Routes.adminStaffs,
       appBar: AppBar(
-        title: const Text("Staffs"),
+        title: const Text("Admin Staffs"),
+        actions: const [
+          CurrenAdminButton(),
+        ],
       ),
       body: const Placeholder(),
     );

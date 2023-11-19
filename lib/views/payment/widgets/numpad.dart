@@ -178,9 +178,6 @@ class _NumPadState extends ConsumerState<NumPad> {
               ],
             ),
           ),
-          const SizedBox(
-            height: USpace.space16,
-          ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -209,7 +206,7 @@ class _NumPadState extends ConsumerState<NumPad> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              padding: const EdgeInsets.all(USpace.space24),
+              padding: const EdgeInsets.all(USpace.space20),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(USpace.space8),
               ),
@@ -217,7 +214,7 @@ class _NumPadState extends ConsumerState<NumPad> {
               foregroundColor: UColors.white,
             ),
             onPressed: () async {
-              if (_change < 0) {
+              if (_change < 0 || _numPadScreenController.text == "0") {
                 QuickAlert.show(
                   context: context,
                   type: QuickAlertType.error,
@@ -235,8 +232,7 @@ class _NumPadState extends ConsumerState<NumPad> {
 
               _showLoading();
               try {
-                final currentuser = FirebaseAuth.instance.currentUser;
-                final admin = ref.watch(adminByIdProvider(currentuser!.uid));
+                final admin = ref.watch(currentAdminProvider);
                 await PaymentDatabase.instance.payTicket(
                   ticket: widget.ticket,
                   amountTendered: double.parse(_numPadScreenController.text),
@@ -268,7 +264,7 @@ class _NumPadState extends ConsumerState<NumPad> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              padding: const EdgeInsets.all(USpace.space24),
+              padding: const EdgeInsets.all(USpace.space20),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(USpace.space8),
               ),
@@ -291,7 +287,7 @@ class _NumPadState extends ConsumerState<NumPad> {
     );
   }
 
-  Future<bool> _confirmPayment() async {
+  Future<bool?> _confirmPayment() async {
     return await QuickAlert.show(
       context: context,
       type: QuickAlertType.custom,
@@ -346,6 +342,9 @@ class _NumPadState extends ConsumerState<NumPad> {
       onConfirmBtnTap: () {
         Navigator.of(context).pop(true);
       },
+      onCancelBtnTap: () {
+        Navigator.of(context).pop(false);
+      },
     );
   }
 
@@ -370,6 +369,7 @@ class _NumPadState extends ConsumerState<NumPad> {
       text:
           "The payment has been successfully processed.\n Please check the Admin Mobile to print the receipt.",
       onConfirmBtnTap: () {
+        ref.invalidate(getTicketByIdFutureProvider(widget.ticket.id!));
         Navigator.of(context).pushReplacementNamed(
           Routes.payment,
         );
