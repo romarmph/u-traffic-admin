@@ -12,21 +12,21 @@ class EnforcerSchedule {
   final String createdBy;
   final String updatedBy;
   final Timestamp createdAt;
-  final Timestamp updatedAt;
+  final Timestamp? updatedAt;
 
   EnforcerSchedule({
     this.id,
-    required this.enforcerId,
-    required this.enforcerName,
+    this.enforcerId = "",
+    this.enforcerName = "",
     required this.shift,
     required this.startTime,
     required this.endTime,
-    required this.postId,
-    required this.postName,
+    this.postId = "",
+    this.postName = "",
     required this.createdBy,
-    required this.updatedBy,
+    this.updatedBy = "",
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   factory EnforcerSchedule.fromJson(Map<String, dynamic> json, String id) {

@@ -23,6 +23,48 @@ class CreateEnforcerSchedFormState
     period: 'AM',
   );
 
+  void _onCreateButtonTap() async {
+    final currentAdmin = ref.read(currentAdminProvider);
+
+    if (startTime.timeDifference(endTime).inHours < 0 ||
+        startTime.timeDifference(endTime).inHours < 7) {
+      await QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Invalid Time',
+        text: 'Please check the time you entered.',
+      );
+      return;
+    }
+
+    final EnforcerSchedule enforcerSchedule = EnforcerSchedule(
+      shift: _shiftPeriod.toShiftPeriod,
+      startTime: startTime,
+      endTime: endTime,
+      createdBy: currentAdmin.id!,
+      createdAt: Timestamp.now(),
+    );
+    try {
+      EnforcerScheduleDatabse.instance.addEnforcerSched(
+        enforcerSchedule,
+      );
+      await QuickAlert.show(
+        context: context,
+        type: QuickAlertType.success,
+        title: 'Success',
+        text: 'Enforcer Schedule has been created.',
+      );
+      Navigator.pop(navigatorKey.currentContext!);
+    } catch (e) {
+      await QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Error',
+        text: 'Something went wrong. Please try again.',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageContainer(
@@ -319,7 +361,7 @@ class CreateEnforcerSchedFormState
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: _onCreateButtonTap,
                           label: const Text('Save Schedule'),
                           icon: const Icon(Icons.save_rounded),
                         ),
