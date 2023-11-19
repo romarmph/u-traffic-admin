@@ -15,6 +15,10 @@ PageRouteBuilder onGenerateRoute(settings) {
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const AdminPage(),
       );
+    case Routes.adminStaffsCreate:
+      return PageRouteBuilder(
+        pageBuilder: (_, __, ___) => const CreateAdminForm(),
+      );
     case Routes.enforcers:
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const EnforcerPage(),

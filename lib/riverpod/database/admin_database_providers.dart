@@ -22,3 +22,10 @@ final getAdminById = FutureProvider.family<Admin, String>(
     return adminDatabase.getAdminById(id);
   },
 );
+
+final getAllAdminStream = StreamProvider<List<Admin>>(
+  (ref) {
+    final adminDatabase = ref.watch(adminDatabaseProvider);
+    return adminDatabase.getAllAdminStream();
+  },
+);

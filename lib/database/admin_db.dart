@@ -67,4 +67,25 @@ class AdminDatabase {
 
     await _firestore.collection(collection).doc(id).delete();
   }
+
+  Stream<List<Admin>> getAllAdminStream() {
+    try {
+      const String collection = "admins";
+
+      return _firestore.collection(collection).snapshots().map(
+        (snapshot) {
+          return snapshot.docs.map(
+            (doc) {
+              return Admin.fromJson(
+                doc.data(),
+                doc.id,
+              );
+            },
+          ).toList();
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

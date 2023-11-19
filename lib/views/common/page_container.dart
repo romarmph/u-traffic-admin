@@ -98,6 +98,18 @@ class _PageContainerState extends ConsumerState<PageContainer> {
             title: "Admin Staffs",
             route: Routes.adminStaffs,
             icon: Icons.admin_panel_settings_rounded,
+            children: [
+              AdminMenuItem(
+                title: 'View',
+                route: Routes.adminStaffs,
+                icon: Icons.view_list_rounded,
+              ),
+              AdminMenuItem(
+                title: 'Create',
+                route: Routes.adminStaffsCreate,
+                icon: Icons.person_add_rounded,
+              ),
+            ],
           ),
           AdminMenuItem(
             title: "Complaints",
