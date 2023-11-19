@@ -171,7 +171,7 @@ class _UpdateAdminFormState extends ConsumerState<UpdateAdminForm> {
       lastName: _lastNameController.text,
       suffix: _suffixController.text,
       email: _emailController.text,
-      status: EmployeeStatus.active,
+      status: newStatus ?? widget.admin.status,
       photoUrl: newPhotoUrl ?? widget.admin.photoUrl,
       employeeNo: _employeeNoController.text,
       createdBy: currentAdmin.id!,
@@ -393,7 +393,7 @@ class _UpdateAdminFormState extends ConsumerState<UpdateAdminForm> {
                                         ),
                                         const SizedBox(width: USpace.space12),
                                         Expanded(
-                                          flex: 1,
+                                          flex: 2,
                                           child: EnforcerFormField(
                                             controller: _suffixController,
                                             hintText: 'Ex. Jr.',
@@ -506,8 +506,70 @@ class _UpdateAdminFormState extends ConsumerState<UpdateAdminForm> {
                                         ),
                                         const SizedBox(width: USpace.space12),
                                         Expanded(
-                                          flex: 1,
-                                          child: Container(),
+                                          flex: 2,
+                                          child: Column(
+                                            children: [
+                                              const Text('Status'),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: USpace.space12,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: UColors.gray100,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                    USpace.space8,
+                                                  ),
+                                                ),
+                                                child: DropdownButton(
+                                                  underline: const SizedBox(),
+                                                  isExpanded: true,
+                                                  value: _dropDownValue(),
+                                                  onChanged: (value) {
+                                                    if (value ==
+                                                        widget.admin.status) {
+                                                      ref
+                                                          .read(
+                                                              updateStatusProvider
+                                                                  .notifier)
+                                                          .state = null;
+                                                    } else {
+                                                      ref
+                                                              .read(
+                                                                  updateStatusProvider
+                                                                      .notifier)
+                                                              .state =
+                                                          value
+                                                              as EmployeeStatus;
+                                                    }
+                                                  },
+                                                  items: const [
+                                                    DropdownMenuItem(
+                                                      value:
+                                                          EmployeeStatus.active,
+                                                      child: Text('Active'),
+                                                    ),
+                                                    DropdownMenuItem(
+                                                      value: EmployeeStatus
+                                                          .onleave,
+                                                      child: Text('On leave'),
+                                                    ),
+                                                    DropdownMenuItem(
+                                                      value: EmployeeStatus
+                                                          .suspended,
+                                                      child: Text('Suspended'),
+                                                    ),
+                                                    DropdownMenuItem(
+                                                      value: EmployeeStatus
+                                                          .terminated,
+                                                      child: Text('Terminated'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -604,6 +666,10 @@ class _UpdateAdminFormState extends ConsumerState<UpdateAdminForm> {
                                                           selectedPermissionsProvider
                                                               .notifier)
                                                       .state = [];
+
+                                                  Navigator.of(navigatorKey
+                                                          .currentContext!)
+                                                      .pop();
                                                 },
                                                 child: const Text('Apply'),
                                               ),
@@ -689,7 +755,7 @@ class _UpdateAdminFormState extends ConsumerState<UpdateAdminForm> {
                               ),
                             );
                           },
-                          child: const Text('Cancel'),
+                          child: const Text('Back'),
                         ),
                         const SizedBox(width: USpace.space16),
                         FilledButton.icon(
@@ -722,13 +788,14 @@ class _UpdateAdminFormState extends ConsumerState<UpdateAdminForm> {
     );
   }
 
-  void _showProfilePhotoMissingError() {
-    QuickAlert.show(
-      context: context,
-      type: QuickAlertType.error,
-      title: 'Profile Photo Missing',
-      text: 'Please upload a profile photo',
-    );
+  EmployeeStatus _dropDownValue() {
+    final newStatus = ref.watch(updateStatusProvider);
+
+    if (newStatus != null) {
+      return newStatus;
+    }
+
+    return widget.admin.status;
   }
 
   void _showAdminUpdateError(int statuscode) {
