@@ -23,6 +23,26 @@ class EnforcerScheduleDataGridSource extends DataGridSource {
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
         if (cell.columnName == EnforcerScheduleGridFields.photo) {
+          if (cell.value == "") {
+            return Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8,
+              ),
+              alignment: Alignment.center,
+              child: const Tooltip(
+                message: 'No enforcer assigned',
+                child: CircleAvatar(
+                  radius: 24,
+                  child: Icon(
+                    Icons.error_rounded,
+                    color: UColors.red400,
+                    size: 24,
+                  ),
+                ),
+              ),
+            );
+          }
+
           return ref.watch(enforcerProviderById(cell.value.toString())).when(
                 data: (data) {
                   return Container(
@@ -59,6 +79,25 @@ class EnforcerScheduleDataGridSource extends DataGridSource {
               onPressed: () {},
               child: const Text('View'),
             ),
+          );
+        }
+
+        if (cell.columnName == EnforcerScheduleGridFields.post) {
+          if (cell.value == "") {
+            return Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: const Text(
+                'No post assigned',
+                style: TextStyle(color: UColors.red400),
+              ),
+            );
+          }
+
+          return Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(cell.value.toString()),
           );
         }
 

@@ -276,8 +276,15 @@ class _SettingsPageState extends ConsumerState {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         UElevatedButton(
-                          onPressed: () {
-                            AuthService().logout();
+                          onPressed: () async {
+                            await AuthService().logout();
+                            Navigator.of(navigatorKey.currentContext!)
+                                .pushAndRemoveUntil(
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) => const Wrapper(),
+                              ),
+                              (route) => false,
+                            );
                           },
                           child: const Text('Logout'),
                         ),

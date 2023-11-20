@@ -7,6 +7,8 @@ class AuthService {
 
   User? get currentUser => _firebaseAuth.currentUser;
 
+  Stream<User?> get user => _firebaseAuth.authStateChanges();
+
   Future<void> login({
     required String email,
     required String password,
@@ -67,13 +69,12 @@ class AuthService {
   }
 
   Future<void> changePassword(String newPassword) async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    await user.updatePassword(newPassword);
-    print('Password has been changed');
-  } else {
-    print('No user is signed in');
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      await user.updatePassword(newPassword);
+      print('Password has been changed');
+    } else {
+      print('No user is signed in');
+    }
   }
-}
-
 }
