@@ -47,16 +47,10 @@ class EnforcerScheduleDatabse {
 
   Stream<EnforcerSchedule> getEnforcerSchedById(String id) {
     try {
-      return _enforcerSchedRef
-          .where(
-            'enforcerId',
-            isEqualTo: id,
-          )
-          .snapshots()
-          .map((snapshot) {
+      return _enforcerSchedRef.doc(id).snapshots().map((snapshot) {
         return EnforcerSchedule.fromJson(
-          snapshot.docs.first.data(),
-          snapshot.docs.first.id,
+          snapshot.data()!,
+          snapshot.id,
         );
       });
     } catch (e) {

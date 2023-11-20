@@ -109,7 +109,9 @@ class EnforcerScheduleDataGridSource extends DataGridSource {
                 ),
                 padding: const EdgeInsets.all(4),
               ),
-              onPressed: () {},
+              onPressed: () {
+                goToEnforcerSchedView(cell.value.toString());
+              },
               child: const Text('View'),
             ),
           );

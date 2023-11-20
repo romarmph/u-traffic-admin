@@ -94,3 +94,14 @@ void goToAdminDetailsPage(String uid) {
     ),
   );
 }
+
+void goToEnforcerSchedView(String id) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => EnforcerScheduleDetailView(
+        scheduleId: id,
+      ),
+    ),
+  );
+}

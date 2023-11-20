@@ -4,10 +4,10 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 class EnforcerScheduleDetailView extends ConsumerWidget {
   const EnforcerScheduleDetailView({
     super.key,
-    required this.enforcerId,
+    required this.scheduleId,
   });
 
-  final String enforcerId;
+  final String scheduleId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,8 +24,8 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
             child: SizedBox(
               width: constraints.maxWidth,
               height: constraints.maxHeight,
-              child: ref.watch(getEnforcerById(enforcerId)).when(
-                data: (enforcer) {
+              child: ref.watch(enforcerSchedByIdStream(scheduleId)).when(
+                data: (schedule) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
@@ -40,7 +40,7 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             const Text(
-                              'Sch Information',
+                              'Schedule Information',
                               style: TextStyle(
                                 color: UColors.gray400,
                                 fontSize: 18,
@@ -49,140 +49,6 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                             ),
                             const SizedBox(
                               height: USpace.space16,
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Center(
-                                      child: Container(
-                                        width: 256,
-                                        height: 256,
-                                        padding:
-                                            const EdgeInsets.all(USpace.space4),
-                                        decoration: BoxDecoration(
-                                          color: UColors.gray100,
-                                          borderRadius: BorderRadius.circular(
-                                              USpace.space16),
-                                        ),
-                                        child: CachedNetworkImage(
-                                          imageUrl: enforcer.photoUrl,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) {
-                                            return const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          },
-                                          errorWidget: (context, url, error) {
-                                            return const Center(
-                                              child: Icon(
-                                                Icons.error_outline_rounded,
-                                                color: UColors.gray400,
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(width: USpace.space16),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            flex: 3,
-                                            child: PreviewListTile(
-                                              title: enforcer.firstName,
-                                              subtitle: 'First Name',
-                                            ),
-                                          ),
-                                          const SizedBox(width: USpace.space12),
-                                          Expanded(
-                                            flex: 3,
-                                            child: PreviewListTile(
-                                              title: enforcer.middleName,
-                                              subtitle: 'Middle Name',
-                                            ),
-                                          ),
-                                          const SizedBox(width: USpace.space12),
-                                          Expanded(
-                                            flex: 3,
-                                            child: PreviewListTile(
-                                              title: enforcer.lastName,
-                                              subtitle: 'Last Name',
-                                            ),
-                                          ),
-                                          const SizedBox(width: USpace.space12),
-                                          Expanded(
-                                            flex: 1,
-                                            child: PreviewListTile(
-                                              title: enforcer.suffix,
-                                              subtitle: 'Suffix',
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: USpace.space12),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Expanded(
-                                            flex: 3,
-                                            child: PreviewListTile(
-                                              title: enforcer.employeeNumber,
-                                              subtitle: 'Employee Number',
-                                            ),
-                                          ),
-                                          const SizedBox(width: USpace.space12),
-                                          Expanded(
-                                            flex: 3,
-                                            child: PreviewListTile(
-                                              title: enforcer.email,
-                                              subtitle: 'Email',
-                                            ),
-                                          ),
-                                          const SizedBox(width: USpace.space12),
-                                          Expanded(
-                                            flex: 3,
-                                            child: PreviewListTile(
-                                              title: enforcer.status.name
-                                                  .toUpperCase(),
-                                              subtitle: 'Status',
-                                              titleStyle: TextStyle(
-                                                color: _statusColor(
-                                                  enforcer.status,
-                                                ),
-                                                fontWeight: FontWeight.w900,
-                                              ),
-                                            ),
-                                          ),
-                                          const SizedBox(width: USpace.space12),
-                                          Expanded(
-                                            flex: 1,
-                                            child: Container(),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const Spacer(),
-                            EnforcerAuthorWidget(
-                              createdBy: enforcer.createdBy,
-                              updatedBy: enforcer.updatedBy,
-                              createdAt: enforcer.createdAt,
-                              updatedAt: enforcer.updatedAt,
                             ),
                           ],
                         ),
@@ -231,11 +97,7 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                                   ),
                                 ),
                               ),
-                              onPressed: () {
-                                goToEnforcerUpdatePage(
-                                  enforcer,
-                                );
-                              },
+                              onPressed: () {},
                               label: const Text('Update'),
                               icon: const Icon(Icons.edit_rounded),
                             ),
@@ -257,122 +119,6 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Color _statusColor(EmployeeStatus status) {
-    switch (status) {
-      case EmployeeStatus.active:
-        return UColors.blue500;
-      case EmployeeStatus.offduty:
-        return UColors.gray500;
-      case EmployeeStatus.onduty:
-        return UColors.green500;
-      case EmployeeStatus.onleave:
-        return UColors.yellow500;
-      case EmployeeStatus.suspended:
-        return UColors.red500;
-      case EmployeeStatus.terminated:
-        return UColors.red500;
-      default:
-        return UColors.gray400;
-    }
-  }
-}
-
-class EnforcerAuthorWidget extends ConsumerWidget {
-  const EnforcerAuthorWidget({
-    super.key,
-    required this.createdBy,
-    required this.updatedBy,
-    required this.createdAt,
-    this.updatedAt,
-  });
-
-  final String createdBy;
-  final String updatedBy;
-  final Timestamp createdAt;
-  final Timestamp? updatedAt;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      decoration: BoxDecoration(
-        color: UColors.gray50,
-        borderRadius: BorderRadius.circular(
-          USpace.space16,
-        ),
-        border: Border.all(
-          color: UColors.gray200,
-          width: 1,
-        ),
-      ),
-      child: Column(
-        children: [
-          ref.watch(getAdminById(createdBy)).when(
-            data: (admin) {
-              final name =
-                  '${admin.firstName} ${admin.middleName} ${admin.lastName}';
-              return Row(
-                children: [
-                  Expanded(
-                    child: PreviewListTile(
-                      title: name,
-                      subtitle: 'Created By',
-                    ),
-                  ),
-                  Expanded(
-                    child: PreviewListTile(
-                      title: createdAt.toAmericanDate,
-                      subtitle: 'Date Created',
-                    ),
-                  )
-                ],
-              );
-            },
-            error: (error, stackTrace) {
-              return const SizedBox();
-            },
-            loading: () {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            },
-          ),
-          updatedBy.isEmpty
-              ? const SizedBox()
-              : ref.watch(getAdminById(updatedBy)).when(
-                  data: (admin) {
-                    final name =
-                        '${admin.firstName} ${admin.middleName} ${admin.lastName}';
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: PreviewListTile(
-                            title: name,
-                            subtitle: 'Updated By',
-                          ),
-                        ),
-                        Expanded(
-                          child: PreviewListTile(
-                            title: updatedAt!.toAmericanDate,
-                            subtitle: 'Date Updated',
-                          ),
-                        )
-                      ],
-                    );
-                  },
-                  error: (error, stackTrace) {
-                    return const SizedBox();
-                  },
-                  loading: () {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  },
-                ),
-        ],
       ),
     );
   }
