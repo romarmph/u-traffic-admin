@@ -5,4 +5,5 @@ enum EmployeeStatus {
   onleave,
   suspended,
   terminated,
+  resigned,
 }

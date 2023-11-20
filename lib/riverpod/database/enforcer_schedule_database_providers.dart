@@ -33,3 +33,15 @@ final enforcerSchedByIdStream =
     StreamProvider.family<EnforcerSchedule, String>((ref, id) {
   return ref.watch(enforcerSchedDatabaseProvider).getEnforcerSchedById(id);
 });
+
+final availableEnforcerStreamProvider = StreamProvider<List<Enforcer>>((ref) {
+  return EnforcerDatabase.instance.getAllAvailableEnforcers();
+});
+
+final availableEnforcerProvider = Provider<List<Enforcer>>((ref) {
+  return ref.watch(availableEnforcerStreamProvider).when(
+        data: (data) => data,
+        error: (error, stackTrace) => [],
+        loading: () => [],
+      );
+});

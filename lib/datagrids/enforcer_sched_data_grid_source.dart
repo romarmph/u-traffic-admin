@@ -63,6 +63,34 @@ class EnforcerScheduleDataGridSource extends DataGridSource {
               );
         }
 
+        if (cell.columnName == EnforcerScheduleGridFields.createdAt) {
+          final date = cell.value as DateTime;
+
+          return Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              date.toTimestamp.toAmericanDate,
+            ),
+          );
+        }
+
+        if (cell.columnName == EnforcerScheduleGridFields.createdBy) {
+          return ref.watch(getAdminById(cell.value.toString())).when(
+                data: (data) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text('${data.firstName} ${data.lastName}'),
+                  );
+                },
+                error: (e, s) => const Icon(Icons.error),
+                loading: () => const CircularProgressIndicator(),
+              );
+        }
+
         if (cell.columnName == EnforcerScheduleGridFields.actions) {
           return Center(
             child: OutlinedButton(
@@ -127,16 +155,16 @@ class EnforcerScheduleDataGridSource extends DataGridSource {
             value: cell.shift.name.capitalize,
           ),
           DataGridCell<String>(
-            columnName: EnforcerScheduleGridFields.startTime,
-            value: _formatTime(cell.startTime),
-          ),
-          DataGridCell<String>(
-            columnName: EnforcerScheduleGridFields.endTime,
-            value: _formatTime(cell.endTime),
-          ),
-          DataGridCell<String>(
             columnName: EnforcerScheduleGridFields.post,
             value: cell.postName,
+          ),
+          DataGridCell<String>(
+            columnName: EnforcerScheduleGridFields.createdBy,
+            value: cell.createdBy,
+          ),
+          DataGridCell<DateTime>(
+            columnName: EnforcerScheduleGridFields.createdAt,
+            value: cell.createdAt.toDate(),
           ),
           DataGridCell<String>(
             columnName: EnforcerScheduleGridFields.actions,

@@ -60,4 +60,38 @@ class EnforcerDatabase {
       rethrow;
     }
   }
+
+  Stream<List<Enforcer>> getAllAvailableEnforcers() async* {
+    try {
+      var schedules = await _firestore.collection('enforcerSchedules').get();
+
+      var assignedEnforcerIds =
+          schedules.docs.map((doc) => doc['enforcerId']).toList();
+
+      var enforcerStream = _enforcerRef
+          .where('status', whereNotIn: [
+            EmployeeStatus.suspended.name,
+            EmployeeStatus.terminated.name,
+            EmployeeStatus.resigned.name,
+          ])
+          .snapshots()
+          .map((snapshot) {
+            return snapshot.docs.map((doc) {
+              return Enforcer.fromJson(
+                doc.data(),
+                doc.id,
+              );
+            }).toList();
+          });
+
+      await for (var enforcers in enforcerStream) {
+        var availableEnforcers = enforcers
+            .where((enforcer) => !assignedEnforcerIds.contains(enforcer.id))
+            .toList();
+        yield availableEnforcers;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
