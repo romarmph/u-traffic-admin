@@ -30,7 +30,7 @@ class EnforcerSchedule {
       id: id,
       enforcerId: json['enforcerId'],
       enforcerName: json['enforcerName'],
-      shift: json['period'].toString().toShiftPeriod,
+      shift: json['shift'].toString().toShiftPeriod,
       postId: json['postId'],
       postName: json['postName'],
       createdBy: json['createdBy'],

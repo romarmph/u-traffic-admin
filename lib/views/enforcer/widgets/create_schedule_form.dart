@@ -70,9 +70,14 @@ class CreateEnforcerSchedFormState
     final enforcer = ref.watch(selectedEnforcerProvider);
     final currentAdmin = ref.read(currentAdminProvider);
     final post = ref.watch(selectedTrafficPostProvider);
+    final shift = ref.watch(selectedShiftProvider);
+
+    if (post == null) {
+      shift == 'night';
+    }
 
     final EnforcerSchedule enforcerSchedule = EnforcerSchedule(
-      shift: ref.watch(selectedShiftProvider).toShiftPeriod,
+      shift: shift.toShiftPeriod,
       enforcerId: enforcer!.id!,
       enforcerName:
           '${enforcer.firstName} ${enforcer.middleName} ${enforcer.lastName}',

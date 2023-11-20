@@ -22,27 +22,32 @@ class EnforcerScheduleDataGridSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
-        if (cell.columnName == EnforcerScheduleGridFields.photo) {
-          if (cell.value == "") {
-            return Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-              ),
-              alignment: Alignment.center,
-              child: const Tooltip(
-                message: 'No enforcer assigned',
-                child: CircleAvatar(
-                  radius: 24,
-                  child: Icon(
-                    Icons.error_rounded,
-                    color: UColors.red400,
-                    size: 24,
-                  ),
-                ),
-              ),
-            );
-          }
+        ShiftPeriod shift = ShiftPeriod.morning;
 
+        if (cell.columnName == EnforcerScheduleGridFields.shift) {
+          shift = cell.value.toString().toLowerCase().toShiftPeriod;
+          return Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Chip(
+              backgroundColor: shift == ShiftPeriod.morning
+                  ? UColors.blue500
+                  : shift == ShiftPeriod.afternoon
+                      ? UColors.orange500
+                      : UColors.indigo900,
+              side: BorderSide.none,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              label: Text(
+                cell.value.toString().capitalize,
+                style: const TextStyle(color: UColors.white),
+              ),
+            ),
+          );
+        }
+
+        if (cell.columnName == EnforcerScheduleGridFields.photo) {
           return ref.watch(enforcerProviderById(cell.value.toString())).when(
                 data: (data) {
                   return Container(
@@ -111,13 +116,15 @@ class EnforcerScheduleDataGridSource extends DataGridSource {
         }
 
         if (cell.columnName == EnforcerScheduleGridFields.post) {
-          if (cell.value == "") {
+          if (cell.value.toString().isEmpty) {
             return Container(
               alignment: Alignment.center,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: const Text(
-                'No post assigned',
-                style: TextStyle(color: UColors.red400),
+                'No post assigned (Night Shift)',
+                style: TextStyle(
+                  color: UColors.indigo900,
+                ),
               ),
             );
           }
@@ -158,10 +165,6 @@ class EnforcerScheduleDataGridSource extends DataGridSource {
             columnName: EnforcerScheduleGridFields.post,
             value: cell.postName,
           ),
-          DataGridCell<String>(
-            columnName: EnforcerScheduleGridFields.createdBy,
-            value: cell.createdBy,
-          ),
           DataGridCell<DateTime>(
             columnName: EnforcerScheduleGridFields.createdAt,
             value: cell.createdAt.toDate(),
@@ -173,9 +176,5 @@ class EnforcerScheduleDataGridSource extends DataGridSource {
         ],
       );
     }).toList();
-  }
-
-  String _formatTime(TimePeriod perdiod) {
-    return '${perdiod.hour.toString().padLeft(2, '0')}:${perdiod.minute.toString().padLeft(2, '0')} ${perdiod.period.toUpperCase()}';
   }
 }
