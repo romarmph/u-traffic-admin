@@ -55,6 +55,12 @@ class EnforcerSchedule {
     };
   }
 
+  // TO String
+  @override
+  String toString() {
+    return 'EnforcerSchedule(id: $id, enforcerId: $enforcerId, enforcerName: $enforcerName, shift: $shift, postId: $postId, postName: $postName, createdBy: $createdBy, updatedBy: $updatedBy, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
   EnforcerSchedule copyWith({
     String? id,
     String? enforcerId,

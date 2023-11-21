@@ -98,37 +98,32 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
                       right: 16,
                     ),
                     child: Container(
-                      width: constraints.maxWidth - 32,
-                      decoration: BoxDecoration(
-                        color: UColors.white,
-                        borderRadius: BorderRadius.circular(USpace.space12),
-                      ),
-                      child: ref.watch(getAllEnforcerSchedStream).when(
-                        data: (data) {
-                          return DataGridContainer(
-                            constraints: constraints,
-                            source: EnforcerScheduleDataGridSource(
-                              data,
-                              ref,
-                            ),
-                            gridColumns: enforcerSchedGridColumns,
-                            dataCount: data.length,
-                          );
-                        },
-                        error: (error, stackTrace) {
-                          return const Center(
-                            child: Text(
-                              'Error fetching enforcer schedules',
-                            ),
-                          );
-                        },
-                        loading: () {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                      ),
-                    ),
+                        width: constraints.maxWidth - 32,
+                        decoration: BoxDecoration(
+                          color: UColors.white,
+                          borderRadius: BorderRadius.circular(USpace.space12),
+                        ),
+                        child: ref.watch(getAllEnforcerSchedStream).when(
+                              data: (data) {
+                                return DataGridContainer(
+                                  constraints: constraints,
+                                  source: EnforcerScheduleDataGridSource(
+                                    data,
+                                    ref,
+                                  ),
+                                  gridColumns: enforcerSchedGridColumns,
+                                  dataCount: data.length,
+                                );
+                              },
+                              error: (error, stackTrace) {
+                                return const Center(
+                                  child: Text('Error'),
+                                );
+                              },
+                              loading: () => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )),
                   ),
                 ),
               ],

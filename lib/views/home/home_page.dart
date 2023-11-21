@@ -11,8 +11,6 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
-    ref.watch(enforcerProvider);
-    ref.watch(enforcerSchedProvider);
     return PageContainer(
       route: Routes.home,
       appBar: AppBar(

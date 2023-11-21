@@ -29,7 +29,11 @@ class Wrapper extends ConsumerWidget {
                             'Your account has been terminated. Please contact your administrator.',
                       );
                     }
-
+                    ref.watch(enforcerProvider);
+                    ref.watch(enforcerSchedProvider);
+                    ref.watch(availableEnforcerProvider);
+                    ref.watch(availableEnforcerStreamProvider);
+                    ref.watch(trafficPostProvider);
                     return const HomePage();
                   },
                   error: (error, stackTrace) {

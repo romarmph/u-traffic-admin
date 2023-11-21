@@ -11,7 +11,11 @@ class EnforcerScheduleDatabse {
 
   Stream<List<EnforcerSchedule>> getAllEnforcerSched() {
     try {
-      return _enforcerSchedRef.snapshots().map((snapshot) {
+      return _enforcerSchedRef
+          .snapshots(
+        includeMetadataChanges: true,
+      )
+          .map((snapshot) {
         return snapshot.docs.map((doc) {
           return EnforcerSchedule.fromJson(
             doc.data(),

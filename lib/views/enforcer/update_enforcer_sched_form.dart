@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-final schedEditModeProvider = StateProvider<String>((ref) => 'swap');
+final schedEditModeProvider = StateProvider<String>((ref) => 'reassign');
 
 class UpdateEnforcerSchedForm extends ConsumerStatefulWidget {
   const UpdateEnforcerSchedForm({
@@ -20,6 +20,7 @@ class _UpdateEnforcerSchedFormState
     extends ConsumerState<UpdateEnforcerSchedForm> {
   final _trafficPostSearchController = TextEditingController();
   final _enforcerSearchController = TextEditingController();
+  final _scheduleSearchController = TextEditingController();
 
   int _flag = 0;
 
@@ -34,6 +35,187 @@ class _UpdateEnforcerSchedFormState
       ref.read(unassignedEnforcerSearchProvider.notifier).state =
           _enforcerSearchController.text;
     });
+    _scheduleSearchController.addListener(() {
+      ref.read(scheduleSearchProvider.notifier).state =
+          _scheduleSearchController.text;
+    });
+  }
+
+  void _onUpdateButtonTap() async {
+    final schedEditMode = ref.watch(schedEditModeProvider);
+
+    if (schedEditMode == 'swap') {
+      _swapSchedule();
+      return;
+    } else {
+      _reassignSchedule();
+      return;
+    }
+  }
+
+  void _swapSchedule() async {
+    final selectedSwapWith = ref.watch(selectedSwapWithProvider);
+
+    if (selectedSwapWith == null) {
+      await QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Error',
+        text: 'Please select a schedule to swap with',
+      );
+      return;
+    }
+
+    QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.loading,
+      title: 'Swapping schedule',
+      text: 'Please wait...',
+    );
+
+    final currentAdmin = ref.watch(currentAdminProvider);
+
+    final currentSchedule = widget.schedule.copyWith(
+      enforcerId: selectedSwapWith.enforcerId,
+      postId: selectedSwapWith.postId,
+      shift: widget.schedule.shift,
+      enforcerName: selectedSwapWith.enforcerName,
+      postName: selectedSwapWith.postName,
+      updatedAt: Timestamp.now(),
+      updatedBy: currentAdmin.id,
+    );
+
+    final selectedSchedule = selectedSwapWith.copyWith(
+      enforcerId: widget.schedule.enforcerId,
+      postId: widget.schedule.postId,
+      shift: selectedSwapWith.shift,
+      enforcerName: widget.schedule.enforcerName,
+      postName: widget.schedule.postName,
+      updatedAt: Timestamp.now(),
+      updatedBy: currentAdmin.id,
+    );
+
+    try {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        transaction.update(
+          FirebaseFirestore.instance.collection('enforcerSchedules').doc(
+                currentSchedule.id,
+              ),
+          currentSchedule.toJson(),
+        );
+        transaction.update(
+          FirebaseFirestore.instance.collection('enforcerSchedules').doc(
+                selectedSchedule.id,
+              ),
+          selectedSchedule.toJson(),
+        );
+      });
+    } catch (e) {
+      Navigator.of(navigatorKey.currentContext!).pop();
+      await QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Error',
+        text: 'Error swapping schedule',
+      );
+      return;
+    }
+    await QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.success,
+      title: 'Success',
+      text: 'Schedule swapped successfully',
+    );
+
+    Navigator.of(navigatorKey.currentContext!).pop();
+    Navigator.of(navigatorKey.currentContext!).pop();
+  }
+
+  void _reassignSchedule() async {
+    final selectedNewEnforcer = ref.watch(selectedEnforcerProvider);
+    final selectedNewPost = ref.watch(selectedTrafficPostProvider);
+    final selectedShift = ref.watch(selectedShiftProvider);
+
+    if (selectedShift != 'night' &&
+        (selectedNewEnforcer == null && selectedNewPost == null)) {
+      await QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Error',
+        text: 'Please select a new enforcer or traffic post',
+      );
+      return;
+    }
+
+    QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.loading,
+      title: 'Reassigning schedule',
+      text: 'Please wait...',
+    );
+
+    final currentAdmin = ref.watch(currentAdminProvider);
+
+    EnforcerSchedule newSchedule;
+
+    if (selectedShift == 'night') {
+      newSchedule = widget.schedule.copyWith(
+        enforcerId: selectedNewEnforcer != null
+            ? selectedNewEnforcer.id
+            : widget.schedule.enforcerId,
+        postId: "",
+        shift: selectedShift.toLowerCase().toShiftPeriod,
+        enforcerName: selectedNewEnforcer != null
+            ? '${selectedNewEnforcer.firstName} ${selectedNewEnforcer.middleName} ${selectedNewEnforcer.lastName} ${selectedNewEnforcer.suffix}'
+            : widget.schedule.enforcerName,
+        postName: "",
+        updatedAt: Timestamp.now(),
+        updatedBy: currentAdmin.id,
+      );
+    } else {
+      newSchedule = widget.schedule.copyWith(
+        enforcerId: selectedNewEnforcer != null
+            ? selectedNewEnforcer.id
+            : widget.schedule.enforcerId,
+        postId: selectedNewPost != null
+            ? selectedNewPost.id
+            : widget.schedule.postId,
+        shift: selectedShift.toLowerCase().toShiftPeriod,
+        enforcerName: selectedNewEnforcer != null
+            ? '${selectedNewEnforcer.firstName} ${selectedNewEnforcer.middleName} ${selectedNewEnforcer.lastName} ${selectedNewEnforcer.suffix}'
+            : widget.schedule.enforcerName,
+        postName: selectedNewPost != null
+            ? selectedNewPost.name
+            : widget.schedule.postName,
+        updatedAt: Timestamp.now(),
+        updatedBy: currentAdmin.id,
+      );
+    }
+
+    try {
+      await EnforcerScheduleDatabse.instance.updateEnforcerSched(
+        newSchedule,
+      );
+    } catch (e) {
+      Navigator.of(navigatorKey.currentContext!).pop();
+      await QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Error',
+        text: 'Error reassigning schedule',
+      );
+      return;
+    }
+
+    await QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.success,
+      title: 'Success',
+      text: 'Schedule reassigned successfully',
+    );
+
+    Navigator.of(navigatorKey.currentContext!).pop();
+    Navigator.of(navigatorKey.currentContext!).pop();
   }
 
   void disposeProvider() {
@@ -42,12 +224,14 @@ class _UpdateEnforcerSchedFormState
     ref.invalidate(selectedEnforcerProvider);
     ref.invalidate(selectedTrafficPostProvider);
     ref.invalidate(selectedShiftProvider);
+    ref.invalidate(selectedSwapWithProvider);
   }
 
   @override
   void dispose() {
     _trafficPostSearchController.dispose();
     _enforcerSearchController.dispose();
+    _scheduleSearchController.dispose();
     disposeProvider();
     super.dispose();
   }
@@ -192,6 +376,22 @@ class _UpdateEnforcerSchedFormState
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
+                            SizedBox(
+                              width: 300,
+                              child: TextField(
+                                controller: _scheduleSearchController,
+                                decoration: InputDecoration(
+                                  hintText: 'Search schedule',
+                                  prefixIcon: const Icon(Icons.search_rounded),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      USpace.space8,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
                             ChoiceChip(
                               label: const Text('Reassign'),
                               selected: schedEditMode != 'swap',
@@ -230,22 +430,39 @@ class _UpdateEnforcerSchedFormState
                           visible: schedEditMode == 'swap',
                           child: Expanded(
                             child: Container(
-                              padding: const EdgeInsets.all(USpace.space16),
+                              padding: const EdgeInsets.all(USpace.space8),
                               decoration: BoxDecoration(
-                                  color: UColors.white,
-                                  borderRadius: BorderRadius.circular(
-                                    USpace.space16,
-                                  ),
-                                  border: Border.all(
-                                    color: UColors.gray300,
-                                    width: 1,
-                                  )),
+                                color: UColors.white,
+                                borderRadius: BorderRadius.circular(
+                                  USpace.space16,
+                                ),
+                                border: Border.all(
+                                  color: UColors.gray300,
+                                  width: 1,
+                                ),
+                              ),
                               child: ref.watch(getAllEnforcerSchedStream).when(
                                     data: (schedules) {
                                       schedules.removeWhere(
                                         (element) =>
                                             element.id == widget.schedule.id,
                                       );
+                                      final query = ref.watch(
+                                        scheduleSearchProvider,
+                                      );
+
+                                      schedules = _searchScheds(
+                                        schedules,
+                                        query,
+                                      );
+
+                                      if (schedules.isEmpty &&
+                                          query.isNotEmpty) {
+                                        return const Center(
+                                          child: Text('Schedule not found'),
+                                        );
+                                      }
+
                                       return SwapWithSelectionWidget(
                                         schedules: schedules,
                                       );
@@ -308,7 +525,7 @@ class _UpdateEnforcerSchedFormState
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: _onUpdateButtonTap,
                           label: const Text('Update'),
                           icon: const Icon(Icons.edit_rounded),
                         ),
@@ -322,6 +539,22 @@ class _UpdateEnforcerSchedFormState
         },
       ),
     );
+  }
+
+  List<EnforcerSchedule> _searchScheds(
+      List<EnforcerSchedule> list, String query) {
+    if (query.isEmpty) {
+      return list;
+    }
+
+    query = query.toLowerCase();
+
+    return list
+        .where((element) =>
+            element.enforcerName.toString().toLowerCase().contains(query) ||
+            element.shift.name.toString().toLowerCase().contains(query) ||
+            element.postName.toString().toLowerCase().contains(query))
+        .toList();
   }
 }
 
@@ -343,6 +576,8 @@ class SwapWithSelectionWidget extends ConsumerWidget {
         bool isSelected = ref.watch(selectedSwapWithProvider) != null
             ? ref.watch(selectedSwapWithProvider)!.id == sched.id
             : false;
+        // print(isSelected);
+        // print(sched.toString());
         return SwapWithSelectionTile(
           isSelected: isSelected,
           schedule: sched,

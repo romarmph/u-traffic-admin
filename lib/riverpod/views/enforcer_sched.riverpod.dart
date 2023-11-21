@@ -25,3 +25,7 @@ final unassignedTrafficPostSearchProvider = StateProvider<String>((ref) {
 final selectedSwapWithProvider = StateProvider<EnforcerSchedule?>((ref) {
   return null;
 });
+
+final scheduleSearchProvider = StateProvider<String>((ref) {
+  return '';
+});

@@ -5,7 +5,7 @@ final enforcerSchedDatabaseProvider = Provider<EnforcerScheduleDatabse>((ref) {
 });
 
 final getAllEnforcerSchedStream = StreamProvider<List<EnforcerSchedule>>((ref) {
-  return ref.watch(enforcerSchedDatabaseProvider).getAllEnforcerSched();
+  return EnforcerScheduleDatabse.instance.getAllEnforcerSched();
 });
 
 final enforcerSchedProvider = Provider<List<EnforcerSchedule>>((ref) {
@@ -28,6 +28,7 @@ final availableEnforcerProvider = Provider<List<Enforcer>>((ref) {
       );
 });
 
-final enforcerSchedByIdStream = StreamProvider.family<EnforcerSchedule, String>((ref, id) {
+final enforcerSchedByIdStream =
+    StreamProvider.family<EnforcerSchedule, String>((ref, id) {
   return ref.watch(enforcerSchedDatabaseProvider).getEnforcerSchedById(id);
 });
