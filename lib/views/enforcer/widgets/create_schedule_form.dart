@@ -183,42 +183,6 @@ class CreateEnforcerSchedFormState
                                   Expanded(
                                     flex: 6,
                                     child: Text(
-                                      'Assign Enforcer',
-                                      style: const UTextStyle()
-                                          .textlgfontmedium
-                                          .copyWith(
-                                            color: UColors.gray500,
-                                          ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: TextField(
-                                      controller: _enforcerSearchController,
-                                      decoration: InputDecoration(
-                                        hintText: 'Search Enforcer',
-                                        prefixIcon:
-                                            const Icon(Icons.search_rounded),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            USpace.space8,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              width: USpace.space16,
-                            ),
-                            Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 6,
-                                    child: Text(
                                       'Assign Traffic Post',
                                       style: const UTextStyle()
                                           .textlgfontmedium
@@ -252,6 +216,42 @@ class CreateEnforcerSchedFormState
                                 ],
                               ),
                             ),
+                            const SizedBox(
+                              width: USpace.space16,
+                            ),
+                            Expanded(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 6,
+                                    child: Text(
+                                      'Assign Enforcer',
+                                      style: const UTextStyle()
+                                          .textlgfontmedium
+                                          .copyWith(
+                                            color: UColors.gray500,
+                                          ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 4,
+                                    child: TextField(
+                                      controller: _enforcerSearchController,
+                                      decoration: InputDecoration(
+                                        hintText: 'Search Enforcer',
+                                        prefixIcon:
+                                            const Icon(Icons.search_rounded),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            USpace.space8,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -274,7 +274,7 @@ class CreateEnforcerSchedFormState
                                       strokeAlign: BorderSide.strokeAlignInside,
                                     ),
                                   ),
-                                  child: const AssignableEnforcerListView(),
+                                  child: const AssignableTrafficPostListView(),
                                 ),
                               ),
                               const SizedBox(
@@ -294,7 +294,7 @@ class CreateEnforcerSchedFormState
                                       strokeAlign: BorderSide.strokeAlignInside,
                                     ),
                                   ),
-                                  child: const AssignableTrafficPostListView(),
+                                  child: const AssignableEnforcerListView(),
                                 ),
                               ),
                             ],
@@ -328,7 +328,14 @@ class CreateEnforcerSchedFormState
                               ),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            ref.invalidate(unassignedEnforcerSearchProvider);
+                            ref.invalidate(unassignedTrafficPostSearchProvider);
+                            ref.invalidate(selectedEnforcerProvider);
+                            ref.invalidate(selectedTrafficPostProvider);
+                            ref.invalidate(selectedShiftProvider);
+                            Navigator.of(context).pop();
+                          },
                           child: const Text('Cancel'),
                         ),
                         const SizedBox(width: USpace.space16),
@@ -430,9 +437,9 @@ class AssignableEnforcerListView extends ConsumerWidget {
     }
 
     return enforcers.where((element) {
-      return element.firstName.toLowerCase().contains(query.toLowerCase()) ||
-          element.middleName.toLowerCase().contains(query.toLowerCase()) ||
-          element.lastName.toLowerCase().contains(query.toLowerCase()) ||
+      final name =
+          '${element.firstName} ${element.middleName} ${element.lastName} ${element.suffix}';
+      return name.toLowerCase().contains(query.toLowerCase()) ||
           element.employeeNumber.toLowerCase().contains(query.toLowerCase());
     }).toList();
   }

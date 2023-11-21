@@ -8,3 +8,9 @@ final getAllTrafficPostProvider = StreamProvider<List<TrafficPost>>((ref) {
   final database = ref.watch(databaseProvider);
   return database.getAllTrafficPostStream();
 });
+
+final trafficPostProviderById =
+    StreamProvider.family<TrafficPost, String>((ref, id) {
+  final database = ref.watch(databaseProvider);
+  return database.getTrafficPostStream(id);
+});
