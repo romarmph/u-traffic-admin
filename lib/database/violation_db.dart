@@ -23,4 +23,26 @@ class ViolationDatabase {
       rethrow;
     }
   }
+
+  Future<List<Violation>> getAllViolation() async {
+    try {
+      final snapshot = await _firestore
+          .collection('violations')
+          .orderBy('name')
+          .get();
+      return snapshot.docs.map((doc) {
+        return Violation.fromJson(doc.data(), doc.id);
+      }).toList();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> addViolation(Violation violation) async {
+    try {
+      await _firestore.collection('violations').add(violation.toJson());
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

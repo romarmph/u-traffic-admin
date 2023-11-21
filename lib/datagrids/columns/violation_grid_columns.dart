@@ -32,10 +32,10 @@ List<GridColumn> violationColumns = [
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: ViolationFields.createdAt,
+    columnName: ViolationFields.status,
     label: const Center(
       child: Text(
-        'Date Created',
+        'Status',
         style: TextStyle(
           color: UColors.gray500,
           fontWeight: FontWeight.w600,
@@ -46,10 +46,10 @@ List<GridColumn> violationColumns = [
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: ViolationFields.updatedAt,
+    columnName: ViolationFields.createdAt,
     label: const Center(
       child: Text(
-        'Date Updated',
+        'Date Created',
         style: TextStyle(
           color: UColors.gray500,
           fontWeight: FontWeight.w600,

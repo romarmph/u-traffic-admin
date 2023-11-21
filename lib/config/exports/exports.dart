@@ -129,7 +129,6 @@ export 'package:u_traffic_admin/views/complaints/complaints_page.dart';
 export 'package:u_traffic_admin/views/system/system_violations_page.dart';
 export 'package:u_traffic_admin/views/system/system_vehicle_type_page.dart';
 export 'package:u_traffic_admin/views/system/system_traffic_posts_page.dart';
-export 'package:u_traffic_admin/views/system/system_enforcer_schedulate.dart';
 
 export 'package:u_traffic_admin/views/system/widgets/menu.dart';
 

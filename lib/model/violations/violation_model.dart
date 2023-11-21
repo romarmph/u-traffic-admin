@@ -4,23 +4,25 @@ class Violation {
   final String? id;
   final int fine;
   final String name;
+  final bool isDisabled;
   final List<ViolationOffense> offense;
   final String createdBy;
   final String editedBy;
   final Timestamp dateCreated;
-  final Timestamp dateEdited;
+  final Timestamp? dateEdited;
   bool isSelected;
 
   Violation({
     this.isSelected = false,
-    required this.id,
+    this.isDisabled = false,
+    this.id,
     required this.fine,
     required this.name,
     required this.offense,
     required this.createdBy,
-    required this.editedBy,
+    this.editedBy = "",
     required this.dateCreated,
-    required this.dateEdited,
+    this.dateEdited,
   });
 
   factory Violation.fromJson(Map<String, dynamic> json, String id) {
@@ -28,6 +30,7 @@ class Violation {
       id: id,
       fine: json['fine'],
       name: json['name'],
+      isDisabled: json['isDisabled'] ?? false,
       offense: List<Map<String, dynamic>>.from(json['offense'])
           .map((e) => ViolationOffense.fromJson(e))
           .toList(),
@@ -42,7 +45,8 @@ class Violation {
     return {
       'fine': fine,
       'name': name,
-      'offense': offense,
+      'offense': offense.map((e) => e.toJson()).toList(),
+      'isDisabled': isDisabled,
       'createdBy': createdBy,
       'editedBy': editedBy,
       'dateCreated': dateCreated,
@@ -55,6 +59,7 @@ class Violation {
     int? fine,
     String? name,
     List<ViolationOffense>? offense,
+    bool? isDisabled,
     String? createdBy,
     String? editedBy,
     Timestamp? dateCreated,
@@ -64,6 +69,7 @@ class Violation {
       id: id ?? this.id,
       fine: fine ?? this.fine,
       name: name ?? this.name,
+      isDisabled: isDisabled ?? this.isDisabled,
       offense: offense ?? this.offense,
       createdBy: createdBy ?? this.createdBy,
       editedBy: editedBy ?? this.editedBy,

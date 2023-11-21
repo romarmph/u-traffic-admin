@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/views/system/add_forms/violation_add_form.dart';
 
 class SystemMenu extends ConsumerStatefulWidget {
   const SystemMenu({
@@ -73,7 +74,16 @@ class _SystemMenuState extends ConsumerState<SystemMenu> {
               Visibility(
                 visible: widget.route != Routes.systemFiles,
                 child: UElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (widget.route == Routes.systemViolations) {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) =>
+                              const CreateViolationForm(),
+                        ),
+                      );
+                    }
+                  },
                   child: Text(_buttonTitle(widget.route)),
                 ),
               ),

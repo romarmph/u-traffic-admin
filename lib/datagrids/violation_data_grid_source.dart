@@ -18,6 +18,20 @@ class ViolationsDataGridSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
+        if (cell.columnName == ViolationFields.status) {
+          final status = cell.value as bool ? "Disabled" : "Enabled";
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            alignment: Alignment.center,
+            child: Text(
+              status,
+              style: TextStyle(
+                color: cell.value as bool ? UColors.red500 : UColors.green500,
+              ),
+            ),
+          );
+        }
+
         if (cell.columnName == ViolationFields.actions) {
           return Center(
             child: OutlinedButton(
@@ -99,13 +113,13 @@ class ViolationsDataGridSource extends DataGridSource {
             columnName: ViolationFields.offenseCount,
             value: cell.offense.length,
           ),
+          DataGridCell<bool>(
+            columnName: ViolationFields.status,
+            value: cell.isDisabled,
+          ),
           DataGridCell<DateTime>(
             columnName: ViolationFields.createdAt,
             value: cell.dateCreated.toDate(),
-          ),
-          DataGridCell<DateTime>(
-            columnName: ViolationFields.updatedAt,
-            value: cell.dateEdited.toDate(),
           ),
           DataGridCell<String>(
             columnName: ViolationFields.actions,

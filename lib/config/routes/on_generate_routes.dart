@@ -63,10 +63,6 @@ PageRouteBuilder onGenerateRoute(settings) {
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const SystemTrafficPostPage(),
       );
-    case Routes.systemEnforcerSchedule:
-      return PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const SystemEnforcerSchedulePage(),
-      );
     case Routes.settings:
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const SettingsPage(),
