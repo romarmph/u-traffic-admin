@@ -98,7 +98,7 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       const Text(
-                                        'Enforcer',
+                                        'Traffic Post',
                                         style: TextStyle(
                                           color: UColors.gray400,
                                           fontSize: 16,
@@ -108,8 +108,8 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                                       const SizedBox(
                                         height: USpace.space8,
                                       ),
-                                      EnforcerInformationContainer(
-                                        enforcerId: schedule.enforcerId,
+                                      TrafficPostInformationContainer(
+                                        trafficPostId: schedule.postId,
                                       ),
                                     ],
                                   ),
@@ -123,7 +123,7 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       const Text(
-                                        'Traffic Post',
+                                        'Enforcer',
                                         style: TextStyle(
                                           color: UColors.gray400,
                                           fontSize: 16,
@@ -133,8 +133,8 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                                       const SizedBox(
                                         height: USpace.space8,
                                       ),
-                                      TrafficPostInformationContainer(
-                                        trafficPostId: schedule.postId,
+                                      EnforcerInformationContainer(
+                                        enforcerId: schedule.enforcerId,
                                       ),
                                     ],
                                   ),

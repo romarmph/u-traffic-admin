@@ -3,7 +3,7 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 
 final schedEditModeProvider = StateProvider<String>((ref) => 'swap');
 
-class UpdateEnforcerSchedForm extends ConsumerWidget {
+class UpdateEnforcerSchedForm extends ConsumerStatefulWidget {
   const UpdateEnforcerSchedForm({
     super.key,
     required this.schedule,
@@ -12,15 +12,52 @@ class UpdateEnforcerSchedForm extends ConsumerWidget {
   final EnforcerSchedule schedule;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _UpdateEnforcerSchedFormState();
+}
+
+class _UpdateEnforcerSchedFormState
+    extends ConsumerState<UpdateEnforcerSchedForm> {
+  final _trafficPostSearchController = TextEditingController();
+  final _enforcerSearchController = TextEditingController();
+
+  int _flag = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _trafficPostSearchController.addListener(() {
+      ref.read(unassignedTrafficPostSearchProvider.notifier).state =
+          _trafficPostSearchController.text;
+    });
+    _enforcerSearchController.addListener(() {
+      ref.read(unassignedEnforcerSearchProvider.notifier).state =
+          _enforcerSearchController.text;
+    });
+  }
+
+  void disposeProvider() {
+    ref.invalidate(unassignedEnforcerSearchProvider);
+    ref.invalidate(unassignedTrafficPostSearchProvider);
+    ref.invalidate(selectedEnforcerProvider);
+    ref.invalidate(selectedTrafficPostProvider);
+    ref.invalidate(selectedShiftProvider);
+  }
+
+  @override
+  void dispose() {
+    _trafficPostSearchController.dispose();
+    _enforcerSearchController.dispose();
+    disposeProvider();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final selecteShift = ref.watch(selectedShiftProvider);
     final selectedEnforcer = ref.watch(selectedEnforcerProvider);
     final selectedPost = ref.watch(selectedTrafficPostProvider);
     final schedEditMode = ref.watch(schedEditModeProvider);
-
-    print(schedule.shift.name == selecteShift
-        ? selecteShift
-        : schedule.shift.name);
 
     return PageContainer(
       appBar: AppBar(
@@ -82,10 +119,13 @@ class UpdateEnforcerSchedForm extends ConsumerWidget {
                               onChanged: (value) {
                                 ref.read(selectedShiftProvider.notifier).state =
                                     value!;
+                                setState(() {
+                                  _flag = 1;
+                                });
                               },
-                              value: schedule.shift.name == selecteShift
-                                  ? selecteShift
-                                  : schedule.shift.name,
+                              value: _flag == 0
+                                  ? widget.schedule.shift.name
+                                  : selecteShift,
                             ),
                           ],
                         ),
@@ -95,32 +135,6 @@ class UpdateEnforcerSchedForm extends ConsumerWidget {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    'Enforcer',
-                                    style: TextStyle(
-                                      color: UColors.gray400,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: USpace.space8,
-                                  ),
-                                  EnforcerInformationContainer(
-                                    enforcerId: selectedEnforcer != null
-                                        ? selectedEnforcer.id!
-                                        : schedule.enforcerId,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(
-                              width: USpace.space16,
-                            ),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,7 +153,33 @@ class UpdateEnforcerSchedForm extends ConsumerWidget {
                                   TrafficPostInformationContainer(
                                     trafficPostId: selectedPost != null
                                         ? selectedPost.id!
-                                        : schedule.postId,
+                                        : widget.schedule.postId,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              width: USpace.space16,
+                            ),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Enforcer',
+                                    style: TextStyle(
+                                      color: UColors.gray400,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: USpace.space8,
+                                  ),
+                                  EnforcerInformationContainer(
+                                    enforcerId: selectedEnforcer != null
+                                        ? selectedEnforcer.id!
+                                        : widget.schedule.enforcerId,
                                   ),
                                 ],
                               ),
@@ -172,7 +212,150 @@ class UpdateEnforcerSchedForm extends ConsumerWidget {
                               },
                             ),
                           ],
-                        )
+                        ),
+                        Expanded(
+                          child: Visibility(
+                            visible: schedEditMode == 'reassign',
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 6,
+                                            child: Text(
+                                              'Assign Traffic Post',
+                                              style: const UTextStyle()
+                                                  .textlgfontmedium
+                                                  .copyWith(
+                                                    color: UColors.gray500,
+                                                  ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Visibility(
+                                              visible: ref.watch(
+                                                      selectedShiftProvider) !=
+                                                  'night',
+                                              child: TextField(
+                                                controller:
+                                                    _trafficPostSearchController,
+                                                decoration: InputDecoration(
+                                                  hintText:
+                                                      'Search Traffic post',
+                                                  prefixIcon: const Icon(
+                                                      Icons.search_rounded),
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      USpace.space8,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: USpace.space16,
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 6,
+                                            child: Text(
+                                              'Assign Enforcer',
+                                              style: const UTextStyle()
+                                                  .textlgfontmedium
+                                                  .copyWith(
+                                                    color: UColors.gray500,
+                                                  ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: TextField(
+                                              controller:
+                                                  _enforcerSearchController,
+                                              decoration: InputDecoration(
+                                                hintText: 'Search Enforcer',
+                                                prefixIcon: const Icon(
+                                                    Icons.search_rounded),
+                                                border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                    USpace.space8,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: USpace.space12,
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: Container(
+                                          height: constraints.maxHeight,
+                                          width: constraints.maxWidth,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              USpace.space12,
+                                            ),
+                                            color: UColors.white,
+                                            border: Border.all(
+                                              color: UColors.gray200,
+                                              strokeAlign:
+                                                  BorderSide.strokeAlignInside,
+                                            ),
+                                          ),
+                                          child:
+                                              const AssignableTrafficPostListView(),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: USpace.space16,
+                                      ),
+                                      Expanded(
+                                        child: Container(
+                                          height: constraints.maxHeight,
+                                          width: constraints.maxWidth,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              USpace.space12,
+                                            ),
+                                            color: UColors.white,
+                                            border: Border.all(
+                                              color: UColors.gray200,
+                                              strokeAlign:
+                                                  BorderSide.strokeAlignInside,
+                                            ),
+                                          ),
+                                          child:
+                                              const AssignableEnforcerListView(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
