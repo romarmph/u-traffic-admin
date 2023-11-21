@@ -105,3 +105,14 @@ void goToEnforcerSchedView(String id) {
     ),
   );
 }
+
+void goToEnforcerSchedUpdate(String id) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => UpdateEnforcerSchedForm(
+        scheduleId: id,
+      ),
+    ),
+  );
+}

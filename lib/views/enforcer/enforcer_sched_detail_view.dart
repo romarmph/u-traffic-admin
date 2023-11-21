@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
-import 'package:u_traffic_admin/riverpod/views/enforcer_sched.riverpod.dart';
 
 class EnforcerScheduleDetailView extends ConsumerWidget {
   const EnforcerScheduleDetailView({
@@ -196,7 +195,12 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                                   ),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                print('update');
+                                goToEnforcerSchedUpdate(
+                                  schedule.id!,
+                                );
+                              },
                               label: const Text('Update'),
                               icon: const Icon(Icons.edit_rounded),
                             ),
@@ -218,164 +222,6 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                 },
               ),
             ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class EnforcerInformationContainer extends ConsumerWidget {
-  const EnforcerInformationContainer({
-    super.key,
-    required this.enforcerId,
-  });
-
-  final String enforcerId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      padding: const EdgeInsets.all(USpace.space16),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: UColors.gray300,
-        ),
-        borderRadius: BorderRadius.circular(
-          USpace.space8,
-        ),
-      ),
-      child: ref.watch(enforcerProviderById(enforcerId)).when(
-        data: (data) {
-          return Row(
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundImage: CachedNetworkImageProvider(
-                  data.photoUrl,
-                ),
-              ),
-              const SizedBox(
-                width: USpace.space16,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${data.firstName} ${data.middleName} ${data.lastName} ${data.suffix}',
-                    style: const TextStyle(
-                      color: UColors.gray400,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: USpace.space8,
-                  ),
-                  Text(
-                    data.email,
-                    style: const TextStyle(
-                      color: UColors.gray400,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-        error: (e, s) {
-          return const Center(
-            child: Text('Error fetching data'),
-          );
-        },
-        loading: () {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class TrafficPostInformationContainer extends ConsumerWidget {
-  const TrafficPostInformationContainer({
-    super.key,
-    required this.trafficPostId,
-  });
-
-  final String trafficPostId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      padding: const EdgeInsets.all(USpace.space16),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: UColors.gray300,
-        ),
-        borderRadius: BorderRadius.circular(
-          USpace.space8,
-        ),
-      ),
-      child: ref.watch(trafficPostProviderById(trafficPostId)).when(
-        data: (data) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 24,
-                backgroundColor: UColors.blue500,
-                child: Text(
-                  data.number.toString(),
-                  style: const TextStyle(
-                    color: UColors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                width: USpace.space16,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    data.name,
-                    style: const TextStyle(
-                      color: UColors.gray400,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: USpace.space8,
-                  ),
-                  Text(
-                    data.location.address,
-                    style: const TextStyle(
-                      color: UColors.gray400,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-        error: (e, s) {
-          return const Center(
-            child: Text('Error fetching data'),
-          );
-        },
-        loading: () {
-          return const Center(
-            child: CircularProgressIndicator(),
           );
         },
       ),
