@@ -196,9 +196,8 @@ class EnforcerScheduleDetailView extends ConsumerWidget {
                                 ),
                               ),
                               onPressed: () {
-                                print('update');
                                 goToEnforcerSchedUpdate(
-                                  schedule.id!,
+                                  schedule,
                                 );
                               },
                               label: const Text('Update'),
