@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
-import 'package:u_traffic_admin/riverpod/views/enforcer_sched.riverpod.dart';
 
 class CreateEnforcerSchedForm extends ConsumerStatefulWidget {
   const CreateEnforcerSchedForm({super.key});
@@ -106,6 +105,14 @@ class CreateEnforcerSchedFormState
         text: 'Something went wrong. Please try again.',
       );
     }
+  }
+
+  void disposeProvider() {
+    ref.invalidate(unassignedEnforcerSearchProvider);
+    ref.invalidate(unassignedTrafficPostSearchProvider);
+    ref.invalidate(selectedEnforcerProvider);
+    ref.invalidate(selectedTrafficPostProvider);
+    ref.invalidate(selectedShiftProvider);
   }
 
   @override
@@ -329,11 +336,6 @@ class CreateEnforcerSchedFormState
                             ),
                           ),
                           onPressed: () {
-                            ref.invalidate(unassignedEnforcerSearchProvider);
-                            ref.invalidate(unassignedTrafficPostSearchProvider);
-                            ref.invalidate(selectedEnforcerProvider);
-                            ref.invalidate(selectedTrafficPostProvider);
-                            ref.invalidate(selectedShiftProvider);
                             Navigator.of(context).pop();
                           },
                           child: const Text('Cancel'),
