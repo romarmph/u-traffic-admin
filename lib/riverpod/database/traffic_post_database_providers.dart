@@ -14,3 +14,11 @@ final trafficPostProviderById =
   final database = ref.watch(databaseProvider);
   return database.getTrafficPostStream(id);
 });
+
+final trafficPostProvider = Provider<List<TrafficPost>>((ref) {
+  return ref.watch(getAllTrafficPostProvider).when(
+        data: (data) => data,
+        error: (error, stackTrace) => [],
+        loading: () => [],
+      );
+});

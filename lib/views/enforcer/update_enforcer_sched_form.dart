@@ -213,146 +213,52 @@ class _UpdateEnforcerSchedFormState
                             ),
                           ],
                         ),
-                        Expanded(
-                          child: Visibility(
-                            visible: schedEditMode == 'reassign',
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 6,
-                                            child: Text(
-                                              'Assign Traffic Post',
-                                              style: const UTextStyle()
-                                                  .textlgfontmedium
-                                                  .copyWith(
-                                                    color: UColors.gray500,
-                                                  ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: Visibility(
-                                              visible: ref.watch(
-                                                      selectedShiftProvider) !=
-                                                  'night',
-                                              child: TextField(
-                                                controller:
-                                                    _trafficPostSearchController,
-                                                decoration: InputDecoration(
-                                                  hintText:
-                                                      'Search Traffic post',
-                                                  prefixIcon: const Icon(
-                                                      Icons.search_rounded),
-                                                  border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                      USpace.space8,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: USpace.space16,
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 6,
-                                            child: Text(
-                                              'Assign Enforcer',
-                                              style: const UTextStyle()
-                                                  .textlgfontmedium
-                                                  .copyWith(
-                                                    color: UColors.gray500,
-                                                  ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: TextField(
-                                              controller:
-                                                  _enforcerSearchController,
-                                              decoration: InputDecoration(
-                                                hintText: 'Search Enforcer',
-                                                prefixIcon: const Icon(
-                                                    Icons.search_rounded),
-                                                border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    USpace.space8,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: USpace.space12,
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          height: constraints.maxHeight,
-                                          width: constraints.maxWidth,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              USpace.space12,
-                                            ),
-                                            color: UColors.white,
-                                            border: Border.all(
-                                              color: UColors.gray200,
-                                              strokeAlign:
-                                                  BorderSide.strokeAlignInside,
-                                            ),
-                                          ),
-                                          child:
-                                              const AssignableTrafficPostListView(),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: USpace.space16,
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          height: constraints.maxHeight,
-                                          width: constraints.maxWidth,
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              USpace.space12,
-                                            ),
-                                            color: UColors.white,
-                                            border: Border.all(
-                                              color: UColors.gray200,
-                                              strokeAlign:
-                                                  BorderSide.strokeAlignInside,
-                                            ),
-                                          ),
-                                          child:
-                                              const AssignableEnforcerListView(),
-                                        ),
-                                      ),
-                                    ],
+                        Visibility(
+                          visible: schedEditMode == 'reassign',
+                          child: Expanded(
+                            child: ScheduleReassignWidget(
+                              constraints: constraints,
+                              ref: ref,
+                              trafficPostSearchController:
+                                  _trafficPostSearchController,
+                              enforcerSearchController:
+                                  _enforcerSearchController,
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: schedEditMode == 'swap',
+                          child: Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(USpace.space16),
+                              decoration: BoxDecoration(
+                                  color: UColors.white,
+                                  borderRadius: BorderRadius.circular(
+                                    USpace.space16,
                                   ),
-                                ),
-                              ],
+                                  border: Border.all(
+                                    color: UColors.gray300,
+                                    width: 1,
+                                  )),
+                              child: ref.watch(getAllEnforcerSchedStream).when(
+                                    data: (schedules) {
+                                      schedules.removeWhere(
+                                        (element) =>
+                                            element.id == widget.schedule.id,
+                                      );
+                                      return SwapWithSelectionWidget(
+                                        schedules: schedules,
+                                      );
+                                    },
+                                    error: (error, stackTrace) {
+                                      return const Center(
+                                        child: Text('Error fetching schedules'),
+                                      );
+                                    },
+                                    loading: () => const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
                             ),
                           ),
                         ),
@@ -415,6 +321,209 @@ class _UpdateEnforcerSchedFormState
           );
         },
       ),
+    );
+  }
+}
+
+class SwapWithSelectionWidget extends ConsumerWidget {
+  const SwapWithSelectionWidget({
+    super.key,
+    required this.schedules,
+  });
+
+  final List<EnforcerSchedule> schedules;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ListView.builder(
+      itemCount: schedules.length,
+      itemBuilder: (context, index) {
+        final sched = schedules[index];
+
+        bool isSelected = ref.watch(selectedSwapWithProvider) != null
+            ? ref.watch(selectedSwapWithProvider)!.id == sched.id
+            : false;
+        return SwapWithSelectionTile(
+          isSelected: isSelected,
+          schedule: sched,
+          onChanged: (value) {
+            ref.read(selectedSwapWithProvider.notifier).state = sched;
+          },
+        );
+      },
+    );
+  }
+}
+
+class SwapWithSelectionTile extends ConsumerWidget {
+  const SwapWithSelectionTile({
+    super.key,
+    required this.isSelected,
+    required this.schedule,
+    required this.onChanged,
+  });
+
+  final bool isSelected;
+  final EnforcerSchedule schedule;
+  final void Function(bool? value)? onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final enforcers = ref.watch(enforcerProvider);
+    final trafficPost = ref.watch(trafficPostProvider);
+
+    final enforcer = enforcers.firstWhere(
+      (element) => element.id == schedule.enforcerId,
+    );
+
+    TrafficPost? post;
+
+    final temp = trafficPost
+        .where(
+          (element) => element.id == schedule.postId,
+        )
+        .toList();
+
+    if (temp.isNotEmpty) {
+      post = temp.first;
+    }
+
+    final String name =
+        '${enforcer.firstName} ${enforcer.middleName} ${enforcer.lastName} ${enforcer.suffix}';
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: isSelected ? UColors.blue200 : UColors.gray50,
+          borderRadius: BorderRadius.circular(
+            USpace.space8,
+          ),
+          border: Border.all(
+            color: isSelected ? UColors.blue400 : UColors.gray300,
+            width: 1,
+          ),
+        ),
+        child: CheckboxListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: USpace.space16,
+            vertical: USpace.space8,
+          ),
+          value: isSelected,
+          title: Row(
+            children: [
+              CircleAvatar(
+                radius: 32,
+                backgroundImage: CachedNetworkImageProvider(
+                  enforcer.photoUrl,
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(width: USpace.space8),
+                        Text(
+                          name,
+                          style: const TextStyle(
+                            color: UColors.gray600,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const Spacer(),
+                        Chip(
+                          side: BorderSide.none,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(USpace.space4),
+                          ),
+                          backgroundColor: UColors.red500,
+                          label: Text(
+                            enforcer.employeeNumber.toString(),
+                            style: const TextStyle(
+                              color: UColors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: USpace.space16),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        _displayPostDetails(schedule.shift, post),
+                        const Spacer(),
+                        Chip(
+                          side: BorderSide.none,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(USpace.space4),
+                          ),
+                          backgroundColor: schedule.shift == ShiftPeriod.morning
+                              ? UColors.blue500
+                              : schedule.shift == ShiftPeriod.afternoon
+                                  ? UColors.orange500
+                                  : UColors.indigo900,
+                          label: Text(
+                            schedule.shift.name.toUpperCase(),
+                            style: const TextStyle(
+                              color: UColors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+
+  Widget _displayPostDetails(ShiftPeriod shift, TrafficPost? post) {
+    if (shift == ShiftPeriod.night) {
+      return const SizedBox.shrink();
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const SizedBox(width: USpace.space12),
+        CircleAvatar(
+          radius: 16,
+          backgroundColor: UColors.indigo600,
+          child: Text(
+            post!.number.toString(),
+            style: const TextStyle(
+              color: UColors.white,
+            ),
+          ),
+        ),
+        const SizedBox(width: USpace.space8),
+        Text(
+          post.name,
+          style: const TextStyle(
+            color: UColors.gray700,
+            fontSize: 18,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(width: USpace.space8),
+        Text(
+          post.location.address,
+          style: const TextStyle(
+            color: UColors.gray500,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 }
