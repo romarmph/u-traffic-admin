@@ -77,20 +77,20 @@ class _UpdateEnforcerSchedFormState
 
     final currentSchedule = widget.schedule.copyWith(
       enforcerId: selectedSwapWith.enforcerId,
-      postId: selectedSwapWith.postId,
-      shift: widget.schedule.shift,
       enforcerName: selectedSwapWith.enforcerName,
-      postName: selectedSwapWith.postName,
+      postId: widget.schedule.postId,
+      shift: widget.schedule.shift,
+      postName: widget.schedule.postName,
       updatedAt: Timestamp.now(),
       updatedBy: currentAdmin.id,
     );
 
     final selectedSchedule = selectedSwapWith.copyWith(
       enforcerId: widget.schedule.enforcerId,
-      postId: widget.schedule.postId,
-      shift: selectedSwapWith.shift,
       enforcerName: widget.schedule.enforcerName,
-      postName: widget.schedule.postName,
+      shift: selectedSwapWith.shift,
+      postId: selectedSwapWith.postId,
+      postName: selectedSwapWith.postName,
       updatedAt: Timestamp.now(),
       updatedBy: currentAdmin.id,
     );

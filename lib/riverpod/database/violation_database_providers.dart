@@ -11,3 +11,7 @@ final violationsProvider = Provider<List<Violation>>(
         loading: () => [],
       ),
 );
+
+final violationByIdProvider = StreamProvider.family<Violation, String>(
+  (ref, id) => ViolationDatabase.instance.getViolationByIdStream(id),
+);
