@@ -48,8 +48,8 @@ export 'package:u_traffic_admin/datagrids/traffic_post_data_grid_source.dart';
 export 'package:u_traffic_admin/datagrids/columns/violation_grid_columns.dart';
 export 'package:u_traffic_admin/datagrids/columns/enforcer_schedule_grid_columns.dart';
 export 'package:u_traffic_admin/datagrids/columns/enforcer_grid_columns.dart';
-
 export 'package:u_traffic_admin/datagrids/columns/admin_grid_columns.dart';
+export 'package:u_traffic_admin/datagrids/columns/complaints_grid_columns.dart';
 
 // * ---- data grid fields
 export 'package:u_traffic_admin/datagrids/column_names/ticket_grid_fields.dart';
@@ -59,6 +59,7 @@ export 'package:u_traffic_admin/datagrids/column_names/payment_grid_fields.dart'
 export 'package:u_traffic_admin/datagrids/column_names/traffic_post_grid_fields.dart';
 export 'package:u_traffic_admin/datagrids/column_names/enforcer_schedule_grid_fields.dart';
 export 'package:u_traffic_admin/datagrids/column_names/enforcer_grid_fields.dart';
+export 'package:u_traffic_admin/datagrids/column_names/complaints_grid_fields.dart';
 
 export 'package:u_traffic_admin/datagrids/column_names/admin_grid_fields.dart';
 
@@ -223,6 +224,8 @@ export 'package:u_traffic_admin/model/payment_model.dart';
 export 'package:u_traffic_admin/model/notification.dart';
 export 'package:u_traffic_admin/model/traffic_post_model.dart';
 export 'package:u_traffic_admin/model/data_exports.dart';
+export 'package:u_traffic_admin/model/attachment.dart';
+export 'package:u_traffic_admin/model/complaint_model.dart';
 
 /**
  * 
@@ -238,6 +241,7 @@ export 'package:u_traffic_admin/database/payments_db.dart';
 export 'package:u_traffic_admin/database/traffic_post_db.dart';
 export 'package:u_traffic_admin/database/enforcer_schedule.dart';
 export 'package:u_traffic_admin/database/enforcer_database.dart';
+export 'package:u_traffic_admin/database/complaints_db.dart';
 
 /**
  * 

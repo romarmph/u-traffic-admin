@@ -187,15 +187,15 @@ class _PageContainerState extends ConsumerState<PageContainer> {
 
     final List<AdminMenuItem> menu = [];
 
-    // if (permissions.contains(AdminPermission.viewDashboard)) {
-    //   menu.add(
-    //     const AdminMenuItem(
-    //       title: "Dashboard",
-    //       route: Routes.home,
-    //       icon: Icons.dashboard_rounded,
-    //     ),
-    //   );
-    // }
+    if (permissions.contains(AdminPermission.viewDashboard)) {
+      menu.add(
+        const AdminMenuItem(
+          title: "Dashboard",
+          route: Routes.home,
+          icon: Icons.dashboard_rounded,
+        ),
+      );
+    }
 
     if (permissions.contains(AdminPermission.managePayment)) {
       menu.add(
@@ -207,15 +207,15 @@ class _PageContainerState extends ConsumerState<PageContainer> {
       );
     }
 
-    // if (permissions.contains(AdminPermission.viewAnalytics)) {
-    //   menu.add(
-    //     const AdminMenuItem(
-    //       title: "Analytics",
-    //       route: Routes.analytics,
-    //       icon: Icons.analytics_rounded,
-    //     ),
-    //   );
-    // }
+    if (permissions.contains(AdminPermission.viewAnalytics)) {
+      menu.add(
+        const AdminMenuItem(
+          title: "Analytics",
+          route: Routes.analytics,
+          icon: Icons.analytics_rounded,
+        ),
+      );
+    }
 
     if (permissions.contains(AdminPermission.manageTickets)) {
       menu.add(
@@ -276,15 +276,15 @@ class _PageContainerState extends ConsumerState<PageContainer> {
       );
     }
 
-    // if (permissions.contains(AdminPermission.manageComplaints)) {
-    //   menu.add(
-    //     const AdminMenuItem(
-    //       title: "Complaints",
-    //       route: Routes.complaints,
-    //       icon: Icons.report_rounded,
-    //     ),
-    //   );
-    // }
+    if (permissions.contains(AdminPermission.manageComplaints)) {
+      menu.add(
+        const AdminMenuItem(
+          title: "Complaints",
+          route: Routes.complaints,
+          icon: Icons.report_rounded,
+        ),
+      );
+    }
 
     if (permissions.contains(AdminPermission.manageSystem)) {
       menu.add(
