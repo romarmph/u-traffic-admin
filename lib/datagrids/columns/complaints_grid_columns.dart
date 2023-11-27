@@ -23,6 +23,20 @@ final List<GridColumn> complaintGridColumn = [
     columnName: ComplaintsGridFields.title,
     label: const Center(
       child: Text(
+        'Sender',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+    ),
+  ),
+  GridColumn(
+    minimumWidth: 150,
+    columnName: ComplaintsGridFields.title,
+    label: const Center(
+      child: Text(
         'Title',
         style: TextStyle(
           color: UColors.gray500,
@@ -47,7 +61,7 @@ final List<GridColumn> complaintGridColumn = [
     ),
   ),
   GridColumn(
-    minimumWidth: 150,
+    columnWidthMode: ColumnWidthMode.fitByColumnName,
     columnName: ComplaintsGridFields.status,
     label: const Center(
       child: Text(
@@ -61,7 +75,7 @@ final List<GridColumn> complaintGridColumn = [
     ),
   ),
   GridColumn(
-    minimumWidth: 150,
+    columnWidthMode: ColumnWidthMode.fitByCellValue,
     columnName: ComplaintsGridFields.createdAt,
     label: const Center(
       child: Text(
@@ -75,6 +89,7 @@ final List<GridColumn> complaintGridColumn = [
     ),
   ),
   GridColumn(
+    columnWidthMode: ColumnWidthMode.fitByCellValue,
     allowSorting: false,
     allowFiltering: false,
     columnName: ComplaintsGridFields.createdAt,

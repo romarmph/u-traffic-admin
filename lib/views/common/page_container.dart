@@ -9,6 +9,7 @@ class PageContainer extends ConsumerStatefulWidget {
     required this.route,
     this.endDrawer,
     this.scaffoldKey,
+    this.floatingActionButton,
   });
 
   final Widget body;
@@ -16,6 +17,7 @@ class PageContainer extends ConsumerStatefulWidget {
   final String route;
   final Drawer? endDrawer;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+  final Widget? floatingActionButton;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PageContainerState();
@@ -31,6 +33,7 @@ class _PageContainerState extends ConsumerState<PageContainer> {
       appBar: widget.appBar,
       endDrawer: widget.endDrawer,
       scaffoldKey: widget.scaffoldKey,
+      floatingActionButton: widget.floatingActionButton,
       sideBar: SideBar(
         activeBackgroundColor: UColors.blue600,
         activeIconColor: UColors.white,

@@ -14,6 +14,7 @@ class AdminScaffold extends StatefulWidget {
     this.backgroundColor,
     this.endDrawer,
     this.scaffoldKey,
+    this.floatingActionButton,
   }) : super(key: key);
 
   final AppBar? appBar;
@@ -22,6 +23,7 @@ class AdminScaffold extends StatefulWidget {
   final Color? backgroundColor;
   final Drawer? endDrawer;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+  final Widget? floatingActionButton;
 
   @override
   State<StatefulWidget> createState() => _AdminScaffoldState();
@@ -147,6 +149,7 @@ class _AdminScaffoldState extends State<AdminScaffold>
       backgroundColor: widget.backgroundColor,
       appBar: _appBar,
       endDrawer: widget.endDrawer,
+      floatingActionButton: widget.floatingActionButton,
       body: AnimatedBuilder(
         animation: _animation,
         builder: (_, __) => widget.sideBar == null

@@ -23,6 +23,32 @@ class ComplaintsDataGridSource extends DataGridSource {
   DataGridRowAdapter buildRow(DataGridRow row) {
     return DataGridRowAdapter(
       cells: row.getCells().map<Widget>((cell) {
+        if (cell.columnName == ComplaintsGridFields.sender) {
+          return Container(
+            padding: const EdgeInsets.all(8),
+            alignment: Alignment.center,
+            child: ref.watch(getDriverByIdProvider(cell.value.toString())).when(
+                  data: (driver) {
+                    return Text(
+                      '${driver.firstName} ${driver.lastName}',
+                      style: const TextStyle(
+                        color: UColors.gray500,
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16,
+                      ),
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    return const Icon(
+                      Icons.error,
+                      color: UColors.red400,
+                    );
+                  },
+                  loading: () => const CircularProgressIndicator(),
+                ),
+          );
+        }
+
         if (cell.columnName == ComplaintsGridFields.photo) {
           return Container(
             padding: const EdgeInsets.all(8),
@@ -115,6 +141,8 @@ class ComplaintsDataGridSource extends DataGridSource {
             padding: const EdgeInsets.all(8),
             child: Text(
               cell.value.toString(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: UColors.gray500,
                 fontWeight: FontWeight.w400,
@@ -129,6 +157,8 @@ class ComplaintsDataGridSource extends DataGridSource {
           alignment: Alignment.center,
           child: Text(
             cell.value.toString(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: UColors.gray500,
               fontWeight: FontWeight.w400,
@@ -145,6 +175,10 @@ class ComplaintsDataGridSource extends DataGridSource {
       return DataGridRow(cells: [
         DataGridCell<String>(
           columnName: ComplaintsGridFields.photo,
+          value: cell.sender,
+        ),
+        DataGridCell<String>(
+          columnName: ComplaintsGridFields.sender,
           value: cell.sender,
         ),
         DataGridCell<String>(

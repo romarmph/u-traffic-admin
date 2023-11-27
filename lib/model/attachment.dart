@@ -1,14 +1,18 @@
+import 'dart:typed_data';
+
 class Attachment {
   final String name;
   final String url;
   final String type;
   final int size;
+  final Uint8List? bytes;
 
   Attachment({
     required this.name,
     required this.url,
     required this.type,
     required this.size,
+    this.bytes,
   });
 
   factory Attachment.fromJson(Map<String, dynamic> json) {

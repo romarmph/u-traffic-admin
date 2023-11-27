@@ -49,6 +49,7 @@ class ComplaintsDatabase {
     });
   }
 
+  /// Returns doc id of the newly added complaint
   Future<String> addComplaint(Complaint complaint) async {
     final ref = await _collection.add(complaint.toJson());
     return ref.id;

@@ -3,6 +3,10 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 import 'package:u_traffic_admin/datagrids/complaints_data_grid_source.dart';
 import 'package:u_traffic_admin/riverpod/database/complains_database_providers.dart';
 
+final complaintSearchQueryProvider = StateProvider<String>((ref) {
+  return "";
+});
+
 class ComplaintsPage extends ConsumerStatefulWidget {
   const ComplaintsPage({super.key});
 
@@ -39,9 +43,32 @@ class _ComplaintsPageState extends ConsumerState<ComplaintsPage> {
                   ),
                   child: Row(
                     children: [
+                      const Spacer(),
                       SizedBox(
                         width: 300,
                         child: TextField(
+                          onChanged: (value) {
+                            ref
+                                .read(complaintSearchQueryProvider.notifier)
+                                .state = value;
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Search Complaint",
+                            prefixIcon: const Icon(Icons.search),
+                            suffixIcon: Visibility(
+                              visible: _searchController.text.isNotEmpty,
+                              child: IconButton(
+                                onPressed: () {
+                                  _searchController.clear();
+                                  ref
+                                      .read(
+                                          complaintSearchQueryProvider.notifier)
+                                      .state = "";
+                                },
+                                icon: const Icon(Icons.close),
+                              ),
+                            ),
+                          ),
                           controller: _searchController,
                         ),
                       ),
@@ -65,6 +92,21 @@ class _ComplaintsPageState extends ConsumerState<ComplaintsPage> {
                                     (element) => element.parentThread == null)
                                 .toList();
 
+                            final query =
+                                ref.watch(complaintSearchQueryProvider);
+
+                            if (query.isNotEmpty) {
+                              complaints = complaints
+                                  .where((element) =>
+                                      element.title
+                                          .toLowerCase()
+                                          .contains(query.toLowerCase()) ||
+                                      element.description
+                                          .toLowerCase()
+                                          .contains(query.toLowerCase()))
+                                  .toList();
+                            }
+
                             return DataGridContainer(
                               gridLinesVisibility: GridLinesVisibility.none,
                               headerGridLinesVisibility:
@@ -79,7 +121,6 @@ class _ComplaintsPageState extends ConsumerState<ComplaintsPage> {
                             );
                           },
                           error: (error, stackTrace) {
-                            print(error);
                             return const Center(
                               child: Text("Error"),
                             );
