@@ -132,10 +132,7 @@ class VehicleDataGridSource extends DataGridSource {
             columnName: VehicleTypeGridFields.dateCreated,
             value: vehicleType.dateCreated.toDate(),
           ),
-          DataGridCell<DateTime>(
-            columnName: VehicleTypeGridFields.dateEdited,
-            value: vehicleType.dateEdited.toDate(),
-          ),
+
           DataGridCell<String>(
             columnName: VehicleTypeGridFields.actions,
             value: vehicleType.id,

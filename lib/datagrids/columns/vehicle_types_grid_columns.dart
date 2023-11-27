@@ -60,20 +60,6 @@ List<GridColumn> vehicleTypeColumns = [
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: VehicleTypeGridFields.dateEdited,
-    label: const Center(
-      child: Text(
-        'Date Edited',
-        style: TextStyle(
-          color: UColors.gray500,
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
-      ),
-    ),
-  ),
-  GridColumn(
-    minimumWidth: 150,
     allowFiltering: false,
     allowSorting: false,
     columnName: VehicleTypeGridFields.actions,
