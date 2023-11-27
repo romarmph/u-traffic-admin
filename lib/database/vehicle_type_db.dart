@@ -30,6 +30,25 @@ class VehicleTypeDatabase {
     });
   }
 
+  Stream<VehicleType> getVehicleTypeByIdStream(String id) {
+    const String collection = "vehicleTypes";
+
+    return _firestore
+        .collection(collection)
+        .doc(id)
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.exists) {
+        return VehicleType.fromJson(
+          snapshot.data()!,
+          snapshot.id,
+        );
+      }
+
+      throw Exception("Vehicle Type not found");
+    });
+  }
+
   Future<VehicleType> getVehicleTypeById(String id) async {
     try {
       const String collection = "vehicleTypes";

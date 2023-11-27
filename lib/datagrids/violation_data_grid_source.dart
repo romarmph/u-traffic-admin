@@ -59,50 +59,50 @@ class ViolationsDataGridSource extends DataGridSource {
                 },
                 child: const Text('View'),
               ),
-              const SizedBox(
-                width: USpace.space8,
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  side: BorderSide.none,
-                ),
-                onPressed: () async {
-                  await QuickAlert.show(
-                    context: navigatorKey.currentContext!,
-                    type: QuickAlertType.warning,
-                    title: 'Delete Violation',
-                    text: 'Are you sure you want to delete this violation?',
-                    showCancelBtn: true,
-                    onConfirmBtnTap: () async {
-                      QuickAlert.show(
-                        context: navigatorKey.currentContext!,
-                        type: QuickAlertType.loading,
-                        title: 'Deleting Violation',
-                        text: 'Please wait...',
-                      );
-                      await ViolationDatabase.instance.deleteViolation(
-                        cell.value.toString(),
-                      );
-                      Navigator.of(navigatorKey.currentContext!).pop();
+              // const SizedBox(
+              //   width: USpace.space8,
+              // ),
+              // TextButton(
+              //   style: TextButton.styleFrom(
+              //     side: BorderSide.none,
+              //   ),
+              //   onPressed: () async {
+              //     await QuickAlert.show(
+              //       context: navigatorKey.currentContext!,
+              //       type: QuickAlertType.warning,
+              //       title: 'Delete Violation',
+              //       text: 'Are you sure you want to delete this violation?',
+              //       showCancelBtn: true,
+              //       onConfirmBtnTap: () async {
+              //         QuickAlert.show(
+              //           context: navigatorKey.currentContext!,
+              //           type: QuickAlertType.loading,
+              //           title: 'Deleting Violation',
+              //           text: 'Please wait...',
+              //         );
+              //         await ViolationDatabase.instance.deleteViolation(
+              //           cell.value.toString(),
+              //         );
+              //         Navigator.of(navigatorKey.currentContext!).pop();
 
-                      await QuickAlert.show(
-                        context: navigatorKey.currentContext!,
-                        type: QuickAlertType.success,
-                        title: 'Violation Deleted',
-                        text: 'The violation has been deleted successfully.',
-                      );
+              //         await QuickAlert.show(
+              //           context: navigatorKey.currentContext!,
+              //           type: QuickAlertType.success,
+              //           title: 'Violation Deleted',
+              //           text: 'The violation has been deleted successfully.',
+              //         );
 
-                      Navigator.of(navigatorKey.currentContext!).pop();
-                    },
-                  );
-                },
-                child: const Text(
-                  'Delete',
-                  style: TextStyle(
-                    color: UColors.red500,
-                  ),
-                ),
-              ),
+              //         Navigator.of(navigatorKey.currentContext!).pop();
+              //       },
+              //     );
+              //   },
+              //   child: const Text(
+              //     'Delete',
+              //     style: TextStyle(
+              //       color: UColors.red500,
+              //     ),
+              //   ),
+              // ),
             ],
           );
         }

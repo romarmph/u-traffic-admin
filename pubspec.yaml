@@ -36,6 +36,7 @@ dependencies:
   expansion_tile_card: ^3.0.0
   path: ^1.8.3
   file_picker: ^6.1.1
+  google_maps_flutter_web: ^0.5.4+2
 
 dev_dependencies:
   flutter_test:

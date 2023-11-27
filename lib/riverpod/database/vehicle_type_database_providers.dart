@@ -11,3 +11,6 @@ final vehicleTypesProvider = Provider<List<VehicleType>>(
         loading: () => [],
       ),
 );
+final vehicleTypeByIdStream = StreamProvider.family<VehicleType, String>(
+  (ref, id) => VehicleTypeDatabase.instance.getVehicleTypeByIdStream(id),
+);

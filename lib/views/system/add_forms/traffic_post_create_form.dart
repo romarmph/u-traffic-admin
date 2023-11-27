@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
 
 class CreateTrafficPostForm extends ConsumerStatefulWidget {
   const CreateTrafficPostForm({super.key});
@@ -14,8 +15,6 @@ class CreateTrafficPostFormState extends ConsumerState<CreateTrafficPostForm> {
   final _trafficPostController = TextEditingController();
   final _postNumberController = TextEditingController();
   ULocation? _location;
-  bool _isHidden = false;
-  bool _isPublic = false;
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +87,7 @@ class CreateTrafficPostFormState extends ConsumerState<CreateTrafficPostForm> {
                         ),
                       ],
                     ),
-                    const Spacer(),
+                    const Divider(),
                     const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
