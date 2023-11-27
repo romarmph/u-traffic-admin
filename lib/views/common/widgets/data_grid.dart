@@ -9,6 +9,8 @@ class DataGridContainer extends ConsumerWidget {
     required this.gridColumns,
     required this.dataCount,
     this.dataGridKey,
+    this.gridLinesVisibility = GridLinesVisibility.horizontal,
+    this.headerGridLinesVisibility = GridLinesVisibility.horizontal,
   });
 
   final BoxConstraints constraints;
@@ -16,6 +18,8 @@ class DataGridContainer extends ConsumerWidget {
   final List<GridColumn> gridColumns;
   final int dataCount;
   final GlobalKey<SfDataGridState>? dataGridKey;
+  final GridLinesVisibility gridLinesVisibility;
+  final GridLinesVisibility headerGridLinesVisibility;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -38,12 +42,14 @@ class DataGridContainer extends ConsumerWidget {
               headerHoverColor: UColors.gray100,
             ),
             child: SfDataGrid(
+              gridLinesVisibility: gridLinesVisibility,
               key: dataGridKey,
               rowsPerPage: 12,
               highlightRowOnHover: true,
               allowFiltering: true,
               allowSorting: true,
               columnWidthMode: ColumnWidthMode.fill,
+              headerGridLinesVisibility: headerGridLinesVisibility,
               source: source,
               columns: gridColumns,
               footer: dataCount == 0

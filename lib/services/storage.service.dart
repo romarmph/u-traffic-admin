@@ -1,3 +1,6 @@
+import 'dart:html' as htmlFile;
+
+import 'package:path/path.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class StorageService {
@@ -22,5 +25,14 @@ class StorageService {
     final snapshot = await uploadTask.whenComplete(() => null);
     final url = await snapshot.ref.getDownloadURL();
     return url;
+  }
+
+  Future<Attachment> uploadFile(String complaintId, Attachment file) async {
+    final ref =
+        _firebaseStorage.ref('attachments/$complaintId').child(file.name);
+    final uploadTask = ref.putData(file.bytes!);
+    final snapshot = await uploadTask.whenComplete(() => null);
+    final url = await snapshot.ref.getDownloadURL();
+    return file.copyWith(url: url);
   }
 }

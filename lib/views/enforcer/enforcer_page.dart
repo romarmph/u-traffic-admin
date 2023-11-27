@@ -47,7 +47,7 @@ class _EnforcerPageState extends ConsumerState<EnforcerPage> {
                         children: [
                           const Spacer(),
                           Visibility(
-                            visible: true,
+                            visible: false,
                             child: InkWell(
                               onTap: () {},
                               child: Container(

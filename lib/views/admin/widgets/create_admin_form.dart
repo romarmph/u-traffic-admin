@@ -4,32 +4,34 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class CreateEnforcerForm extends ConsumerStatefulWidget {
-  const CreateEnforcerForm({super.key});
+class CreateAdminForm extends ConsumerStatefulWidget {
+  const CreateAdminForm({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _CreateEnforcerFormState();
+      _CreateAdminFormState();
 }
 
-class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
+class _CreateAdminFormState extends ConsumerState<CreateAdminForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailFormKey = GlobalKey<FormState>();
   final _employeeNumberFormKey = GlobalKey<FormState>();
-  bool _isPasswordVisible = false;
   final _firstNameController = TextEditingController();
   final _middleNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _suffixController = TextEditingController();
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
   final _employeeNoController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _emailExists = false;
 
   final _validator = EnforcerFormValidator();
 
+  bool _isPasswordVisible = false;
+
   Future<bool> _isFormValid() async {
     final profilePhoto = ref.watch(profilePhotoStateProvider);
+    final selectedPermissions = ref.watch(selectedPermissionsProvider);
     if (!_formKey.currentState!.validate()) {
       !_emailFormKey.currentState!.validate();
       !_employeeNumberFormKey.currentState!.validate();
@@ -50,6 +52,16 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
     setState(() {
       _emailExists = !isEmailAvailable;
     });
+
+    if (selectedPermissions.isEmpty) {
+      QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Permissions Missing',
+        text: 'Please select at least one permission',
+      );
+      return false;
+    }
 
     if (profilePhoto == null) {
       _showProfilePhotoMissingError();
@@ -82,7 +94,7 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
     late String uid;
 
     try {
-      final result = await EnforcerHTTPSerivice.instance.createEnforcerAccount(
+      final result = await AdminHTTPSerivice.instance.createAdminAccount(
         _emailController.text,
         _passwordController.text,
       );
@@ -98,10 +110,8 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
         text: 'Connection timeout, please try again',
       );
       return;
-    } catch (e, stackTrace) {
-      print(e);
-      print(stackTrace);
-      _showEnforcerCreateError(-1);
+    } catch (e) {
+      _showAdminCreateError(-1);
       return;
     }
 
@@ -109,26 +119,26 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
 
     final url = await _uploadProfile(uid);
 
-    final enforcer = Enforcer(
-      firstName: _firstNameController.text,
-      middleName: _middleNameController.text,
-      lastName: _lastNameController.text,
-      suffix: _suffixController.text,
-      email: _emailController.text,
-      status: EmployeeStatus.active,
-      photoUrl: url!,
-      employeeNumber: _employeeNoController.text,
-      createdBy: currentAdmin.id!,
-      createdAt: Timestamp.now(),
-    );
+    final enforcer = Admin(
+        firstName: _firstNameController.text,
+        middleName: _middleNameController.text,
+        lastName: _lastNameController.text,
+        suffix: _suffixController.text,
+        email: _emailController.text,
+        status: EmployeeStatus.active,
+        photoUrl: url!,
+        employeeNo: _employeeNoController.text,
+        createdBy: currentAdmin.id!,
+        createdAt: Timestamp.now(),
+        permissions: ref.watch(selectedPermissionsProvider));
 
     try {
-      await EnforcerDatabase.instance.addEnforcer(
+      await AdminDatabase.instance.addAdmin(
         enforcer,
         uid,
       );
     } catch (e) {
-      _showEnforcerCreateError(-1);
+      _showAdminCreateError(-1);
       return;
     }
 
@@ -145,7 +155,7 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
     Navigator.of(navigatorKey.currentContext!).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) {
-          return const EnforcerPage();
+          return const AdminPage();
         },
       ),
     );
@@ -177,10 +187,10 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
     final profilePhoto = ref.watch(profilePhotoStateProvider);
     return PageContainer(
       appBar: AppBar(
-        title: const Text('Create Enforcer'),
+        title: const Text('Create Admin'),
         actions: const [CurrenAdminButton()],
       ),
-      route: Routes.enforcersCreate,
+      route: Routes.adminStaffsCreate,
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Padding(
@@ -202,7 +212,7 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Text(
-                          'Enforcer Information',
+                          'Admin Information',
                           style: TextStyle(
                             color: UColors.gray400,
                             fontSize: 18,
@@ -266,6 +276,8 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
                               child: Form(
                                 key: _formKey,
                                 child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
                                     Row(
                                       crossAxisAlignment:
@@ -332,7 +344,7 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
                                               },
                                               validator: (value) {
                                                 final employeeNoExist = ref.watch(
-                                                    findEnforcerWithEmployeeNo(
+                                                    checkEmployeeNumberAvailable(
                                                   value!,
                                                 ));
 
@@ -408,6 +420,18 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(height: USpace.space12),
+                                    const Text(
+                                      'Admin Permissions',
+                                      style: TextStyle(
+                                        color: UColors.gray400,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    const PermissionSelectionWidget(
+                                      isUpdateMode: true,
+                                    ),
                                   ],
                                 ),
                               ),
@@ -450,7 +474,7 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
                                 .pushReplacement(
                               PageRouteBuilder(
                                 pageBuilder: (_, __, ___) {
-                                  return const EnforcerPage();
+                                  return const AdminPage();
                                 },
                               ),
                             );
@@ -471,7 +495,7 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
                             ),
                           ),
                           onPressed: _onSaveButtonTap,
-                          label: const Text('Create Enforcer'),
+                          label: const Text('Create Admin'),
                           icon: const Icon(Icons.save_rounded),
                         ),
                       ],
@@ -495,7 +519,7 @@ class _CreateEnforcerFormState extends ConsumerState<CreateEnforcerForm> {
     );
   }
 
-  void _showEnforcerCreateError(int statuscode) {
+  void _showAdminCreateError(int statuscode) {
     if (statuscode == -1) {
       QuickAlert.show(
         context: context,

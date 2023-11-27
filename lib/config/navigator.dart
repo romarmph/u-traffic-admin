@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/views/admin/admin_detail_view_page.dart';
 
 void goToRoute(String route) {
   Navigator.of(navigatorKey.currentContext!).pushNamed(
@@ -78,6 +79,39 @@ void goToEnforcerUpdatePage(Enforcer enforcer) {
     PageRouteBuilder(
       pageBuilder: (_, __, ___) => UpdateEnforcerForm(
         enforcer: enforcer,
+      ),
+    ),
+  );
+}
+
+void goToAdminDetailsPage(String uid) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => AdminDetailsPage(
+        adminId: uid,
+      ),
+    ),
+  );
+}
+
+void goToEnforcerSchedView(String id) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => EnforcerScheduleDetailView(
+        scheduleId: id,
+      ),
+    ),
+  );
+}
+
+void goToEnforcerSchedUpdate(EnforcerSchedule id) {
+  Navigator.push(
+    navigatorKey.currentContext!,
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => UpdateEnforcerSchedForm(
+        schedule: id,
       ),
     ),
   );

@@ -5,28 +5,24 @@ class EnforcerSchedule {
   final String enforcerId;
   final String enforcerName;
   final ShiftPeriod shift;
-  final TimePeriod startTime;
-  final TimePeriod endTime;
   final String postId;
   final String postName;
   final String createdBy;
   final String updatedBy;
   final Timestamp createdAt;
-  final Timestamp updatedAt;
+  final Timestamp? updatedAt;
 
   EnforcerSchedule({
     this.id,
     required this.enforcerId,
     required this.enforcerName,
     required this.shift,
-    required this.startTime,
-    required this.endTime,
-    required this.postId,
-    required this.postName,
+    this.postId = "",
+    this.postName = "",
     required this.createdBy,
-    required this.updatedBy,
+    this.updatedBy = "",
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   factory EnforcerSchedule.fromJson(Map<String, dynamic> json, String id) {
@@ -34,9 +30,7 @@ class EnforcerSchedule {
       id: id,
       enforcerId: json['enforcerId'],
       enforcerName: json['enforcerName'],
-      shift: json['period'].toString().toShiftPeriod,
-      startTime: TimePeriod.fromJson(json['startTime']),
-      endTime: TimePeriod.fromJson(json['endTime']),
+      shift: json['shift'].toString().toShiftPeriod,
       postId: json['postId'],
       postName: json['postName'],
       createdBy: json['createdBy'],
@@ -52,8 +46,6 @@ class EnforcerSchedule {
       'enforcerId': enforcerId,
       'enforcerName': enforcerName,
       'shift': shift.name,
-      'startTime': startTime.toJson(),
-      'endTime': endTime.toJson(),
       'postId': postId,
       'postName': postName,
       'createdBy': createdBy,
@@ -63,13 +55,17 @@ class EnforcerSchedule {
     };
   }
 
+  // TO String
+  @override
+  String toString() {
+    return 'EnforcerSchedule(id: $id, enforcerId: $enforcerId, enforcerName: $enforcerName, shift: $shift, postId: $postId, postName: $postName, createdBy: $createdBy, updatedBy: $updatedBy, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
+
   EnforcerSchedule copyWith({
     String? id,
     String? enforcerId,
     String? enforcerName,
     ShiftPeriod? shift,
-    TimePeriod? startTime,
-    TimePeriod? endTime,
     String? postId,
     String? postName,
     String? createdBy,
@@ -82,8 +78,6 @@ class EnforcerSchedule {
       enforcerId: enforcerId ?? this.enforcerId,
       enforcerName: enforcerName ?? this.enforcerName,
       shift: shift ?? this.shift,
-      startTime: startTime ?? this.startTime,
-      endTime: endTime ?? this.endTime,
       postId: postId ?? this.postId,
       postName: postName ?? this.postName,
       createdBy: createdBy ?? this.createdBy,

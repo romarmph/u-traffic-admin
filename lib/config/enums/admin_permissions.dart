@@ -3,8 +3,8 @@ enum AdminPermission {
   manageTickets,
   managePayment,
   viewDashboard,
+  viewAnalytics,
   manageAdmins,
   manageComplaints,
   manageSystem,
-  manageRequests,
 }

@@ -11,7 +11,11 @@ class EnforcerScheduleDatabse {
 
   Stream<List<EnforcerSchedule>> getAllEnforcerSched() {
     try {
-      return _enforcerSchedRef.snapshots().map((snapshot) {
+      return _enforcerSchedRef
+          .snapshots(
+        includeMetadataChanges: true,
+      )
+          .map((snapshot) {
         return snapshot.docs.map((doc) {
           return EnforcerSchedule.fromJson(
             doc.data(),
@@ -47,16 +51,10 @@ class EnforcerScheduleDatabse {
 
   Stream<EnforcerSchedule> getEnforcerSchedById(String id) {
     try {
-      return _enforcerSchedRef
-          .where(
-            'enforcerId',
-            isEqualTo: id,
-          )
-          .snapshots()
-          .map((snapshot) {
+      return _enforcerSchedRef.doc(id).snapshots().map((snapshot) {
         return EnforcerSchedule.fromJson(
-          snapshot.docs.first.data(),
-          snapshot.docs.first.id,
+          snapshot.data()!,
+          snapshot.id,
         );
       });
     } catch (e) {

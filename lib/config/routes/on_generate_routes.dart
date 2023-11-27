@@ -15,6 +15,10 @@ PageRouteBuilder onGenerateRoute(settings) {
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const AdminPage(),
       );
+    case Routes.adminStaffsCreate:
+      return PageRouteBuilder(
+        pageBuilder: (_, __, ___) => const CreateAdminForm(),
+      );
     case Routes.enforcers:
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const EnforcerPage(),
@@ -26,6 +30,10 @@ PageRouteBuilder onGenerateRoute(settings) {
     case Routes.enforcerSchedules:
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const EnforcerSchedulePage(),
+      );
+    case Routes.enforcerSchedulesCreate:
+      return PageRouteBuilder(
+        pageBuilder: (_, __, ___) => const CreateEnforcerSchedForm(),
       );
     case Routes.tickets:
       return PageRouteBuilder(
@@ -54,10 +62,6 @@ PageRouteBuilder onGenerateRoute(settings) {
     case Routes.systemTrafficPosts:
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const SystemTrafficPostPage(),
-      );
-    case Routes.systemEnforcerSchedule:
-      return PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const SystemEnforcerSchedulePage(),
       );
     case Routes.settings:
       return PageRouteBuilder(

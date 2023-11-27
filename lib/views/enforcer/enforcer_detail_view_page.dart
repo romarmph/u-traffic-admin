@@ -182,7 +182,7 @@ class EnforcersViewPage extends ConsumerWidget {
                               ],
                             ),
                             const Spacer(),
-                            EnforcerAuthorWidget(
+                            AuthorWidget(
                               createdBy: enforcer.createdBy,
                               updatedBy: enforcer.updatedBy,
                               createdAt: enforcer.createdAt,
@@ -285,8 +285,8 @@ class EnforcersViewPage extends ConsumerWidget {
   }
 }
 
-class EnforcerAuthorWidget extends ConsumerWidget {
-  const EnforcerAuthorWidget({
+class AuthorWidget extends ConsumerWidget {
+  const AuthorWidget({
     super.key,
     required this.createdBy,
     required this.updatedBy,

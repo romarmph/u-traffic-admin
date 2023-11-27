@@ -17,4 +17,13 @@ class TrafficPostDatabase {
       }).toList();
     });
   }
+
+  Stream<TrafficPost> getTrafficPostStream(String id) {
+    return _collectionRef.doc(id).snapshots().map((snapshot) {
+      return TrafficPost.fromJson(
+        snapshot.data()!,
+        snapshot.id,
+      );
+    });
+  }
 }

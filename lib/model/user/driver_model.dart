@@ -1,62 +1,81 @@
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class Driver {
-  final String? id;
-  final String driverName;
-  final Timestamp birthDate;
-  final String address;
-  final String? email;
-  final String? phone;
+  String? id;
+  String firstName;
+  String middleName;
+  String lastName;
+  Timestamp birthDate;
+  String email;
+  String phone;
+  String photoUrl;
+  bool isProfileComplete = false;
 
-  const Driver({
+  Driver({
     this.id,
-    this.phone,
-    this.email,
-    required this.driverName,
+    required this.firstName,
+    required this.middleName,
+    required this.lastName,
     required this.birthDate,
-    required this.address,
+    this.photoUrl = "",
+    required this.email,
+    required this.phone,
+    required this.isProfileComplete,
   });
 
   Map<String, dynamic> toJson() {
     return {
-      'driverName': driverName,
-      'birthDate': birthDate,
-      'email': email,
-      'phone': phone,
-      'address': address,
+      "firstName": firstName,
+      "middleName": middleName,
+      "lastName": lastName,
+      "birthDate": birthDate,
+      "photoUrl": photoUrl,
+      "email": email,
+      "phone": phone,
+      "isProfileComplete": isProfileComplete,
     };
   }
 
-  factory Driver.fromJson(Map<String, dynamic> json) {
+  factory Driver.fromJson(Map<String, dynamic> json, String uid) {
     return Driver(
-      driverName: json['driverName'],
-      birthDate: json['birthDate'],
-      email: json['email'],
-      phone: json['phone'],
-      address: json['address'],
+      id: uid,
+      firstName: json["firstName"] ?? "",
+      middleName: json["middleName"] ?? "",
+      lastName: json["lastName"] ?? "",
+      birthDate: json["birthDate"],
+      email: json["email"],
+      photoUrl: json["photoUrl"] ?? "",
+      phone: json["phone"] ?? "",
+      isProfileComplete: json["isProfileComplete"],
+    );
+  }
+
+  Driver copyWith({
+    String? id,
+    String? firstName,
+    String? middleName,
+    String? lastName,
+    Timestamp? birthDate,
+    String? email,
+    String? phone,
+    String? photoUrl,
+    bool? isProfileComplete,
+  }) {
+    return Driver(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      middleName: middleName ?? this.middleName,
+      lastName: lastName ?? this.lastName,
+      birthDate: birthDate ?? this.birthDate,
+      email: email ?? this.email,
+      phone: phone ?? this.phone,
+      photoUrl: photoUrl ?? this.photoUrl,
+      isProfileComplete: isProfileComplete ?? this.isProfileComplete,
     );
   }
 
   @override
   String toString() {
-    return 'Driver{driverName: $driverName, birthDate: $birthDate, email: $email, phone: $phone, address: $address}';
-  }
-
-  Driver copyWith({
-    String? id,
-    String? driverName,
-    Timestamp? birthDate,
-    String? email,
-    String? phone,
-    String? address,
-  }) {
-    return Driver(
-      id: id ?? this.id,
-      driverName: driverName ?? this.driverName,
-      birthDate: birthDate ?? this.birthDate,
-      email: email ?? this.email,
-      phone: phone ?? this.phone,
-      address: address ?? this.address,
-    );
+    return "Driver(id: $id, firstName: $firstName, middleName: $middleName, lastName: $lastName, birthDate: $birthDate, email: $email, phone: $phone, isProfileComplete: $isProfileComplete, photoUrl: $photoUrl)";
   }
 }

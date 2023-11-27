@@ -18,6 +18,8 @@ class Routes {
   static const String enforcersCreate = '/enforcers/create';
   static const String enforcersEdit = '/enforcers/edit';
   static const String enforcerSchedules = '/enforcers/schedules';
+  static const String enforcerSchedulesCreate = '/enforcers/schedules/create';
+  static const String enforcerSchedulesUpdate = '/enforcers/schedules/update';
 
   // Admin Staff routes
   static const String adminStaffs = '/admin-staffs';

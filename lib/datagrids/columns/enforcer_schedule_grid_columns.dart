@@ -48,38 +48,24 @@ final List<GridColumn> enforcerSchedGridColumns = [
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: EnforcerScheduleGridFields.startTime,
-    label: const Center(
-      child: Text(
-        'Start Time',
-        style: TextStyle(
-          color: UColors.gray500,
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
-      ),
-    ),
-  ),
-  GridColumn(
-    minimumWidth: 150,
-    columnName: EnforcerScheduleGridFields.endTime,
-    label: const Center(
-      child: Text(
-        'End Time',
-        style: TextStyle(
-          color: UColors.gray500,
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
-      ),
-    ),
-  ),
-  GridColumn(
-    minimumWidth: 150,
     columnName: EnforcerScheduleGridFields.post,
     label: const Center(
       child: Text(
         'Traffic Post',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+    ),
+  ),
+  GridColumn(
+    minimumWidth: 150,
+    columnName: EnforcerScheduleGridFields.createdAt,
+    label: const Center(
+      child: Text(
+        'Date Created',
         style: TextStyle(
           color: UColors.gray500,
           fontWeight: FontWeight.w600,

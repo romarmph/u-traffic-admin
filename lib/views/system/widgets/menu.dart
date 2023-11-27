@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/views/system/add_forms/violation_add_form.dart';
 
 class SystemMenu extends ConsumerStatefulWidget {
   const SystemMenu({
@@ -73,7 +74,16 @@ class _SystemMenuState extends ConsumerState<SystemMenu> {
               Visibility(
                 visible: widget.route != Routes.systemFiles,
                 child: UElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (widget.route == Routes.systemViolations) {
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          pageBuilder: (_, __, ___) =>
+                              const CreateViolationForm(),
+                        ),
+                      );
+                    }
+                  },
                   child: Text(_buttonTitle(widget.route)),
                 ),
               ),
@@ -89,7 +99,6 @@ class _SystemMenuState extends ConsumerState<SystemMenu> {
     ref.read(violationSearchQueryProvider.notifier).state = "";
     ref.read(vehicleTypeSearchQueryProvider.notifier).state = "";
     ref.read(postSearchQueryProvider.notifier).state = "";
-    ref.read(enforcerScheduleSearchQueryProvider.notifier).state = "";
     ref.read(fileSearchQueryProvider.notifier).state = "";
   }
 
@@ -112,12 +121,6 @@ class _SystemMenuState extends ConsumerState<SystemMenu> {
             postSearchQueryProvider.notifier,
           )
           .state = value;
-    } else if (widget.route == Routes.systemEnforcerSchedule) {
-      ref
-          .read(
-            enforcerScheduleSearchQueryProvider.notifier,
-          )
-          .state = value;
     } else {
       ref
           .read(
@@ -131,8 +134,6 @@ class _SystemMenuState extends ConsumerState<SystemMenu> {
     switch (route) {
       case Routes.systemViolations:
         return "Add Violation";
-      case Routes.systemEnforcerSchedule:
-        return "Add Enforcer Schedule";
       case Routes.systemTrafficPosts:
         return "Add Posts";
       case Routes.systemVehicleTypes:

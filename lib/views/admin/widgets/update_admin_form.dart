@@ -3,34 +3,38 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
-class UpdateEnforcerForm extends ConsumerStatefulWidget {
-  const UpdateEnforcerForm({
+final isUpdateModeProvider = StateProvider<bool>((ref) {
+  return false;
+});
+
+class UpdateAdminForm extends ConsumerStatefulWidget {
+  const UpdateAdminForm({
     super.key,
-    required this.enforcer,
+    required this.admin,
   });
 
-  final Enforcer enforcer;
+  final Admin admin;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _UpdateEnforcerFormState();
+      _UpdateAdminFormState();
 }
 
-class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
+class _UpdateAdminFormState extends ConsumerState<UpdateAdminForm> {
   final _formKey = GlobalKey<FormState>();
   final _emailFormKey = GlobalKey<FormState>();
   final _employeeNumberFormKey = GlobalKey<FormState>();
-  bool _isPasswordVisible = false;
   final _firstNameController = TextEditingController();
   final _middleNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _suffixController = TextEditingController();
-  final _passwordController = TextEditingController();
   final _emailController = TextEditingController();
   final _employeeNoController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   final _validator = EnforcerFormValidator();
   bool _emailExists = false;
+  bool _isPasswordVisible = false;
 
   final _isChangesMadeProvider = StateProvider<bool>((ref) {
     final isProfilePhotoChanged = ref.watch(profilePhotoStateProvider) != null;
@@ -45,49 +49,42 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
 
   @override
   void initState() {
-    _firstNameController.text = widget.enforcer.firstName;
-    _middleNameController.text = widget.enforcer.middleName;
-    _lastNameController.text = widget.enforcer.lastName;
-    _suffixController.text = widget.enforcer.suffix;
-    _emailController.text = widget.enforcer.email;
-    _employeeNoController.text = widget.enforcer.employeeNumber;
+    super.initState();
+    _firstNameController.text = widget.admin.firstName;
+    _middleNameController.text = widget.admin.middleName;
+    _lastNameController.text = widget.admin.lastName;
+    _suffixController.text = widget.admin.suffix;
+    _emailController.text = widget.admin.email;
+    _employeeNoController.text = widget.admin.employeeNo;
     _firstNameController.addListener(() {
       ref.watch(_isChangesMadeProvider.notifier).state =
-          _firstNameController.text != widget.enforcer.firstName;
+          _firstNameController.text != widget.admin.firstName;
     });
     _middleNameController.addListener(() {
       ref.watch(_isChangesMadeProvider.notifier).state =
-          _middleNameController.text != widget.enforcer.middleName;
+          _middleNameController.text != widget.admin.middleName;
     });
     _lastNameController.addListener(() {
       ref.watch(_isChangesMadeProvider.notifier).state =
-          _lastNameController.text != widget.enforcer.lastName;
+          _lastNameController.text != widget.admin.lastName;
     });
     _suffixController.addListener(() {
       ref.watch(_isChangesMadeProvider.notifier).state =
-          _suffixController.text != widget.enforcer.suffix;
+          _suffixController.text != widget.admin.suffix;
     });
     _emailController.addListener(() {
       ref.watch(_isChangesMadeProvider.notifier).state =
-          _emailController.text != widget.enforcer.email;
+          _emailController.text != widget.admin.email;
     });
     _employeeNoController.addListener(() {
       ref.watch(_isChangesMadeProvider.notifier).state =
-          _employeeNoController.text != widget.enforcer.employeeNumber;
+          _employeeNoController.text != widget.admin.employeeNo;
     });
     _passwordController.addListener(() {
       ref.watch(_isChangesMadeProvider.notifier).state =
           _passwordController.text.isNotEmpty &&
               _passwordController.text.length >= 6;
     });
-    super.initState();
-  }
-
-  void _pickImageButtonTap() async {
-    final image = await ImagePickerService.instance.pickImage();
-    if (image != null) {
-      ref.read(profilePhotoStateProvider.notifier).state = image;
-    }
   }
 
   Future<bool> _isFormValid() async {
@@ -115,17 +112,23 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
     return true;
   }
 
-  void _onUpdateButtonTap() async {
-    final isValid = await _isFormValid();
+  void _pickImageButtonTap() async {
+    final image = await ImagePickerService.instance.pickImage();
+    if (image != null) {
+      ref.read(profilePhotoStateProvider.notifier).state = image;
+    }
+  }
 
-    if (!isValid) {
+  void _onSaveButtonTap() async {
+    final isFormValid = await _isFormValid();
+    if (!isFormValid) {
       return;
     }
 
     QuickAlert.show(
       context: navigatorKey.currentContext!,
       type: QuickAlertType.loading,
-      title: 'Updating Enforcer',
+      title: 'Creating Enforcer',
       text: 'Please wait...',
     );
 
@@ -133,12 +136,12 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
     final newStatus = ref.watch(updateStatusProvider);
     final currentAdmin = ref.watch(currentAdminProvider);
 
-    if (_emailController.text != widget.enforcer.email ||
+    if (_emailController.text != widget.admin.email ||
         (_passwordController.text.isNotEmpty &&
             _passwordController.text.length >= 6)) {
       try {
         await EnforcerHTTPSerivice.instance.updateEnforcerAccount(
-          widget.enforcer.id!,
+          widget.admin.id!,
           _emailController.text,
           _passwordController.text,
         );
@@ -147,55 +150,62 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
         QuickAlert.show(
           context: navigatorKey.currentContext!,
           type: QuickAlertType.error,
-          title: 'Enforcer Create Error',
+          title: 'Enforcer Update Error',
           text: 'Connection timeout, please try again',
         );
         return;
       } catch (e) {
         Navigator.of(navigatorKey.currentContext!).pop();
         if (e is int) {
-          _showEnforcerCreateError(e);
+          _showAdminUpdateError(e);
         } else {
-          _showEnforcerCreateError(-1);
+          _showAdminUpdateError(-1);
         }
         return;
       }
     }
 
-    final enforcer = Enforcer(
-      id: widget.enforcer.id,
+    final enforcer = Admin(
       firstName: _firstNameController.text,
       middleName: _middleNameController.text,
       lastName: _lastNameController.text,
       suffix: _suffixController.text,
-      email: _emailController.text != widget.enforcer.email
-          ? _emailController.text
-          : widget.enforcer.email,
-      employeeNumber: _employeeNoController.text,
-      status: newStatus ?? widget.enforcer.status,
-      photoUrl: newPhotoUrl ?? widget.enforcer.photoUrl,
-      createdBy: widget.enforcer.createdBy,
-      createdAt: widget.enforcer.createdAt,
-      updatedAt: Timestamp.now(),
-      updatedBy: currentAdmin.id!,
+      email: _emailController.text,
+      status: newStatus ?? widget.admin.status,
+      photoUrl: newPhotoUrl ?? widget.admin.photoUrl,
+      employeeNo: _employeeNoController.text,
+      createdBy: currentAdmin.id!,
+      createdAt: Timestamp.now(),
+      permissions: widget.admin.permissions,
     );
 
     try {
-      await EnforcerDatabase.instance.updateEnforcer(enforcer);
+      await AdminDatabase.instance.addAdmin(
+        enforcer,
+        widget.admin.id!,
+      );
     } catch (e) {
-      _showEnforcerCreateError(-1);
-      Navigator.of(navigatorKey.currentContext!).pop();
+      _showAdminUpdateError(-1);
       return;
     }
 
-    Navigator.of(navigatorKey.currentContext!).pop();
+    Navigator.pop(navigatorKey.currentContext!);
+
     await QuickAlert.show(
       context: navigatorKey.currentContext!,
       type: QuickAlertType.success,
-      title: 'Enforcer Updated',
-      text: 'The enforcer account has been updated',
+      title: 'Admin Update',
+      text: 'Admin account has been updated.',
     );
-    Navigator.of(navigatorKey.currentContext!).pop();
+
+    ref.read(profilePhotoStateProvider.notifier).state = null;
+    Navigator.of(navigatorKey.currentContext!).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) {
+          return const AdminPage();
+        },
+      ),
+    );
   }
 
   Future<String?> _uploadProfile() async {
@@ -208,7 +218,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
     try {
       final url = await StorageService.instance.uploadImage(
         profilePhoto,
-        widget.enforcer.id!,
+        widget.admin.id!,
       );
 
       return url;
@@ -228,10 +238,10 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
     final profilePhoto = ref.watch(profilePhotoStateProvider);
     return PageContainer(
       appBar: AppBar(
-        title: const Text('Update Enforcer'),
+        title: const Text('Update Admin'),
         actions: const [CurrenAdminButton()],
       ),
-      route: Routes.enforcersEdit,
+      route: Routes.adminStaffsEdit,
       body: LayoutBuilder(
         builder: (context, constraints) {
           return Padding(
@@ -253,7 +263,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         const Text(
-                          'Enforcer Information',
+                          'Admin Information',
                           style: TextStyle(
                             color: UColors.gray400,
                             fontSize: 18,
@@ -286,8 +296,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                                       child: profilePhoto != null
                                           ? Image.memory(profilePhoto.data!)
                                           : CachedNetworkImage(
-                                              imageUrl:
-                                                  widget.enforcer.photoUrl,
+                                              imageUrl: widget.admin.photoUrl,
                                               fit: BoxFit.cover,
                                               placeholder: (context, url) {
                                                 return const Center(
@@ -345,6 +354,8 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                               child: Form(
                                 key: _formKey,
                                 child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
                                     Row(
                                       crossAxisAlignment:
@@ -411,15 +422,15 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                                               },
                                               validator: (value) {
                                                 final employeeNoExist = ref.watch(
-                                                    findEnforcerWithEmployeeNo(
+                                                    checkEmployeeNumberAvailable(
                                                   value!,
                                                 ));
 
                                                 if (!employeeNoExist &&
                                                     _employeeNoController
                                                             .text !=
-                                                        widget.enforcer
-                                                            .employeeNumber) {
+                                                        widget
+                                                            .admin.employeeNo) {
                                                   return 'Employee No. already exist';
                                                 }
 
@@ -449,7 +460,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                                               validator: (value) {
                                                 if (_emailExists &&
                                                     _emailController.text !=
-                                                        widget.enforcer.email) {
+                                                        widget.admin.email) {
                                                   return 'Email already in use';
                                                 }
                                                 return _validator
@@ -517,8 +528,7 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                                                   value: _dropDownValue(),
                                                   onChanged: (value) {
                                                     if (value ==
-                                                        widget
-                                                            .enforcer.status) {
+                                                        widget.admin.status) {
                                                       ref
                                                           .read(
                                                               updateStatusProvider
@@ -563,6 +573,73 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                                         ),
                                       ],
                                     ),
+                                    const SizedBox(height: USpace.space12),
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          'Permissions',
+                                          style: TextStyle(
+                                            color: UColors.gray400,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Visibility(
+                                          visible:
+                                              ref.watch(isUpdateModeProvider),
+                                          child: Row(
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  ref
+                                                      .read(isUpdateModeProvider
+                                                          .notifier)
+                                                      .state = false;
+                                                  ref
+                                                      .read(
+                                                          selectedPermissionsProvider
+                                                              .notifier)
+                                                      .state = [];
+                                                },
+                                                child: const Text('Cancel'),
+                                              ),
+                                              FilledButton(
+                                                onPressed: _updatePermission,
+                                                child: const Text('Apply'),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Visibility(
+                                          visible:
+                                              !ref.watch(isUpdateModeProvider),
+                                          child: TextButton.icon(
+                                            style: TextButton.styleFrom(
+                                              padding: const EdgeInsets.all(
+                                                USpace.space16,
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              ref
+                                                  .read(isUpdateModeProvider
+                                                      .notifier)
+                                                  .state = true;
+                                            },
+                                            icon:
+                                                const Icon(Icons.edit_rounded),
+                                            label: const Text(
+                                              'Edit Permissions',
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    PermissionSelectionWidget(
+                                      oldPermissions: widget.admin.permissions,
+                                      isUpdateMode:
+                                          ref.watch(isUpdateModeProvider),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -597,8 +674,23 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                               ),
                             ),
                           ),
-                          onPressed: _onCancelButtonTap,
-                          child: const Text('Cancel'),
+                          onPressed: () {
+                            ref
+                                .watch(profilePhotoStateProvider.notifier)
+                                .state = null;
+                            ref
+                                .watch(selectedPermissionsProvider.notifier)
+                                .state = [];
+                            Navigator.of(navigatorKey.currentContext!)
+                                .pushReplacement(
+                              PageRouteBuilder(
+                                pageBuilder: (_, __, ___) {
+                                  return const AdminPage();
+                                },
+                              ),
+                            );
+                          },
+                          child: const Text('Back'),
                         ),
                         const SizedBox(width: USpace.space16),
                         FilledButton.icon(
@@ -615,8 +707,8 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
                           ),
                           onPressed: !ref.watch(_isChangesMadeProvider)
                               ? null
-                              : _onUpdateButtonTap,
-                          label: const Text('Update Enforcer'),
+                              : _onSaveButtonTap,
+                          label: const Text('Update Admin'),
                           icon: const Icon(Icons.save_rounded),
                         ),
                       ],
@@ -631,36 +723,48 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
     );
   }
 
-  void _onCancelButtonTap() async {
-    if (ref.watch(_isChangesMadeProvider)) {
-      await QuickAlert.show(
-        context: context,
-        type: QuickAlertType.warning,
-        title: 'Unsaved Changes',
-        text: 'Are you sure you want to leave this page?',
-        showCancelBtn: true,
-        onConfirmBtnTap: () {
-          ref.watch(profilePhotoStateProvider.notifier).state = null;
-          Navigator.of(navigatorKey.currentContext!).pushReplacement(
-            PageRouteBuilder(
-              pageBuilder: (_, __, ___) {
-                return const EnforcerPage();
-              },
-            ),
-          );
-        },
+  void _updatePermission() async {
+    final selectedPermissions = ref.watch(selectedPermissionsProvider);
+
+    final adminDb = AdminDatabase.instance;
+
+    QuickAlert.show(
+      context: context,
+      type: QuickAlertType.loading,
+      title: 'Updating Permissions',
+      text: 'Please wait...',
+    );
+
+    try {
+      await adminDb.updateAdminPermission(
+        widget.admin.id!,
+        selectedPermissions,
+      );
+    } catch (e) {
+      QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Permission Update Error',
+        text: 'There was an error updating the permissions',
       );
       return;
     }
 
-    ref.watch(profilePhotoStateProvider.notifier).state = null;
-    Navigator.of(navigatorKey.currentContext!).pushReplacement(
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) {
-          return const EnforcerPage();
-        },
-      ),
+    Navigator.of(navigatorKey.currentContext!).pop();
+
+    await QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.success,
+      title: 'Permission Update',
+      text: 'Permissions has been updated',
     );
+
+    ref.read(isUpdateModeProvider.notifier).state = false;
+
+    ref.read(selectedPermissionsProvider.notifier).state = [];
+    ref.invalidate(getAdminById(widget.admin.id!));
+
+    Navigator.of(navigatorKey.currentContext!).pop();
   }
 
   EmployeeStatus _dropDownValue() {
@@ -670,10 +774,20 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
       return newStatus;
     }
 
-    return widget.enforcer.status;
+    return widget.admin.status;
   }
 
-  void _showEnforcerCreateError(int statuscode) {
+  void _showAdminUpdateError(int statuscode) {
+    if (statuscode == -1) {
+      QuickAlert.show(
+        context: context,
+        type: QuickAlertType.error,
+        title: 'Enforcer Update Error',
+        text:
+            'There was an error creating the enforcer account. Please contact the system administrator',
+      );
+    }
+
     if (statuscode >= 400 && statuscode < 500) {
       QuickAlert.show(
         context: context,
@@ -681,7 +795,6 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
         title: 'Enforcer Update Error',
         text: 'Please check the enforcer information',
       );
-      return;
     } else if (statuscode >= 500) {
       QuickAlert.show(
         context: context,
@@ -689,23 +802,6 @@ class _UpdateEnforcerFormState extends ConsumerState<UpdateEnforcerForm> {
         title: 'Enforcer Update Error',
         text: 'Server error, please contact the system administrator',
       );
-      return;
-    } else if (statuscode == -1) {
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: 'Enforcer Update Error',
-        text:
-            'There was an error updating the enforcer account. Please contact the system administrator',
-      );
-    } else {
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: 'Enforcer Update Error',
-        text: 'There was an error creating the enforcer account',
-      );
-      return;
     }
   }
 }
