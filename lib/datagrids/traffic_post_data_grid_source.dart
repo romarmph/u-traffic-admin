@@ -78,10 +78,6 @@ class TrafficPostDataGridSource extends DataGridSource {
           columnName: TrafficPostFields.createdAt,
           value: dataGridRow.createdAt.toDate(),
         ),
-        DataGridCell<DateTime>(
-          columnName: TrafficPostFields.updatedAt,
-          value: dataGridRow.updatedAt.toDate(),
-        ),
         DataGridCell<String>(
           columnName: TrafficPostFields.action,
           value: dataGridRow.id,

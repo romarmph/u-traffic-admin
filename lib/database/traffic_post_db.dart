@@ -26,4 +26,8 @@ class TrafficPostDatabase {
       );
     });
   }
+
+  Future<void> addPost(TrafficPost post) async {
+    await _collectionRef.add(post.toJson());
+  }
 }

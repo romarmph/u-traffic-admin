@@ -60,20 +60,6 @@ final List<GridColumn> trafficPostColumns = [
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: TrafficPostFields.updatedAt,
-    label: const Center(
-      child: Text(
-        'Date Updated',
-        style: TextStyle(
-          color: UColors.gray500,
-          fontWeight: FontWeight.w600,
-          fontSize: 16,
-        ),
-      ),
-    ),
-  ),
-  GridColumn(
-    minimumWidth: 150,
     columnName: TrafficPostFields.action,
     label: const Center(
       child: Text(

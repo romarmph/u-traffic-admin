@@ -265,7 +265,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text('Cancel'),
+                child: const Text('Close'),
               ),
             ),
           ],
@@ -334,8 +334,6 @@ class _TicketPageState extends ConsumerState<TicketPage> {
             ).toJson(),
           );
     });
-
-    Navigator.pop(navigatorKey.currentContext!);
   }
 
   PdfDocument _toDocument() {
