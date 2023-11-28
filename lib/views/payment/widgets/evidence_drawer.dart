@@ -4,18 +4,18 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 class EvidenceDrawer extends ConsumerWidget {
   const EvidenceDrawer({
     super.key,
-    required this.ticketID,
+    required this.ticketNumber,
   });
 
-  final String ticketID;
+  final int ticketNumber;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final evidences = ref.watch(getAllEvidenceProvider(ticketID));
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      color: UColors.white,
+      padding: const EdgeInsets.all(16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Text(
             'Evidence',
@@ -25,20 +25,39 @@ class EvidenceDrawer extends ConsumerWidget {
             ),
           ),
           Expanded(
-            child: ListView.separated(
-              itemCount: evidences.length,
-              itemBuilder: (context, index) {
-                final evidence = evidences[index];
-                return GestureDetector(
-                  onTap: () => _viewImage(context, evidence),
-                  child: EvidenceCard(
-                    evidence: evidence,
+            child: ref.watch(getAllEvidenceStreamProvider(ticketNumber)).when(
+              data: (evidences) {
+                return ListView.separated(
+                  itemCount: evidences.length,
+                  itemBuilder: (context, index) {
+                    final evidence = evidences[index];
+                    return GestureDetector(
+                      onTap: () => _viewImage(context, evidence),
+                      child: EvidenceCard(
+                        evidence: evidence,
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(
+                      height: USpace.space12,
+                    );
+                  },
+                );
+              },
+              error: (error, stackTrace) {
+                return const Center(
+                  child: Text(
+                    'Error fetching ticket. Please try again later.',
                   ),
                 );
               },
-              separatorBuilder: (context, index) {
-                return const SizedBox(
-                  height: USpace.space12,
+              loading: () {
+                return Container(
+                  color: UColors.white,
+                  child: const Center(
+                    child: LinearProgressIndicator(),
+                  ),
                 );
               },
             ),
@@ -53,11 +72,29 @@ class EvidenceDrawer extends ConsumerWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
+          surfaceTintColor: UColors.white,
+          title: Column(
+            children: [
+              Text(
+                evidence.name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (evidence.description != null)
+                Text(
+                  evidence.description!,
+                  style: const TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
+            ],
+          ),
           content: SizedBox(
             width: 500,
             height: 500,
             child: CachedNetworkImage(
-              width: 500,
               imageUrl: evidence.path,
               placeholder: (context, url) => const Center(
                 child: CircularProgressIndicator(),

@@ -146,7 +146,6 @@ class TicketDataGridSource extends DataGridSource {
                   columnName: TicketGridFields.chassisNumber,
                   value: ticket.chassisNumber,
                 ),
-             
                 DataGridCell<String>(
                   columnName: TicketGridFields.engineNumber,
                   value: ticket.engineNumber,
@@ -173,7 +172,7 @@ class TicketDataGridSource extends DataGridSource {
         side: const BorderSide(color: UColors.blue600),
       ),
       onPressed: () {
-        goToTicketView(id, currentRoute);
+        goToTicketView(id, Routes.tickets);
       },
       child: const Text('View'),
     );

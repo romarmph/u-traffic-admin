@@ -21,21 +21,34 @@ class _TicketDetailsPageState extends ConsumerState<TicketDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(getAllEvidenceProvider(
-      widget.ticketID,
-    ));
     return PageContainer(
       route: widget.route,
       endDrawer: Drawer(
-        width: 500,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(USpace.space8),
-        ),
-        backgroundColor: UColors.white,
-        child: EvidenceDrawer(
-          ticketID: widget.ticketID,
-        ),
-      ),
+          width: 500,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(USpace.space8),
+          ),
+          backgroundColor: UColors.white,
+          child: ref.watch(getTicketByIdFutureProvider(widget.ticketID)).when(
+                data: (data) => EvidenceDrawer(
+                  ticketNumber: data.ticketNumber!,
+                ),
+                error: (error, stackTrace) {
+                  return const SizedBox(
+                    child: Text(
+                      'Error fetching ticket. Please try again later.',
+                    ),
+                  );
+                },
+                loading: () {
+                  return Container(
+                    color: UColors.white,
+                    child: const Center(
+                      child: LinearProgressIndicator(),
+                    ),
+                  );
+                },
+              )),
       appBar: AppBar(
         title: const Text("Process Payment"),
         actions: const [

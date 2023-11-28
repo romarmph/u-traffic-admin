@@ -31,9 +31,27 @@ class _TicketViewState extends ConsumerState<TicketView> {
           borderRadius: BorderRadius.circular(USpace.space8),
         ),
         backgroundColor: UColors.white,
-        child: EvidenceDrawer(
-          ticketID: widget.ticketID,
-        ),
+        child: ref.watch(getTicketByIdFutureProvider(widget.ticketID)).when(
+              data: (data) => EvidenceDrawer(
+                ticketNumber: data.ticketNumber!,
+              ),
+              error: (error, stackTrace) {
+                return Container(
+                  color: UColors.white,
+                  child: const Text(
+                    'Error fetching ticket. Please try again later.',
+                  ),
+                );
+              },
+              loading: () {
+                return Container(
+                  color: UColors.white,
+                  child: const Center(
+                    child: LinearProgressIndicator(),
+                  ),
+                );
+              },
+            ),
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

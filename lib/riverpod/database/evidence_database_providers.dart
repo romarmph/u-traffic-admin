@@ -1,21 +1,21 @@
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 final getAllEvidenceStreamProvider =
-    StreamProvider.family<List<Evidence>, String>((ref, ticketID) {
+    StreamProvider.family<List<Evidence>, int>((ref, ticketNumber) {
   final evidences = EvidenceDatabase.instance.getEvidenceByTicketNumber(
-    ticketID,
+    ticketNumber,
   );
 
   return evidences;
 });
 
-final getAllEvidenceProvider = Provider.family<List<Evidence>, String>((
+final getAllEvidenceProvider = Provider.family<List<Evidence>, int>((
   ref,
-  ticketID,
+  ticketNumber,
 ) {
   return ref
       .watch(getAllEvidenceStreamProvider(
-        ticketID,
+        ticketNumber,
       ))
       .when(
         data: (data) => data,

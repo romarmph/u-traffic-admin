@@ -20,9 +20,12 @@ class EvidenceCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: UColors.white,
         borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: UColors.gray200,
+        ),
         boxShadow: const [
           BoxShadow(
-            color: UColors.gray100,
+            color: UColors.gray200,
             blurRadius: 8,
             offset: Offset(0, 2),
           )
@@ -32,7 +35,9 @@ class EvidenceCard extends StatelessWidget {
         children: [
           CachedNetworkImage(
             imageUrl: evidence.path,
-            placeholder: (context, url) => const CircularProgressIndicator(),
+            placeholder: (context, url) => const Center(
+              child: CircularProgressIndicator(),
+            ),
             errorWidget: (context, url, error) {
               return const Icon(Icons.error);
             },
