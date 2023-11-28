@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' as excel;
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class TicketPage extends ConsumerStatefulWidget {
@@ -66,8 +67,8 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                               'unpaid',
                               'paid',
                               'cancelled',
-                              'refunded',
-                              'submitted',
+                              // 'refunded',
+                              // 'submitted',
                               'expired',
                             ],
                           ),
@@ -281,13 +282,25 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     final employeeNo = admin.employeeNo;
     final uid = admin.id!;
     dynamic workbook = _key.currentState!.exportToExcelWorkbook(
-      excludeColumns: ['actions', 'status'],
+      exportColumnWidth: true,
+      cellExport: (details) {
+        if (details.cellType == DataGridExportCellType.row) {
+          if (details.columnName == TicketGridFields.ticketDueDate ||
+              details.columnName == TicketGridFields.dateCreated) {
+            print(details.excelRange);
+          }
+        }
+      },
+      excludeColumns: [
+        TicketGridFields.actions,
+        TicketGridFields.status,
+      ],
     );
 
+    workbook = _formatWorkbook(workbook);
+
     if (type == 'pdf') {
-      workbook = _key.currentState!.exportToPdfDocument(
-        excludeColumns: ['actions', 'status'],
-      );
+      workbook = _toDocument();
     }
 
     final List<int> bytes = workbook.saveSync();
@@ -323,5 +336,55 @@ class _TicketPageState extends ConsumerState<TicketPage> {
             ).toJson(),
           );
     });
+
+    Navigator.pop(navigatorKey.currentContext!);
+  }
+
+  PdfDocument _toDocument() {
+    PdfDocument document = PdfDocument();
+
+    document.pageSettings.orientation = PdfPageOrientation.landscape;
+    PdfPage pdfPage = document.pages.add();
+    PdfGrid pdfGrid = _key.currentState!.exportToPdfGrid(
+      cellExport: (details) {
+        if (details.cellType == DataGridExportCellType.columnHeader) {
+          details.pdfCell.style.font = PdfStandardFont(
+            PdfFontFamily.helvetica,
+            8,
+            style: PdfFontStyle.regular,
+          );
+        }
+        if (details.cellType == DataGridExportCellType.row) {
+          if (details.columnName == TicketGridFields.ticketDueDate ||
+              details.columnName == TicketGridFields.dateCreated) {
+            details.pdfCell.value = details.cellValue
+                .toString()
+                .toDateTime
+                .toTimestamp
+                .toAmericanDate;
+          }
+        }
+      },
+      fitAllColumnsInOnePage: true,
+      excludeColumns: [
+        TicketGridFields.actions,
+        TicketGridFields.status,
+      ],
+    );
+    pdfGrid.draw(page: pdfPage, bounds: const Rect.fromLTWH(0, 0, 0, 0));
+
+    return document;
+  }
+
+  excel.Workbook _formatWorkbook(excel.Workbook workbook) {
+    final sheet = workbook.worksheets[0];
+    sheet.getRangeByName('A1:Z1').cellStyle.backColor = '#F2F2F2';
+    sheet.getRangeByName('A1:Z1').cellStyle.bold = true;
+    sheet.getRangeByName('A1:Z1').cellStyle.fontSize = 12;
+    final excel.Style style = workbook.styles.add('Style1');
+    style.hAlign = excel.HAlignType.center;
+    style.vAlign = excel.VAlignType.center;
+
+    return workbook;
   }
 }

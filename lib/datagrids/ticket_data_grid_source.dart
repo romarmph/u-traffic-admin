@@ -138,6 +138,23 @@ class TicketDataGridSource extends DataGridSource {
                   columnName: TicketGridFields.actions,
                   value: ticket.id,
                 ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.plateNumber,
+                  value: ticket.plateNumber,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.chassisNumber,
+                  value: ticket.chassisNumber,
+                ),
+             
+                DataGridCell<String>(
+                  columnName: TicketGridFields.engineNumber,
+                  value: ticket.engineNumber,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.conductionOrFileNumber,
+                  value: ticket.conductionOrFileNumber,
+                ),
               ],
             ))
         .toList();

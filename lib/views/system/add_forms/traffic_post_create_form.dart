@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
-import 'package:google_maps_flutter_web/google_maps_flutter_web.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CreateTrafficPostForm extends ConsumerStatefulWidget {
   const CreateTrafficPostForm({super.key});
@@ -15,6 +15,8 @@ class CreateTrafficPostFormState extends ConsumerState<CreateTrafficPostForm> {
   final _trafficPostController = TextEditingController();
   final _postNumberController = TextEditingController();
   ULocation? _location;
+
+  late GoogleMapController mapController;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +90,17 @@ class CreateTrafficPostFormState extends ConsumerState<CreateTrafficPostForm> {
                       ],
                     ),
                     const Divider(),
+                    Expanded(
+                      child: GoogleMap(
+                        initialCameraPosition: const CameraPosition(
+                          target: LatLng(0, 0),
+                          zoom: 14.4746,
+                        ),
+                        onMapCreated: (GoogleMapController controller) {
+                          mapController = controller;
+                        },
+                      ),
+                    ),
                     const Divider(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -114,3 +127,17 @@ class CreateTrafficPostFormState extends ConsumerState<CreateTrafficPostForm> {
     );
   }
 }
+
+
+///
+///
+///
+///
+/// TODO: Add traffic post adding form
+/// TODO: Fix enforcer to display traffic posts and schedule correctly
+/// TODO: Implement ticket expiration in node js
+///
+///
+///
+///
+
