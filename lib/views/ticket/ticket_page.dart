@@ -286,9 +286,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       cellExport: (details) {
         if (details.cellType == DataGridExportCellType.row) {
           if (details.columnName == TicketGridFields.ticketDueDate ||
-              details.columnName == TicketGridFields.dateCreated) {
-            print(details.excelRange);
-          }
+              details.columnName == TicketGridFields.dateCreated) {}
         }
       },
       excludeColumns: [

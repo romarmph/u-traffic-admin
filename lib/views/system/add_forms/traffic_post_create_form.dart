@@ -14,7 +14,7 @@ class CreateTrafficPostFormState extends ConsumerState<CreateTrafficPostForm> {
   final _formKey = GlobalKey<FormState>();
   final _trafficPostController = TextEditingController();
   final _postNumberController = TextEditingController();
-  ULocation? _location;
+  // ULocation? _location;
 
   late GoogleMapController mapController;
 

@@ -121,8 +121,10 @@ class _ComplaintsPageState extends ConsumerState<ComplaintsPage> {
                             );
                           },
                           error: (error, stackTrace) {
+                            print(error);
+                            print(stackTrace);
                             return const Center(
-                              child: Text("Error"),
+                              child: Text("Error Fetching Complaints"),
                             );
                           },
                           loading: () => const Center(
