@@ -8,11 +8,11 @@ class EvidenceDatabase {
 
   static final _firestore = FirebaseFirestore.instance;
 
-  Stream<List<Evidence>> getEvidenceByTicketNumber(String ticketID) {
+  Stream<List<Evidence>> getEvidenceByTicketNumber(int ticketNumber) {
     try {
       final data = _firestore
           .collection('evidences')
-          .where('ticketID', isEqualTo: ticketID)
+          .where('ticketNumber', isEqualTo: ticketNumber)
           .snapshots();
 
       return data.map((event) {

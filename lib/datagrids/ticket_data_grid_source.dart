@@ -138,6 +138,22 @@ class TicketDataGridSource extends DataGridSource {
                   columnName: TicketGridFields.actions,
                   value: ticket.id,
                 ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.plateNumber,
+                  value: ticket.plateNumber,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.chassisNumber,
+                  value: ticket.chassisNumber,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.engineNumber,
+                  value: ticket.engineNumber,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.conductionOrFileNumber,
+                  value: ticket.conductionOrFileNumber,
+                ),
               ],
             ))
         .toList();
@@ -156,7 +172,7 @@ class TicketDataGridSource extends DataGridSource {
         side: const BorderSide(color: UColors.blue600),
       ),
       onPressed: () {
-        goToTicketView(id, currentRoute);
+        goToTicketView(id, Routes.tickets);
       },
       child: const Text('View'),
     );

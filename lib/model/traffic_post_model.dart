@@ -8,7 +8,7 @@ class TrafficPost {
   final String createdBy;
   final String updatedBy;
   final Timestamp createdAt;
-  final Timestamp updatedAt;
+  final Timestamp? updatedAt;
 
   const TrafficPost({
     this.id,
@@ -16,15 +16,16 @@ class TrafficPost {
     required this.number,
     required this.location,
     required this.createdBy,
-    required this.updatedBy,
+    this.updatedBy = "",
     required this.createdAt,
-    required this.updatedAt,
+    this.updatedAt,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'name': name,
       'location': location.toJson(),
+      'number': number,
       'createdBy': createdBy,
       'updatedBy': updatedBy,
       'createdAt': createdAt,

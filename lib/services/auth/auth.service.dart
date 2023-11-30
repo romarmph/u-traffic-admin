@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class AuthService {

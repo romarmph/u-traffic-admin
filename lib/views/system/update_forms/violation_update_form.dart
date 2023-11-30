@@ -423,7 +423,6 @@ class _OffenseCreateFormState extends ConsumerState<OffenseCreateForm> {
                           ...old,
                           offense,
                         ];
-                        print("shit");
                       } else {
                         ViolationOffense offense = ViolationOffense(
                           level: currentLevel,

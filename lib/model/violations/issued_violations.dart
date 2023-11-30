@@ -25,4 +25,15 @@ class IssuedViolation {
       isBigVehicle: json['isBigVehicle'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'violationID': violationID,
+      'violation': violation,
+      'offense': offense,
+      'fine': fine,
+      'penalty': penalty,
+      'isBigVehicle': isBigVehicle,
+    };
+  }
 }

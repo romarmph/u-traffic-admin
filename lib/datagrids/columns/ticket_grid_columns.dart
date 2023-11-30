@@ -61,7 +61,7 @@ List<GridColumn> ticketGridColumns = [
   ),
   GridColumn(
     minimumWidth: 150,
-    columnName: TicketGridFields.dateCreated,
+    columnName: TicketGridFields.ticketDueDate,
     filterPopupMenuOptions: const FilterPopupMenuOptions(
       filterMode: FilterMode.advancedFilter,
       showColumnName: true,
@@ -111,10 +111,78 @@ List<GridColumn> ticketGridColumns = [
     allowFiltering: false,
     allowSorting: false,
     minimumWidth: 150,
-    columnName: TicketGridFields.status,
+    columnName: TicketGridFields.actions,
     label: const Center(
       child: Text(
         'Actions',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+    ),
+  ),
+  GridColumn(
+    allowFiltering: false,
+    allowSorting: false,
+    minimumWidth: 150,
+    columnName: TicketGridFields.plateNumber,
+    visible: false,
+    label: const Center(
+      child: Text(
+        'Plate Number',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+    ),
+  ),
+  GridColumn(
+    allowFiltering: false,
+    allowSorting: false,
+    minimumWidth: 150,
+    columnName: TicketGridFields.engineNumber,
+    visible: false,
+    label: const Center(
+      child: Text(
+        'Engine Number',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+    ),
+  ),
+  GridColumn(
+    allowFiltering: false,
+    allowSorting: false,
+    minimumWidth: 150,
+    columnName: TicketGridFields.chassisNumber,
+    visible: false,
+    label: const Center(
+      child: Text(
+        'Chassis Number',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+    ),
+  ),
+  GridColumn(
+    allowFiltering: false,
+    allowSorting: false,
+    minimumWidth: 150,
+    columnName: TicketGridFields.conductionOrFileNumber,
+    visible: false,
+    label: const Center(
+      child: Text(
+        'Conduction Number',
         style: TextStyle(
           color: UColors.gray500,
           fontWeight: FontWeight.w600,

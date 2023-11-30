@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/views/system/add_forms/traffic_post_create_form.dart';
+import 'package:u_traffic_admin/views/system/add_forms/vehicle_type_create_form.dart';
 import 'package:u_traffic_admin/views/system/add_forms/violation_add_form.dart';
 
 class SystemMenu extends ConsumerStatefulWidget {
@@ -83,6 +85,35 @@ class _SystemMenuState extends ConsumerState<SystemMenu> {
                         ),
                       );
                     }
+
+                    if (widget.route == Routes.systemTrafficPosts) {
+                      // Navigator.of(context).push(
+                      //   PageRouteBuilder(
+                      //     pageBuilder: (_, __, ___) =>
+                      //         const CreateTrafficPostForm(),
+                      //   ),
+                      // );
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const AlertDialog(
+                              contentPadding: EdgeInsets.zero,
+                              content: CreateTrafficPostFormDialog(),
+                            );
+                          });
+                    }
+
+                    if (widget.route == Routes.systemVehicleTypes) {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AlertDialog(
+                            contentPadding: EdgeInsets.zero,
+                            content: CreateVehicleTypeForm(),
+                          );
+                        },
+                      );
+                    }
                   },
                   child: Text(_buttonTitle(widget.route)),
                 ),
@@ -143,3 +174,4 @@ class _SystemMenuState extends ConsumerState<SystemMenu> {
     }
   }
 }
+
