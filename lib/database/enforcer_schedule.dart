@@ -88,6 +88,20 @@ class EnforcerScheduleDatabse {
     }
   }
 
+  Future<void> deleteEnforcerSchedByPostId(String id) async {
+    try {
+      await _enforcerSchedRef.where('postId', isEqualTo: id).get().then(
+        (snapshot) {
+          for (DocumentSnapshot ds in snapshot.docs) {
+            ds.reference.delete();
+          }
+        },
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<void> setEnforcerToSchedule({
     required String enforcerId,
     required String scheduleId,

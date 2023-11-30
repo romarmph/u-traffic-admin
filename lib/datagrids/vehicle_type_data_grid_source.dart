@@ -251,7 +251,9 @@ class VehicleTypeView extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                   child: const Text('Close'),
                 ),
                 const SizedBox(width: 16),
@@ -262,36 +264,8 @@ class VehicleTypeView extends ConsumerWidget {
                       context: navigatorKey.currentContext!,
                       builder: (context) {
                         return Dialog(
-                          child: ref
-                              .watch(vehicleTypeByIdStream(vehicleTypeId))
-                              .when(
-                            data: (vehicleType) {
-                              return VehicleTypeUpdateForm(
-                                vehicleType: vehicleType,
-                              );
-                            },
-                            error: (error, stackTrace) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: UColors.white,
-                                ),
-                                padding: const EdgeInsets.all(16),
-                                child: Text(error.toString()),
-                              );
-                            },
-                            loading: () {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: UColors.white,
-                                ),
-                                padding: const EdgeInsets.all(16),
-                                child: const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              );
-                            },
+                          child: VehicleTypeUpdateForm(
+                            vehicleType: vehicleType,
                           ),
                         );
                       },

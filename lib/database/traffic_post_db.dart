@@ -30,4 +30,14 @@ class TrafficPostDatabase {
   Future<void> addPost(TrafficPost post) async {
     await _collectionRef.add(post.toJson());
   }
+
+  Future<void> updatePost(TrafficPost post) async {
+    await _collectionRef.doc(post.id).update(post.toJson());
+  }
+
+  Future<void> deletePost(String id) async {
+    await _collectionRef.doc(id).delete();
+
+    await EnforcerScheduleDatabse.instance.deleteEnforcerSchedByPostId(id);
+  }
 }

@@ -96,6 +96,7 @@ class CreateEnforcerSchedFormState
         title: 'Success',
         text: 'Enforcer Schedule has been created.',
       );
+      disposeProvider();
       Navigator.pop(navigatorKey.currentContext!);
     } catch (e) {
       await QuickAlert.show(
@@ -104,6 +105,8 @@ class CreateEnforcerSchedFormState
         title: 'Error',
         text: 'Something went wrong. Please try again.',
       );
+      disposeProvider();
+      Navigator.pop(navigatorKey.currentContext!);
     }
   }
 
@@ -113,6 +116,11 @@ class CreateEnforcerSchedFormState
     ref.invalidate(selectedEnforcerProvider);
     ref.invalidate(selectedTrafficPostProvider);
     ref.invalidate(selectedShiftProvider);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -369,6 +377,3 @@ class CreateEnforcerSchedFormState
     );
   }
 }
-
-
-
