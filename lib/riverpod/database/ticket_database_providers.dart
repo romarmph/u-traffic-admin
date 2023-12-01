@@ -32,3 +32,10 @@ final getTicketByTicketNumberFutureProvider =
     FutureProvider.family<Ticket, int>((ref, ticketNumber) {
   return TicketDatabase.instance.getTicketByTicketNumber(ticketNumber);
 });
+
+final relatedTicketsStreamProvider =
+    StreamProvider.family<List<Ticket>, Ticket>(
+  (ref, ticket) {
+    return TicketDatabase.instance.getRelatedTicketsStream(ticket);
+  },
+);

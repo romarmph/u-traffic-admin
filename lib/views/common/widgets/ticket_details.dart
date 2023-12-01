@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/views/ticket/related_tickets_page.dart';
 
 class TicketDetails extends ConsumerWidget {
   const TicketDetails({
@@ -51,6 +52,60 @@ class TicketDetails extends ConsumerWidget {
                     style: const UTextStyle().textlgfontmedium,
                   ),
                   const Spacer(),
+                  Container(
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      color: UColors.gray100,
+                      borderRadius: BorderRadius.circular(USpace.space8),
+                    ),
+                    width: 300,
+                    child: ref.watch(relatedTicketsStreamProvider(ticket)).when(
+                      data: (data) {
+                        return ListTile(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => RelatedTicketsPage(
+                                  ticket: ticket,
+                                ),
+                              ),
+                            );
+                          },
+                          title: Text(
+                            "Related tickets found:",
+                            style: const UTextStyle()
+                                .leadingnonetextlgfontsemibold,
+                          ),
+                          subtitle: const Text('Tap to view'),
+                          trailing: Text(
+                            data.length.toString(),
+                            style: const UTextStyle().textlgfontmedium,
+                          ),
+                        );
+                      },
+                      error: (error, stackTrace) {
+                        return Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: UColors.red500,
+                            borderRadius: BorderRadius.circular(USpace.space8),
+                          ),
+                          child: const Text(
+                            "Error fetching related tickets.",
+                            style: TextStyle(
+                              color: UColors.white,
+                            ),
+                          ),
+                        );
+                      },
+                      loading: () {
+                        return const LoginLoadingPage();
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    width: USpace.space16,
+                  ),
                   UElevatedButton(
                     onPressed: () {
                       scaffoldKey.currentState!.openEndDrawer();
