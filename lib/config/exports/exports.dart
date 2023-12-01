@@ -23,6 +23,7 @@ export 'package:syncfusion_flutter_datagrid_export/export.dart';
 export 'package:syncfusion_flutter_pdf/pdf.dart';
 export 'package:image_picker_web/image_picker_web.dart';
 export 'package:side_sheet/side_sheet.dart';
+export 'package:syncfusion_flutter_charts/charts.dart';
 
 /**
  * 
@@ -226,6 +227,9 @@ export 'package:u_traffic_admin/model/traffic_post_model.dart';
 export 'package:u_traffic_admin/model/data_exports.dart';
 export 'package:u_traffic_admin/model/attachment.dart';
 export 'package:u_traffic_admin/model/complaint_model.dart';
+
+// * ---- data chart models
+export 'package:u_traffic_admin/model/charts/pie_chart_data_model.dart';
 
 /**
  * 

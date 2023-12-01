@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class TicketDataGridSource extends DataGridSource {
@@ -34,6 +35,24 @@ class TicketDataGridSource extends DataGridSource {
         if (dataGridCell.columnName == TicketGridFields.actions) {
           isUnpaid = _isUnpaid;
           _isUnpaid = false;
+
+          if (currentRoute == Routes.ticketRelated) {
+            return Center(
+                child: OutlinedButton(
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  vertical: USpace.space8,
+                  horizontal: USpace.space16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(USpace.space8),
+                ),
+                side: const BorderSide(color: UColors.blue600),
+              ),
+              onPressed: () {},
+              child: const Text('Compare'),
+            ));
+          }
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,

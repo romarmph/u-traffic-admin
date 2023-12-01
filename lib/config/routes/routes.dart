@@ -11,6 +11,7 @@ class Routes {
   // Ticket routes
   static const String tickets = '/tickets';
   static const String ticketView = '/tickets/view';
+  static const String ticketRelated = '/tickets/related';
 
   // Enforcer routes
   static const String enforcers = '/enforcers';

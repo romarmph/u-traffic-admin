@@ -19,6 +19,12 @@ class TicketDetailsPage extends ConsumerStatefulWidget {
 class _TicketDetailsPageState extends ConsumerState<TicketDetailsPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  void test(Ticket data) async {
+    TicketDatabase.instance.getRelatedTicketsStream(
+      data,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageContainer(
@@ -62,37 +68,34 @@ class _TicketDetailsPageState extends ConsumerState<TicketDetailsPage> {
             padding: const EdgeInsets.symmetric(
               vertical: 16,
             ),
-            child: ref
-                .watch(
-                  getTicketByIdFutureProvider(
-                    widget.ticketID,
+            child: ref.watch(getTicketByIdFutureProvider(widget.ticketID)).when(
+              data: (data) {
+                test(data);
+                return TicketDetails(
+                  scaffoldKey: _scaffoldKey,
+                  constraints: constraints,
+                  ticket: data,
+                );
+              },
+              error: (error, stackTrace) {
+                return Container(
+                  color: UColors.white,
+                  height: constraints.maxHeight - 100 - 16,
+                  child: const Text(
+                    'Error fetching ticket. Please try again later.',
                   ),
-                )
-                .when(
-                  data: (data) => TicketDetails(
-                    scaffoldKey: _scaffoldKey,
-                    constraints: constraints,
-                    ticket: data,
+                );
+              },
+              loading: () {
+                return Container(
+                  color: UColors.white,
+                  height: constraints.maxHeight - 100 - 16,
+                  child: const Center(
+                    child: LinearProgressIndicator(),
                   ),
-                  error: (error, stackTrace) {
-                    return Container(
-                      color: UColors.white,
-                      height: constraints.maxHeight - 100 - 16,
-                      child: const Text(
-                        'Error fetching ticket. Please try again later.',
-                      ),
-                    );
-                  },
-                  loading: () {
-                    return Container(
-                      color: UColors.white,
-                      height: constraints.maxHeight - 100 - 16,
-                      child: const Center(
-                        child: LinearProgressIndicator(),
-                      ),
-                    );
-                  },
-                ),
+                );
+              },
+            ),
           );
         },
       ),
