@@ -29,3 +29,7 @@ final selectedSwapWithProvider = StateProvider<EnforcerSchedule?>((ref) {
 final scheduleSearchProvider = StateProvider<String>((ref) {
   return '';
 });
+
+final shiftDropdownProvider = StateProvider<String>((ref) {
+  return 'All';
+});
