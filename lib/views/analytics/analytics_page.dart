@@ -14,7 +14,28 @@ class AnalyticsPage extends ConsumerWidget {
           CurrenAdminButton(),
         ],
       ),
-      body: const Placeholder(),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container()
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }
