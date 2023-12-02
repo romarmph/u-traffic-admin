@@ -28,16 +28,6 @@ class _PageContainerState extends ConsumerState<PageContainer> {
   Widget build(BuildContext context) {
     ref.watch(vehicleTypesProvider);
     ref.watch(violationsProvider);
-    int countRoutesInNavigator() {
-      var nav = Navigator.of(context);
-      int count = 0;
-      while (nav.canPop()) {
-        nav.pop();
-        count++;
-      }
-      // After counting, you need to rebuild your route stack
-      return count;
-    }
 
     return AdminScaffold(
       backgroundColor: UColors.gray100,

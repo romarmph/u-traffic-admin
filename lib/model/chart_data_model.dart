@@ -1,5 +1,5 @@
-class PieChartData {
-  PieChartData(
+class ChartData {
+  ChartData(
     this.name,
     this.count,
   );

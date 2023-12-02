@@ -235,31 +235,5 @@ class TicketDatabase {
     yield allTickets;
   }
 
-  Stream<List<PieChartData>> getTicketByStatusAggregate() async* {
-    try {
-      final collection = _firestore.collection("tickets");
-      const String queryField = "status";
-      List<PieChartData> aggregates = [];
 
-      for (var status in TicketStatus.values) {
-        final result = await collection
-            .where(queryField, isEqualTo: status.name)
-            .count()
-            .get();
-
-        aggregates.add(
-          PieChartData(
-            status.name.toUpperCase(),
-            result.count as double,
-          ),
-        );
-      }
-
-      yield aggregates;
-    } on FirebaseException {
-      rethrow;
-    } catch (e) {
-      rethrow;
-    }
-  }
 }
