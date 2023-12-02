@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:u_traffic_admin/config/enums/date_range.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/model/daily_dart_data.dart';
 import 'package:u_traffic_admin/riverpod/aggregates/ticket.riverpod.dart';
+import 'package:u_traffic_admin/views/analytics/widgets/dashboard_header.dart';
 import 'package:u_traffic_admin/views/analytics/widgets/doughnut_chart.dart';
-import 'package:u_traffic_admin/views/analytics/widgets/quick_info_card.dart';
+import 'package:u_traffic_admin/views/analytics/widgets/quick_info_row.dart';
 
 class AnalyticsPage extends ConsumerStatefulWidget {
   const AnalyticsPage({super.key});
@@ -15,7 +16,8 @@ class AnalyticsPage extends ConsumerStatefulWidget {
 class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
   @override
   Widget build(BuildContext context) {
-    ref.watch(ticketByStatusAggregateProvider);
+    final columnRange = ref.watch(columnRangeProvider);
+
     return PageContainer(
       route: Routes.analytics,
       appBar: AppBar(
@@ -32,95 +34,9 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        const Text(
-                          "U-Traffic Analytics",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const Spacer(),
-                        const Text(
-                          "Date Range",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        StatusTypeDropDown(
-                          statusList: DateRangeType.values
-                              .map((e) => e.name.capitalize)
-                              .toList(),
-                          onChanged: (value) {
-                            ref.read(dateRangeTypeProvider.notifier).state =
-                                DateRangeType.values.firstWhere((element) =>
-                                    element.name.capitalize == value);
-                          },
-                          value:
-                              ref.watch(dateRangeTypeProvider).name.capitalize,
-                        ),
-                      ],
-                    ),
-                  ),
+                  const DashboardHeader(),
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: QuickInfoCard(
-                          provider: totalTicketsAggregate,
-                          title: "Total tickets",
-                          icon: Icons.article_outlined,
-                          color: UColors.blue600,
-                          isNegative: true,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                        child: QuickInfoCard(
-                          provider: paidTicketsAggregateProvider,
-                          title: "Paid tickets",
-                          icon: Icons.paid_rounded,
-                          color: UColors.green600,
-                          isNegative: false,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                        child: QuickInfoCard(
-                          provider: unpaidTicketsAggregateProvider,
-                          title: "Unpaid tickets",
-                          icon: Icons.paid_rounded,
-                          color: UColors.red600,
-                          isNegative: true,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 16,
-                      ),
-                      Expanded(
-                        child: QuickInfoCard(
-                          provider: paidVsUnpaidAggregateProvider,
-                          title: "Paid tickets",
-                          icon: Icons.paid_rounded,
-                          color: UColors.green600,
-                          isNegative: true,
-                        ),
-                      ),
-                    ],
-                  ),
+                  const QuickInfoRow(),
                   const SizedBox(height: 16),
                   Row(
                     children: [
@@ -155,25 +71,25 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                     ),
                     child: Row(
                       children: [
-                        const Text(
-                          "Daily Ticket Issued",
-                          style: TextStyle(
+                        Text(
+                          "${columnRange.capitalize} Ticket Issued",
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                         const Spacer(),
                         StatusTypeDropDown(
-                          statusList: DateRangeType.values
-                              .map((e) => e.name.capitalize)
-                              .toList(),
+                          statusList: const [
+                            "Daily",
+                            "Monthly",
+                            "Yearly",
+                          ],
                           onChanged: (value) {
-                            ref.read(dateRangeTypeProvider.notifier).state =
-                                DateRangeType.values.firstWhere((element) =>
-                                    element.name.capitalize == value);
+                            ref.read(columnRangeProvider.notifier).state =
+                                value!.toLowerCase();
                           },
-                          value:
-                              ref.watch(dateRangeTypeProvider).name.capitalize,
+                          value: ref.watch(columnRangeProvider).capitalize,
                         ),
                       ],
                     ),
@@ -188,7 +104,39 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                       ),
                     ),
                     padding: const EdgeInsets.all(16),
-                    child: Container(),
+                    child: ref.watch(ticketsColumnChartProvider).when(
+                          data: (data) {
+                            if (columnRange == 'daily') {
+                              data = data.reversed.toList();
+                            }
+                            return SfCartesianChart(
+                              primaryXAxis: CategoryAxis(),
+                              series: <ChartSeries>[
+                                ColumnSeries<ColumnDataChart, String>(
+                                  dataSource: data,
+                                  xValueMapper: (ColumnDataChart data, _) =>
+                                      data.column,
+                                  yValueMapper: (ColumnDataChart data, _) =>
+                                      data.count,
+                                  dataLabelSettings: const DataLabelSettings(
+                                    isVisible: true,
+                                  ),
+                                )
+                              ],
+                            );
+                          },
+                          error: (error, stackTrace) => Center(
+                            child: Text(
+                              error.toString(),
+                              style: const TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                          loading: () => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
                   ),
                 ],
               ),
@@ -199,3 +147,4 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     );
   }
 }
+

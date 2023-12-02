@@ -1,5 +1,6 @@
 import 'package:u_traffic_admin/config/enums/date_range.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/model/daily_dart_data.dart';
 import 'package:u_traffic_admin/model/date_range.dart';
 
 final dateRangeTypeProvider = StateProvider<DateRangeType>((ref) {
@@ -65,10 +66,55 @@ final paidVsUnpaidAggregateProvider = StreamProvider<List<ChartData>>((ref) {
 
 final paidTicketsAggregateProvider = StreamProvider<List<ChartData>>((ref) {
   final dateRange = ref.watch(dateRangeProvider);
-  return TicketAggregates.instance.paidTicketsAggregate(dateRange);
+  return TicketAggregates.instance.getTotalTicketsAggregate(
+    dateRange,
+    'status',
+    'paid',
+  );
 });
 
 final unpaidTicketsAggregateProvider = StreamProvider<List<ChartData>>((ref) {
   final dateRange = ref.watch(dateRangeProvider);
-  return TicketAggregates.instance.unpaidTicketsAggregate(dateRange);
+  return TicketAggregates.instance.getTotalTicketsAggregate(
+    dateRange,
+    'status',
+    'unpaid',
+  );
+});
+
+final cancelledTicketsAggregateProvider =
+    StreamProvider<List<ChartData>>((ref) {
+  final dateRange = ref.watch(dateRangeProvider);
+  return TicketAggregates.instance.getTotalTicketsAggregate(
+    dateRange,
+    'status',
+    'cancelled',
+  );
+});
+
+final expiredTicketsAggregateProvider = StreamProvider<List<ChartData>>((ref) {
+  final dateRange = ref.watch(dateRangeProvider);
+  return TicketAggregates.instance.getTotalTicketsAggregate(
+    dateRange,
+    'status',
+    'expired',
+  );
+});
+
+final columnRangeProvider = StateProvider<String>((ref) {
+  return 'daily';
+});
+
+final ticketsColumnChartProvider = StreamProvider<List<ColumnDataChart>>((
+  ref,
+) {
+  final columngChartRange = ref.watch(columnRangeProvider);
+
+  if (columngChartRange == 'daily') {
+    return TicketAggregates.instance.getDailyChartDataAggregate();
+  } else if (columngChartRange == 'monthly') {
+    return TicketAggregates.instance.getMonthlyChartDataAggregate();
+  } else {
+    return TicketAggregates.instance.getYearlyChartDataAggregate();
+  }
 });
