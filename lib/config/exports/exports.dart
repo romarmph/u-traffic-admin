@@ -229,7 +229,7 @@ export 'package:u_traffic_admin/model/attachment.dart';
 export 'package:u_traffic_admin/model/complaint_model.dart';
 
 // * ---- data chart models
-export 'package:u_traffic_admin/model/charts/pie_chart_data_model.dart';
+export 'package:u_traffic_admin/model/chart_data_model.dart';
 
 /**
  * 
@@ -246,6 +246,9 @@ export 'package:u_traffic_admin/database/traffic_post_db.dart';
 export 'package:u_traffic_admin/database/enforcer_schedule.dart';
 export 'package:u_traffic_admin/database/enforcer_database.dart';
 export 'package:u_traffic_admin/database/complaints_db.dart';
+
+// * ---- aggregates
+export 'package:u_traffic_admin/database/aggregates/ticket_aggregate_database.dart';
 
 /**
  * 

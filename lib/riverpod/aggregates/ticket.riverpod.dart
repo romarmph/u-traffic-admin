@@ -1,6 +1,74 @@
+import 'package:u_traffic_admin/config/enums/date_range.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/model/date_range.dart';
 
-final ticketByStatusAggregateProvider =
-    StreamProvider<List<PieChartData>>((ref) {
-  return TicketDatabase.instance.getTicketByStatusAggregate();
+final dateRangeTypeProvider = StateProvider<DateRangeType>((ref) {
+  return DateRangeType.today;
+});
+
+final dateRangeProvider = StateProvider<DateRange>((ref) {
+  final dateRangeType = ref.watch(dateRangeTypeProvider);
+
+  DateTime now = DateTime.now();
+  DateTime? currentStart;
+  DateTime? currentEnd;
+  DateTime? previousStart;
+  DateTime? previousEnd;
+
+  if (dateRangeType == DateRangeType.today) {
+    currentEnd = now;
+    currentStart = DateTime(now.year, now.month, now.day);
+    previousEnd = currentStart;
+    previousStart = previousEnd.subtract(const Duration(days: 1));
+  } else if (dateRangeType == DateRangeType.week) {
+    currentEnd = now;
+    currentStart = currentEnd.subtract(const Duration(days: 7));
+    previousEnd = currentStart;
+    previousStart = previousEnd.subtract(const Duration(days: 7));
+  } else if (dateRangeType == DateRangeType.month) {
+    currentEnd = now;
+    currentStart = currentEnd.subtract(const Duration(days: 30));
+    previousEnd = currentStart;
+    previousStart = previousEnd.subtract(const Duration(days: 30));
+  } else if (dateRangeType == DateRangeType.year) {
+    currentEnd = now;
+    currentStart = currentEnd.subtract(const Duration(days: 365));
+    previousEnd = currentStart;
+    previousStart = previousEnd.subtract(const Duration(days: 365));
+  } else {
+    return DateRange();
+  }
+
+  return DateRange(
+    currentStart: Timestamp.fromDate(currentStart),
+    currentEnd: Timestamp.fromDate(currentEnd),
+    previousStart: Timestamp.fromDate(previousStart),
+    previousEnd: Timestamp.fromDate(previousEnd),
+  );
+});
+
+final totalTicketsAggregate = StreamProvider<List<ChartData>>((ref) {
+  final dateRange = ref.watch(dateRangeProvider);
+
+  return TicketAggregates.instance.getTotalTicketsAggregate(dateRange);
+});
+
+final ticketByStatusAggregateProvider = StreamProvider<List<ChartData>>((ref) {
+  final dateRange = ref.watch(dateRangeProvider);
+  return TicketAggregates.instance.getTicketByStatusAggregate(dateRange);
+});
+
+final paidVsUnpaidAggregateProvider = StreamProvider<List<ChartData>>((ref) {
+  final dateRange = ref.watch(dateRangeProvider);
+  return TicketAggregates.instance.getPaidVsUnpaidAggregate(dateRange);
+});
+
+final paidTicketsAggregateProvider = StreamProvider<List<ChartData>>((ref) {
+  final dateRange = ref.watch(dateRangeProvider);
+  return TicketAggregates.instance.paidTicketsAggregate(dateRange);
+});
+
+final unpaidTicketsAggregateProvider = StreamProvider<List<ChartData>>((ref) {
+  final dateRange = ref.watch(dateRangeProvider);
+  return TicketAggregates.instance.unpaidTicketsAggregate(dateRange);
 });
