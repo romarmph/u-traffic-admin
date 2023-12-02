@@ -5,7 +5,7 @@ PageRouteBuilder onGenerateRoute(settings) {
   switch (settings.name) {
     case Routes.home:
       return PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const Wrapper(),
+        pageBuilder: (_, __, ___) => const HomePage(),
       );
     case Routes.login:
       return PageRouteBuilder(

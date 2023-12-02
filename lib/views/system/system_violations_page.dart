@@ -11,6 +11,8 @@ class SystemPage extends ConsumerStatefulWidget {
 class _SystemPageState extends ConsumerState<SystemPage> {
   @override
   Widget build(BuildContext context) {
+    final appBarHeight = AppBar().preferredSize.height;
+
     return PageContainer(
       route: Routes.systemViolations,
       appBar: AppBar(
@@ -51,6 +53,11 @@ class _SystemPageState extends ConsumerState<SystemPage> {
                           data = _searchType(data, query);
                           return DataGridContainer(
                             constraints: constraints,
+                            height: constraints.maxHeight -
+                                60 -
+                                appBarHeight -
+                                100 -
+                                16,
                             source: ViolationsDataGridSource(
                               data,
                             ),

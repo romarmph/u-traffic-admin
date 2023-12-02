@@ -11,6 +11,7 @@ class DataGridContainer extends ConsumerWidget {
     this.dataGridKey,
     this.gridLinesVisibility = GridLinesVisibility.horizontal,
     this.headerGridLinesVisibility = GridLinesVisibility.horizontal,
+    this.height,
   });
 
   final BoxConstraints constraints;
@@ -20,16 +21,16 @@ class DataGridContainer extends ConsumerWidget {
   final GlobalKey<SfDataGridState>? dataGridKey;
   final GridLinesVisibility gridLinesVisibility;
   final GridLinesVisibility headerGridLinesVisibility;
+  final double? height;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appBarHeight = AppBar().preferredSize.height;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
           clipBehavior: Clip.antiAlias,
-          height: constraints.maxHeight - 60 - appBarHeight - 100 - 16,
+          height: height,
           decoration: BoxDecoration(
             color: UColors.white,
             borderRadius: BorderRadius.circular(USpace.space16),

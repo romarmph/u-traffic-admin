@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+// import 'package:u_traffic_admin/views/ticket/compare_ticket_page.dart';
 
 class TicketDataGridSource extends DataGridSource {
   TicketDataGridSource({
@@ -35,23 +36,32 @@ class TicketDataGridSource extends DataGridSource {
           isUnpaid = _isUnpaid;
           _isUnpaid = false;
 
-          if (currentRoute == Routes.ticketRelated) {
-            return Center(
-                child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  vertical: USpace.space8,
-                  horizontal: USpace.space16,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(USpace.space8),
-                ),
-                side: const BorderSide(color: UColors.blue600),
-              ),
-              onPressed: () {},
-              child: const Text('Compare'),
-            ));
-          }
+          // if (currentRoute == Routes.ticketRelated) {
+          //   return Center(
+          //     child: OutlinedButton(
+          //       style: OutlinedButton.styleFrom(
+          //         padding: const EdgeInsets.symmetric(
+          //           vertical: USpace.space8,
+          //           horizontal: USpace.space16,
+          //         ),
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(USpace.space8),
+          //         ),
+          //         side: const BorderSide(color: UColors.blue600),
+          //       ),
+          //       onPressed: () {
+          //         Navigator.of(navigatorKey.currentContext!).push(
+          //           MaterialPageRoute(
+          //             builder: (context) => CompareTicketPage(
+          //               relatedTicketId: dataGridCell.value,
+          //             ),
+          //           ),
+          //         );
+          //       },
+          //       child: const Text('Compare'),
+          //     ),
+          //   );
+          // }
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,

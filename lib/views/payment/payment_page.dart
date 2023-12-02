@@ -31,6 +31,8 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
 
   @override
   Widget build(BuildContext context) {
+    final appBarHeight = AppBar().preferredSize.height;
+
     return PageContainer(
       route: Routes.payment,
       appBar: AppBar(
@@ -199,6 +201,11 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                                 paymentSearchQueryProvider,
                               );
                               return DataGridContainer(
+                                height: constraints.maxHeight -
+                                    60 -
+                                    appBarHeight -
+                                    100 -
+                                    16,
                                 source: TicketDataGridSource(
                                   ticketList: _searchTicket(data, query),
                                   currentRoute: Routes.payment,
@@ -226,6 +233,11 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                                 paymentSearchQueryProvider,
                               );
                               return DataGridContainer(
+                                height: constraints.maxHeight -
+                                    60 -
+                                    appBarHeight -
+                                    100 -
+                                    16,
                                 source: PaymentDataGridSource(
                                   ref: ref,
                                   paymentList:

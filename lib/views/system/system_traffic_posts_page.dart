@@ -12,6 +12,7 @@ class SystemTrafficPostPage extends ConsumerStatefulWidget {
 class _SystemTrafficPostPageState extends ConsumerState<SystemTrafficPostPage> {
   @override
   Widget build(BuildContext context) {
+    final appBarHeight = AppBar().preferredSize.height;
     return PageContainer(
       route: Routes.systemTrafficPosts,
       appBar: AppBar(
@@ -55,6 +56,11 @@ class _SystemTrafficPostPageState extends ConsumerState<SystemTrafficPostPage> {
                             source: TrafficPostDataGridSource(
                               _searchType(data, query),
                             ),
+                            height: constraints.maxHeight -
+                                60 -
+                                appBarHeight -
+                                100 -
+                                16,
                             gridColumns: trafficPostColumns,
                             dataCount: _searchType(data, query).length,
                           );
