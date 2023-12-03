@@ -12,6 +12,7 @@ class SystemVehicleTypePage extends ConsumerStatefulWidget {
 class SystemVehicleTypePageState extends ConsumerState<SystemVehicleTypePage> {
   @override
   Widget build(BuildContext context) {
+    final appBarHeight = AppBar().preferredSize.height;
     return PageContainer(
       route: Routes.systemVehicleTypes,
       appBar: AppBar(
@@ -51,6 +52,11 @@ class SystemVehicleTypePageState extends ConsumerState<SystemVehicleTypePage> {
                           final query =
                               ref.watch(vehicleTypeSearchQueryProvider);
                           return DataGridContainer(
+                            height: constraints.maxHeight -
+                                60 -
+                                appBarHeight -
+                                100 -
+                                16,
                             constraints: constraints,
                             source: VehicleDataGridSource(
                               _searchType(data, query),

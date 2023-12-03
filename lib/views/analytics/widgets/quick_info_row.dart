@@ -40,7 +40,7 @@ class QuickInfoRow extends StatelessWidget {
           child: QuickInfoCard(
             provider: unpaidTicketsAggregateProvider,
             title: "Unpaid tickets",
-            icon: Icons.paid_rounded,
+            icon: Icons.pending_actions_outlined,
             color: UColors.red400,
             isNegative: true,
           ),
@@ -52,7 +52,7 @@ class QuickInfoRow extends StatelessWidget {
           child: QuickInfoCard(
             provider: cancelledTicketsAggregateProvider,
             title: "Cancelled tickets",
-            icon: Icons.paid_rounded,
+            icon: Icons.cancel_outlined,
             color: UColors.purple400,
             isNegative: true,
           ),
@@ -64,7 +64,7 @@ class QuickInfoRow extends StatelessWidget {
           child: QuickInfoCard(
             provider: expiredTicketsAggregateProvider,
             title: "Expired tickets",
-            icon: Icons.paid_rounded,
+            icon: Icons.free_cancellation_rounded,
             color: UColors.yellow400,
             isNegative: true,
           ),

@@ -235,5 +235,36 @@ class TicketDatabase {
     yield allTickets;
   }
 
+  Stream<List<Ticket>> getAllTodayTicket() {
+    const String collection = "tickets";
+    const String queryField = "dateCreated";
 
+    final today = DateTime.now();
+    final startTime = DateTime(today.year, today.month, today.day);
+    final endTime = DateTime(today.year, today.month, today.day + 1);
+
+    return _firestore
+        .collection(collection)
+        .where(
+          queryField,
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startTime),
+        )
+        .where(
+          queryField,
+          isLessThanOrEqualTo: Timestamp.fromDate(endTime),
+        )
+        .snapshots()
+        .map((snapshot) {
+      if (snapshot.docs.isEmpty) {
+        return [];
+      }
+
+      return snapshot.docs.map((e) {
+        return Ticket.fromJson(
+          e.data(),
+          e.id,
+        );
+      }).toList();
+    });
+  }
 }

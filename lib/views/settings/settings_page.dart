@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:universal_html/html.dart' as html;
 
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
@@ -278,13 +279,7 @@ class _SettingsPageState extends ConsumerState {
                         UElevatedButton(
                           onPressed: () async {
                             await AuthService().logout();
-                            Navigator.of(navigatorKey.currentContext!)
-                                .pushAndRemoveUntil(
-                              PageRouteBuilder(
-                                pageBuilder: (_, __, ___) => const Wrapper(),
-                              ),
-                              (route) => false,
-                            );
+                            html.window.location.reload();
                           },
                           child: const Text('Logout'),
                         ),

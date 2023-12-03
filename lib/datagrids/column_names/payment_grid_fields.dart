@@ -1,4 +1,5 @@
 class PaymentGridFields {
+  static const String orNumber = 'orNumber';
   static const String ticketNumber = 'ticketNumber';
   static const String fineAmount = 'fineAmount';
   static const String tenderedAmount = 'tenderedAmount';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+import 'package:u_traffic_admin/views/ticket/compare_ticket_page.dart';
 import 'package:u_traffic_admin/views/ticket/related_tickets_page.dart';
 
 class TicketDetails extends ConsumerWidget {
@@ -62,8 +63,15 @@ class TicketDetails extends ConsumerWidget {
                     child: ref.watch(relatedTicketsStreamProvider(ticket)).when(
                       data: (data) {
                         return ListTile(
-                          onTap: () {
-                            Navigator.of(context).push(
+                          onTap: () async {
+                            await Future.delayed(
+                              const Duration(milliseconds: 100),
+                              () => ref
+                                  .read(sourceTicketProvider.notifier)
+                                  .state = ticket,
+                            );
+
+                            Navigator.of(navigatorKey.currentContext!).push(
                               MaterialPageRoute(
                                 builder: (context) => RelatedTicketsPage(
                                   ticket: ticket,
@@ -574,12 +582,111 @@ class TicketDetails extends ConsumerWidget {
               ),
             ),
             onPressed: () {
-              goToPaymentProcessPage(
-                ticket,
-              );
+              // showDialog(
+              //   context: navigatorKey.currentContext!,
+              //   builder: (context) {
+              //     return Dialog(
+              //       insetPadding: EdgeInsets.zero,
+              //       child: PaymentForm(),
+              //     );
+              //   },
+              // );
+              goToPaymentProcessPage(ticket);
             },
             child: const Text(
               "Pay Ticket",
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PaymentForm extends ConsumerStatefulWidget {
+  const PaymentForm({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _PaymentFormState();
+}
+
+class _PaymentFormState extends ConsumerState<PaymentForm> {
+  final _oRNumberController = TextEditingController();
+  final _confirmORNumberController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 400,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: UColors.white,
+        borderRadius: BorderRadius.circular(USpace.space12),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text(
+            "Payment Form",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          // Instructions to fill up the physical form first
+          const SizedBox(
+            height: USpace.space16,
+          ),
+          const Text(
+            "Please fill up the Official Receipt then use the OR Number to pay this ticket.",
+            style: TextStyle(
+              fontSize: 14,
+              color: UColors.gray500,
+            ),
+          ),
+          const SizedBox(
+            height: USpace.space16,
+          ),
+          TextFormField(
+            controller: _oRNumberController,
+            decoration: const InputDecoration(
+              labelText: "OR Number",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(
+            height: USpace.space16,
+          ),
+          TextFormField(
+            controller: _confirmORNumberController,
+            decoration: const InputDecoration(
+              labelText: "Confirm OR Number",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(
+            height: USpace.space16,
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: UColors.green500,
+              foregroundColor: UColors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              padding: const EdgeInsets.symmetric(
+                vertical: 16,
+                horizontal: 24,
+              ),
+            ),
+            onPressed: () async {},
+            child: const Text(
+              "Submit",
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

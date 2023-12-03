@@ -91,6 +91,10 @@ class PaymentDataGridSource extends DataGridSource {
     _paymentRows = paymentList.map<DataGridRow>((payment) {
       return DataGridRow(
         cells: [
+          DataGridCell<String>(
+            columnName: PaymentGridFields.orNumber,
+            value: payment.orNumber,
+          ),
           DataGridCell<int>(
             columnName: PaymentGridFields.ticketNumber,
             value: payment.ticketNumber,

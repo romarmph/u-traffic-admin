@@ -14,6 +14,8 @@ class _AdminPageState extends ConsumerState<AdminPage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBarHeight = AppBar().preferredSize.height;
+
     return PageContainer(
       route: Routes.adminStaffs,
       appBar: AppBar(
@@ -181,6 +183,11 @@ class _AdminPageState extends ConsumerState<AdminPage> {
                             }).toList();
                           }
                           return DataGridContainer(
+                            height: constraints.maxHeight -
+                                60 -
+                                appBarHeight -
+                                100 -
+                                16,
                             source: AdminDataGridSource(
                               data,
                             ),

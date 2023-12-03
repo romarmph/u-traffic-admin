@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
+// import 'package:u_traffic_admin/views/ticket/compare_ticket_page.dart';
 
 class TicketDataGridSource extends DataGridSource {
   TicketDataGridSource({
     required this.ticketList,
     required this.currentRoute,
+    required this.ref,
   }) {
     buildDataGridRows();
   }
 
+  WidgetRef ref;
   String currentRoute;
   List<Ticket> ticketList = [];
 
@@ -34,24 +37,6 @@ class TicketDataGridSource extends DataGridSource {
         if (dataGridCell.columnName == TicketGridFields.actions) {
           isUnpaid = _isUnpaid;
           _isUnpaid = false;
-
-          if (currentRoute == Routes.ticketRelated) {
-            return Center(
-                child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                  vertical: USpace.space8,
-                  horizontal: USpace.space16,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(USpace.space8),
-                ),
-                side: const BorderSide(color: UColors.blue600),
-              ),
-              onPressed: () {},
-              child: const Text('Compare'),
-            ));
-          }
 
           return Row(
             mainAxisAlignment: MainAxisAlignment.center,

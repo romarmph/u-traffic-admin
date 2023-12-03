@@ -39,3 +39,7 @@ final relatedTicketsStreamProvider =
     return TicketDatabase.instance.getRelatedTicketsStream(ticket);
   },
 );
+
+final allTicketsTodayPRovider = StreamProvider<List<Ticket>>((ref) {
+  return TicketDatabase.instance.getAllTodayTicket();
+});

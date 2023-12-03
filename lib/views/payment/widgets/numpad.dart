@@ -230,11 +230,25 @@ class _NumPadState extends ConsumerState<NumPad> {
                 return;
               }
 
+              final orNumber = await getOrNumber();
+
+              if (orNumber == null) {
+                await QuickAlert.show(
+                    context: navigatorKey.currentContext!,
+                    type: QuickAlertType.error,
+                    title: 'Missing OR Number',
+                    text:
+                        'After filling up the Official Receipt, please use the OR Number to confirm the payment.');
+                Navigator.of(navigatorKey.currentContext!).pop();
+                return;
+              }
+
               _showLoading();
               try {
                 final admin = ref.watch(currentAdminProvider);
                 await PaymentDatabase.instance.payTicket(
                   ticket: widget.ticket,
+                  orNumber: orNumber,
                   amountTendered: double.parse(_numPadScreenController.text),
                   change: _change,
                   cashierName: '${admin.firstName} ${admin.lastName}',
@@ -436,5 +450,244 @@ class _NumPadState extends ConsumerState<NumPad> {
     setState(() {
       _changeColor = UColors.green500;
     });
+  }
+
+  Future<String?> getOrNumber() async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return const Dialog(
+          insetPadding: EdgeInsets.all(16),
+          child: ORNumberForm(),
+        );
+      },
+    );
+  }
+}
+
+class ORNumberForm extends ConsumerStatefulWidget {
+  const ORNumberForm({super.key});
+
+  @override
+  ConsumerState<ORNumberForm> createState() => _ORNumberFormState();
+}
+
+class _ORNumberFormState extends ConsumerState<ORNumberForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _orNumberController = TextEditingController();
+  final _confirmOrNumberController = TextEditingController();
+
+  String? _errorText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 500,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: UColors.white,
+        borderRadius: BorderRadius.circular(USpace.space12),
+      ),
+      child: ref.watch(paymentStreamProvider).when(data: (data) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'OR Number',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(
+              height: USpace.space16,
+            ),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    controller: _orNumberController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(USpace.space8),
+                      ),
+                      labelText: 'OR Number',
+                    ),
+                    onChanged: (value) {
+                      if (data.any((element) => element.orNumber == value)) {
+                        setState(() {
+                          _errorText = 'OR Number is already used';
+                        });
+                      } else {
+                        setState(() {
+                          _errorText = null;
+                        });
+                      }
+                      _formKey.currentState!.validate();
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the OR Number';
+                      }
+
+                      if (data.any((element) => element.orNumber == value)) {
+                        return 'OR Number is already used';
+                      } else {
+                        _errorText = null;
+                      }
+
+                      return _errorText;
+                    },
+                  ),
+                  const SizedBox(
+                    height: USpace.space16,
+                  ),
+                  TextFormField(
+                    controller: _confirmOrNumberController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(USpace.space8),
+                      ),
+                      labelText: 'Confirm OR Number',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter the OR Number';
+                      }
+
+                      if (value != _orNumberController.text) {
+                        return 'The OR Number does not match';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: USpace.space16,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('Cancel'),
+                      ),
+                      const SizedBox(
+                        width: USpace.space16,
+                      ),
+                      FilledButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.of(context).pop(_orNumberController.text);
+                          }
+                        },
+                        child: const Text('Confirm'),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ],
+        );
+      }, error: (error, stackTrace) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'OR Number',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(
+              height: USpace.space16,
+            ),
+            const Text(
+              'Failed to load OR Number',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(
+              height: USpace.space16,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(
+                  width: USpace.space16,
+                ),
+                FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Confirm'),
+                ),
+              ],
+            )
+          ],
+        );
+      }, loading: () {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'OR Number',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(
+              height: USpace.space16,
+            ),
+            const Text(
+              'Loading OR Number',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(
+              height: USpace.space16,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(
+                  width: USpace.space16,
+                ),
+                FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Confirm'),
+                ),
+              ],
+            )
+          ],
+        );
+      }),
+    );
   }
 }

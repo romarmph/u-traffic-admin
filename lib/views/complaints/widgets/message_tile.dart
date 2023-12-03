@@ -16,12 +16,16 @@ class MessageTile extends ConsumerWidget {
     required this.senderPhotoUrl,
     required this.senderName,
     this.isFromDriver = false,
+    this.email,
+    this.phone,
   });
 
   final String comlaint;
   final String senderPhotoUrl;
   final String senderName;
   final bool isFromDriver;
+  final String? email;
+  final String? phone;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -65,6 +69,31 @@ class MessageTile extends ConsumerWidget {
               Text(
                 complaint.createdAt.toAmericanDate,
                 style: const UTextStyle().textsmfontmedium,
+              ),
+              Visibility(
+                visible: isFromDriver,
+                child: Row(
+                  children: [
+                    const SizedBox(width: 8),
+                    const Text(
+                      '-',
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      email ?? "",
+                      style: const TextStyle(
+                        color: UColors.blue500,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      phone ?? "",
+                      style: const TextStyle(
+                        color: UColors.blue500,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

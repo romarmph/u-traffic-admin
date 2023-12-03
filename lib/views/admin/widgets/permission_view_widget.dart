@@ -173,41 +173,41 @@ class PermissionViewWidget extends ConsumerWidget {
               onChanged: (value) {},
             ),
           ),
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: permissions.contains(
-          //       AdminPermission.manageComplaints,
-          //     )
-          //         ? UColors.blue200
-          //         : UColors.gray50,
-          //     borderRadius: BorderRadius.circular(
-          //       USpace.space8,
-          //     ),
-          //     border: Border.all(
-          //       color: permissions.contains(
-          //         AdminPermission.manageComplaints,
-          //       )
-          //           ? UColors.blue400
-          //           : UColors.gray300,
-          //       width: 1,
-          //     ),
-          //   ),
-          //   child: CheckboxListTile(
-          //     enabled: false,
-          //     value: permissions.contains(
-          //       AdminPermission.manageComplaints,
-          //     ),
-          //     title: const Text('Manage Complaints'),
-          //     subtitle: const Text(
-          //       'Allow admin to manage complaints',
-          //       style: TextStyle(
-          //         color: UColors.gray400,
-          //         fontSize: 12,
-          //       ),
-          //     ),
-          //     onChanged: (value) {},
-          //   ),
-          // ),
+          Container(
+            decoration: BoxDecoration(
+              color: permissions.contains(
+                AdminPermission.manageComplaints,
+              )
+                  ? UColors.blue200
+                  : UColors.gray50,
+              borderRadius: BorderRadius.circular(
+                USpace.space8,
+              ),
+              border: Border.all(
+                color: permissions.contains(
+                  AdminPermission.manageComplaints,
+                )
+                    ? UColors.blue400
+                    : UColors.gray300,
+                width: 1,
+              ),
+            ),
+            child: CheckboxListTile(
+              enabled: false,
+              value: permissions.contains(
+                AdminPermission.manageComplaints,
+              ),
+              title: const Text('Manage Complaints'),
+              subtitle: const Text(
+                'Allow admin to manage complaints',
+                style: TextStyle(
+                  color: UColors.gray400,
+                  fontSize: 12,
+                ),
+              ),
+              onChanged: (value) {},
+            ),
+          ),
           Container(
             decoration: BoxDecoration(
               color: permissions.contains(
@@ -243,76 +243,76 @@ class PermissionViewWidget extends ConsumerWidget {
               onChanged: (value) {},
             ),
           ),
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: permissions.contains(
-          //       AdminPermission.viewAnalytics,
-          //     )
-          //         ? UColors.blue200
-          //         : UColors.gray50,
-          //     borderRadius: BorderRadius.circular(
-          //       USpace.space8,
-          //     ),
-          //     border: Border.all(
-          //       color: permissions.contains(
-          //         AdminPermission.viewAnalytics,
-          //       )
-          //           ? UColors.blue400
-          //           : UColors.gray300,
-          //       width: 1,
-          //     ),
-          //   ),
-          //   child: CheckboxListTile(
-          //     enabled: false,
-          //     value: permissions.contains(
-          //       AdminPermission.viewAnalytics,
-          //     ),
-          //     title: const Text('View Analytics'),
-          //     subtitle: const Text(
-          //       'Allow admin to view analytics',
-          //       style: TextStyle(
-          //         color: UColors.gray400,
-          //         fontSize: 12,
-          //       ),
-          //     ),
-          //     onChanged: (value) {},
-          //   ),
-          // ),
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: permissions.contains(
-          //       AdminPermission.viewDashboard,
-          //     )
-          //         ? UColors.blue200
-          //         : UColors.gray50,
-          //     borderRadius: BorderRadius.circular(
-          //       USpace.space8,
-          //     ),
-          //     border: Border.all(
-          //       color: permissions.contains(
-          //         AdminPermission.viewDashboard,
-          //       )
-          //           ? UColors.blue400
-          //           : UColors.gray300,
-          //       width: 1,
-          //     ),
-          //   ),
-          //   child: CheckboxListTile(
-          //     enabled: false,
-          //     value: permissions.contains(
-          //       AdminPermission.viewDashboard,
-          //     ),
-          //     title: const Text('View Dashboard'),
-          //     subtitle: const Text(
-          //       'Allow admin to view dashboard',
-          //       style: TextStyle(
-          //         color: UColors.gray400,
-          //         fontSize: 12,
-          //       ),
-          //     ),
-          //     onChanged: (value) {},
-          //   ),
-          // ),
+          Container(
+            decoration: BoxDecoration(
+              color: permissions.contains(
+                AdminPermission.viewAnalytics,
+              )
+                  ? UColors.blue200
+                  : UColors.gray50,
+              borderRadius: BorderRadius.circular(
+                USpace.space8,
+              ),
+              border: Border.all(
+                color: permissions.contains(
+                  AdminPermission.viewAnalytics,
+                )
+                    ? UColors.blue400
+                    : UColors.gray300,
+                width: 1,
+              ),
+            ),
+            child: CheckboxListTile(
+              enabled: false,
+              value: permissions.contains(
+                AdminPermission.viewAnalytics,
+              ),
+              title: const Text('View Analytics'),
+              subtitle: const Text(
+                'Allow admin to view analytics',
+                style: TextStyle(
+                  color: UColors.gray400,
+                  fontSize: 12,
+                ),
+              ),
+              onChanged: (value) {},
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: permissions.contains(
+                AdminPermission.viewDashboard,
+              )
+                  ? UColors.blue200
+                  : UColors.gray50,
+              borderRadius: BorderRadius.circular(
+                USpace.space8,
+              ),
+              border: Border.all(
+                color: permissions.contains(
+                  AdminPermission.viewDashboard,
+                )
+                    ? UColors.blue400
+                    : UColors.gray300,
+                width: 1,
+              ),
+            ),
+            child: CheckboxListTile(
+              enabled: false,
+              value: permissions.contains(
+                AdminPermission.viewDashboard,
+              ),
+              title: const Text('View Dashboard'),
+              subtitle: const Text(
+                'Allow admin to view dashboard',
+                style: TextStyle(
+                  color: UColors.gray400,
+                  fontSize: 12,
+                ),
+              ),
+              onChanged: (value) {},
+            ),
+          ),
         ],
       ),
     );

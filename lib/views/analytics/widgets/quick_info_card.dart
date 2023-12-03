@@ -70,6 +70,7 @@ class QuickInfoCard extends ConsumerWidget {
                       child: Icon(
                         icon,
                         color: color,
+                        size: 32,
                       ),
                     ),
                   ),

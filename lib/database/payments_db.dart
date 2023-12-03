@@ -11,6 +11,7 @@ class PaymentDatabase {
   Future<void> payTicket({
     required Ticket ticket,
     required double amountTendered,
+    required String orNumber,
     required double change,
     required String cashierName,
   }) async {
@@ -18,6 +19,7 @@ class PaymentDatabase {
 
     final payment = PaymentDetail(
       ticketNumber: ticket.ticketNumber!,
+      orNumber: orNumber,
       ticketID: ticket.id!,
       tenderedAmount: amountTendered,
       change: change,

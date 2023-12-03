@@ -246,53 +246,53 @@ class PermissionSelectionWidgetState
               },
             ),
           ),
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: selected.contains(
-          //       AdminPermission.manageComplaints,
-          //     )
-          //         ? UColors.blue200
-          //         : UColors.gray50,
-          //     borderRadius: BorderRadius.circular(
-          //       USpace.space8,
-          //     ),
-          //     border: Border.all(
-          //       color: selected.contains(
-          //         AdminPermission.manageComplaints,
-          //       )
-          //           ? UColors.blue400
-          //           : UColors.gray300,
-          //       width: 1,
-          //     ),
-          //   ),
-          //   child: CheckboxListTile(
-          //     enabled: widget.isUpdateMode,
-          //     value: selected.contains(
-          //       AdminPermission.manageComplaints,
-          //     ),
-          //     title: const Text('Manage Complaints'),
-          //     subtitle: const Text(
-          //       'Allow admin to manage complaints',
-          //       style: TextStyle(
-          //         color: UColors.gray400,
-          //         fontSize: 12,
-          //       ),
-          //     ),
-          //     onChanged: (value) {
-          //       if (value!) {
-          //         ref.read(selectedPermissionsProvider.notifier).state = [
-          //           ...selected,
-          //           AdminPermission.manageComplaints
-          //         ];
-          //       } else {
-          //         ref.read(selectedPermissionsProvider.notifier).state = [
-          //           ...selected.where((element) =>
-          //               element != AdminPermission.manageComplaints)
-          //         ];
-          //       }
-          //     },
-          //   ),
-          // ),
+          Container(
+            decoration: BoxDecoration(
+              color: selected.contains(
+                AdminPermission.manageComplaints,
+              )
+                  ? UColors.blue200
+                  : UColors.gray50,
+              borderRadius: BorderRadius.circular(
+                USpace.space8,
+              ),
+              border: Border.all(
+                color: selected.contains(
+                  AdminPermission.manageComplaints,
+                )
+                    ? UColors.blue400
+                    : UColors.gray300,
+                width: 1,
+              ),
+            ),
+            child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
+              value: selected.contains(
+                AdminPermission.manageComplaints,
+              ),
+              title: const Text('Manage Complaints'),
+              subtitle: const Text(
+                'Allow admin to manage complaints',
+                style: TextStyle(
+                  color: UColors.gray400,
+                  fontSize: 12,
+                ),
+              ),
+              onChanged: (value) {
+                if (value!) {
+                  ref.read(selectedPermissionsProvider.notifier).state = [
+                    ...selected,
+                    AdminPermission.manageComplaints
+                  ];
+                } else {
+                  ref.read(selectedPermissionsProvider.notifier).state = [
+                    ...selected.where((element) =>
+                        element != AdminPermission.manageComplaints)
+                  ];
+                }
+              },
+            ),
+          ),
           Container(
             decoration: BoxDecoration(
               color: selected.contains(
@@ -340,100 +340,100 @@ class PermissionSelectionWidgetState
               },
             ),
           ),
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: selected.contains(
-          //       AdminPermission.viewAnalytics,
-          //     )
-          //         ? UColors.blue200
-          //         : UColors.gray50,
-          //     borderRadius: BorderRadius.circular(
-          //       USpace.space8,
-          //     ),
-          //     border: Border.all(
-          //       color: selected.contains(
-          //         AdminPermission.viewAnalytics,
-          //       )
-          //           ? UColors.blue400
-          //           : UColors.gray300,
-          //       width: 1,
-          //     ),
-          //   ),
-          //   child: CheckboxListTile(
-          //     enabled: widget.isUpdateMode,
-          //     value: selected.contains(
-          //       AdminPermission.viewAnalytics,
-          //     ),
-          //     title: const Text('View Analytics'),
-          //     subtitle: const Text(
-          //       'Allow admin to view analytics',
-          //       style: TextStyle(
-          //         color: UColors.gray400,
-          //         fontSize: 12,
-          //       ),
-          //     ),
-          //     onChanged: (value) {
-          //       if (value!) {
-          //         ref.read(selectedPermissionsProvider.notifier).state = [
-          //           ...selected,
-          //           AdminPermission.viewAnalytics
-          //         ];
-          //       } else {
-          //         ref.read(selectedPermissionsProvider.notifier).state = [
-          //           ...selected.where(
-          //               (element) => element != AdminPermission.viewAnalytics)
-          //         ];
-          //       }
-          //     },
-          //   ),
-          // ),
-          // Container(
-          //   decoration: BoxDecoration(
-          //     color: selected.contains(
-          //       AdminPermission.viewDashboard,
-          //     )
-          //         ? UColors.blue200
-          //         : UColors.gray50,
-          //     borderRadius: BorderRadius.circular(
-          //       USpace.space8,
-          //     ),
-          //     border: Border.all(
-          //       color: selected.contains(
-          //         AdminPermission.viewDashboard,
-          //       )
-          //           ? UColors.blue400
-          //           : UColors.gray300,
-          //       width: 1,
-          //     ),
-          //   ),
-          //   child: CheckboxListTile(
-          //     enabled: widget.isUpdateMode,
-          //     value: selected.contains(
-          //       AdminPermission.viewDashboard,
-          //     ),
-          //     title: const Text('View Dashboard'),
-          //     subtitle: const Text(
-          //       'Allow admin to view dashboard',
-          //       style: TextStyle(
-          //         color: UColors.gray400,
-          //         fontSize: 12,
-          //       ),
-          //     ),
-          //     onChanged: (value) {
-          //       if (value!) {
-          //         ref.read(selectedPermissionsProvider.notifier).state = [
-          //           ...selected,
-          //           AdminPermission.viewDashboard
-          //         ];
-          //       } else {
-          //         ref.read(selectedPermissionsProvider.notifier).state = [
-          //           ...selected.where(
-          //               (element) => element != AdminPermission.viewDashboard)
-          //         ];
-          //       }
-          //     },
-          //   ),
-          // ),
+          Container(
+            decoration: BoxDecoration(
+              color: selected.contains(
+                AdminPermission.viewAnalytics,
+              )
+                  ? UColors.blue200
+                  : UColors.gray50,
+              borderRadius: BorderRadius.circular(
+                USpace.space8,
+              ),
+              border: Border.all(
+                color: selected.contains(
+                  AdminPermission.viewAnalytics,
+                )
+                    ? UColors.blue400
+                    : UColors.gray300,
+                width: 1,
+              ),
+            ),
+            child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
+              value: selected.contains(
+                AdminPermission.viewAnalytics,
+              ),
+              title: const Text('View Analytics'),
+              subtitle: const Text(
+                'Allow admin to view analytics',
+                style: TextStyle(
+                  color: UColors.gray400,
+                  fontSize: 12,
+                ),
+              ),
+              onChanged: (value) {
+                if (value!) {
+                  ref.read(selectedPermissionsProvider.notifier).state = [
+                    ...selected,
+                    AdminPermission.viewAnalytics
+                  ];
+                } else {
+                  ref.read(selectedPermissionsProvider.notifier).state = [
+                    ...selected.where(
+                        (element) => element != AdminPermission.viewAnalytics)
+                  ];
+                }
+              },
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: selected.contains(
+                AdminPermission.viewDashboard,
+              )
+                  ? UColors.blue200
+                  : UColors.gray50,
+              borderRadius: BorderRadius.circular(
+                USpace.space8,
+              ),
+              border: Border.all(
+                color: selected.contains(
+                  AdminPermission.viewDashboard,
+                )
+                    ? UColors.blue400
+                    : UColors.gray300,
+                width: 1,
+              ),
+            ),
+            child: CheckboxListTile(
+              enabled: widget.isUpdateMode,
+              value: selected.contains(
+                AdminPermission.viewDashboard,
+              ),
+              title: const Text('View Dashboard'),
+              subtitle: const Text(
+                'Allow admin to view dashboard',
+                style: TextStyle(
+                  color: UColors.gray400,
+                  fontSize: 12,
+                ),
+              ),
+              onChanged: (value) {
+                if (value!) {
+                  ref.read(selectedPermissionsProvider.notifier).state = [
+                    ...selected,
+                    AdminPermission.viewDashboard
+                  ];
+                } else {
+                  ref.read(selectedPermissionsProvider.notifier).state = [
+                    ...selected.where(
+                        (element) => element != AdminPermission.viewDashboard)
+                  ];
+                }
+              },
+            ),
+          ),
         ],
       ),
     );
