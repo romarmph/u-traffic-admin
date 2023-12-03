@@ -45,7 +45,7 @@ class DataGridContainer extends ConsumerWidget {
             child: SfDataGrid(
               gridLinesVisibility: gridLinesVisibility,
               key: dataGridKey,
-              rowsPerPage: 12,
+              rowsPerPage: 25,
               highlightRowOnHover: true,
               allowFiltering: true,
               allowSorting: true,
@@ -71,7 +71,7 @@ class DataGridContainer extends ConsumerWidget {
             child: SfDataPager(
               pageCount: pageCount(
                 dataCount,
-                12,
+                25,
               ),
               delegate: source,
             ),

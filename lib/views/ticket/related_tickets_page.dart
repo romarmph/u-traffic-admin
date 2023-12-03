@@ -105,6 +105,7 @@ class _RelatedTicketsPageState extends ConsumerState<RelatedTicketsPage> {
                       child: DataGridContainer(
                         constraints: constraints,
                         source: TicketDataGridSource(
+                          ref: ref,
                           ticketList: gridData,
                           currentRoute: Routes.ticketRelated,
                         ),

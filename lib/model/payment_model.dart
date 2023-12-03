@@ -7,6 +7,7 @@ class PaymentDetail {
   final double tenderedAmount;
   final double change;
   final int ticketNumber;
+  final String orNumber;
   final String ticketID;
   final String processedBy;
   final String processedByName;
@@ -19,6 +20,7 @@ class PaymentDetail {
     required this.tenderedAmount,
     required this.change,
     required this.ticketNumber,
+    required this.orNumber,
     required this.ticketID,
     required this.processedBy,
     required this.processedAt,
@@ -32,6 +34,7 @@ class PaymentDetail {
       'tenderedAmount': tenderedAmount,
       'change': change,
       'ticketNumber': ticketNumber,
+      'orNumber': orNumber,
       'ticketID': ticketID,
       'processedBy': processedBy,
       'processedAt': processedAt,
@@ -49,6 +52,7 @@ class PaymentDetail {
       tenderedAmount: json['tenderedAmount'],
       change: json['change'],
       ticketNumber: json['ticketNumber'],
+      orNumber: json['orNumber'],
       ticketID: json['ticketID'],
       processedBy: json['processedBy'],
       processedByName: json['processedByName'],
@@ -63,6 +67,7 @@ class PaymentDetail {
     double? tenderedAmount,
     double? change,
     int? ticketNumber,
+    String? orNumber,
     String? ticketID,
     String? processedBy,
     String? processedByName,
@@ -77,6 +82,7 @@ class PaymentDetail {
       tenderedAmount: tenderedAmount ?? this.tenderedAmount,
       change: change ?? this.change,
       ticketNumber: ticketNumber ?? this.ticketNumber,
+      orNumber: orNumber ?? this.orNumber,
       ticketID: ticketID ?? this.ticketID,
       processedBy: processedBy ?? this.processedBy,
       processedByName: processedByName ?? this.processedByName,

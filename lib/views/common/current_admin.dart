@@ -19,17 +19,21 @@ class CurrenAdminButton extends ConsumerWidget {
         const SizedBox(
           width: USpace.space8,
         ),
-        CircleAvatar(
-          minRadius: 32,
+        Container(
+          height: 48,
+          width: 48,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(50),
+            color: UColors.gray300,
+          ),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
           child: Padding(
             padding: const EdgeInsets.all(4.0),
-            child: ClipOval(
-              child: CachedNetworkImage(
-                imageUrl: admin.photoUrl,
-                placeholder: (context, url) =>
-                    const CircularProgressIndicator(),
-                errorWidget: (context, url, error) => const Icon(Icons.error),
-              ),
+            child: CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl: admin.photoUrl,
+              placeholder: (context, url) => const CircularProgressIndicator(),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
             ),
           ),
         ),

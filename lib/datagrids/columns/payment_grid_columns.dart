@@ -8,6 +8,21 @@ List<GridColumn> paymentGridColumn = [
     columnName: PaymentGridFields.ticketNumber,
     label: const Center(
       child: Text(
+        'OR No.',
+        style: TextStyle(
+          color: UColors.gray500,
+          fontWeight: FontWeight.w600,
+          fontSize: 16,
+        ),
+      ),
+    ),
+  ),
+  GridColumn(
+    minimumWidth: 150,
+    columnWidthMode: ColumnWidthMode.fitByColumnName,
+    columnName: PaymentGridFields.ticketNumber,
+    label: const Center(
+      child: Text(
         'Ticket No.',
         style: TextStyle(
           color: UColors.gray500,

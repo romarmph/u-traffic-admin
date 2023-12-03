@@ -154,6 +154,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                   16,
                               dataGridKey: _key,
                               source: TicketDataGridSource(
+                                ref: ref,
                                 ticketList: _searchTicket(data, query),
                                 currentRoute: Routes.payment,
                               ),

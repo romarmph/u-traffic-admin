@@ -75,6 +75,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                       appBarHeight -
                                       320,
                                   source: TicketDataGridSource(
+                                    ref: ref,
                                     ticketList: data,
                                     currentRoute: Routes.home,
                                   ),

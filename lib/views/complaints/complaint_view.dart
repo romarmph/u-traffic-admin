@@ -203,6 +203,8 @@ class ComplaintViewPage extends ConsumerWidget {
                                     senderName:
                                         "${driver.firstName} ${driver.lastName}",
                                     senderPhotoUrl: driver.photoUrl,
+                                    email: driver.email,
+                                    phone: driver.phone,
                                   );
                                 },
                                 error: (error, stackTrace) {

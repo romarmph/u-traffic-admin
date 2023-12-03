@@ -19,6 +19,7 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBarHeight = AppBar().preferredSize.height;
     return PageContainer(
       route: Routes.enforcerSchedules,
       appBar: AppBar(
@@ -152,6 +153,11 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
                                 }
 
                                 return DataGridContainer(
+                                  height: constraints.maxHeight -
+                                      60 -
+                                      appBarHeight -
+                                      100 -
+                                      16,
                                   constraints: constraints,
                                   source: EnforcerScheduleDataGridSource(
                                     data,

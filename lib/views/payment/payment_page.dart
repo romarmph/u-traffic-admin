@@ -207,6 +207,7 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                                     100 -
                                     16,
                                 source: TicketDataGridSource(
+                                  ref: ref,
                                   ticketList: _searchTicket(data, query),
                                   currentRoute: Routes.payment,
                                 ),
