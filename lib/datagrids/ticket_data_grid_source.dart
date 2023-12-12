@@ -91,6 +91,18 @@ class TicketDataGridSource extends DataGridSource {
           );
         }
 
+        if (dataGridCell.columnName == TicketGridFields.violations) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            alignment: Alignment.center,
+            child: Text(
+              dataGridCell.value,
+              overflow: TextOverflow.clip,
+              style: const UTextStyle().textbasefontsemibold,
+            ),
+          );
+        }
+
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           alignment: Alignment.center,
@@ -99,6 +111,7 @@ class TicketDataGridSource extends DataGridSource {
                 ? '-'
                 : dataGridCell.value.toString(),
             overflow: TextOverflow.ellipsis,
+            style: const UTextStyle().textbasefontsemibold,
           ),
         );
       },
@@ -138,8 +151,11 @@ class TicketDataGridSource extends DataGridSource {
                   value: ticket.status.toString().split('.').last.capitalize,
                 ),
                 DataGridCell<String>(
-                  columnName: TicketGridFields.actions,
-                  value: ticket.id,
+                  columnName: TicketGridFields.violations,
+                  value: ticket.issuedViolations
+                      .map((e) => e.violation)
+                      .toList()
+                      .join(', '),
                 ),
                 DataGridCell<String>(
                   columnName: TicketGridFields.plateNumber,
@@ -156,6 +172,10 @@ class TicketDataGridSource extends DataGridSource {
                 DataGridCell<String>(
                   columnName: TicketGridFields.conductionOrFileNumber,
                   value: ticket.conductionOrFileNumber,
+                ),
+                DataGridCell<String>(
+                  columnName: TicketGridFields.vehicleOwner,
+                  value: ticket.vehicleOwner,
                 ),
               ],
             ))

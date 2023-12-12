@@ -146,7 +146,17 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                           data: (data) {
                             final query =
                                 ref.watch(ticketViewSearchQueryProvider);
+
                             return DataGridContainer(
+                              onCellTap: (details) {
+                                if (details.rowColumnIndex.rowIndex == 0) {
+                                  return;
+                                }
+                                goToTicketView(
+                                  data[details.rowColumnIndex.rowIndex - 1].id!,
+                                  Routes.tickets,
+                                );
+                              },
                               height: constraints.maxHeight -
                                   60 -
                                   appBarHeight -
@@ -194,7 +204,16 @@ class _TicketPageState extends ConsumerState<TicketPage> {
             ticket.licenseNumber!.toLowerCase().contains(query) ||
             ticket.enforcerName.toLowerCase().contains(query) ||
             ticket.dateCreated.toAmericanDate.toLowerCase().contains(query) ||
-            ticket.ticketDueDate.toAmericanDate.toLowerCase().contains(query);
+            ticket.ticketDueDate.toAmericanDate.toLowerCase().contains(query) ||
+            ticket.plateNumber!.toLowerCase().contains(query) ||
+            ticket.engineNumber!.toLowerCase().contains(query) ||
+            ticket.chassisNumber!.toLowerCase().contains(query) ||
+            ticket.conductionOrFileNumber!.toLowerCase().contains(query) ||
+            ticket.issuedViolations
+                .where((element) => element.violation
+                    .toLowerCase()
+                    .contains(query.toLowerCase()))
+                .isNotEmpty;
       }).toList();
     }
     return tickets;

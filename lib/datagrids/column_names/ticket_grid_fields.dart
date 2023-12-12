@@ -19,7 +19,7 @@ class TicketGridFields {
   static const String ticketDueDate = 'Ticket Due Date';
   static const String violationDateTime = 'violationDateTime';
   static const String violationPlace = 'violationPlace';
-  static const String violationsID = 'violationsID';
+  static const String violations = 'violations';
   static const String totalFine = 'Total Fine';
   static const String conductionOrFileNumber = 'Conduction/File Number';
   static const String actions = 'actions';

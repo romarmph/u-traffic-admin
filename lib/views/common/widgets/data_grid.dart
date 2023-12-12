@@ -12,6 +12,7 @@ class DataGridContainer extends ConsumerWidget {
     this.gridLinesVisibility = GridLinesVisibility.horizontal,
     this.headerGridLinesVisibility = GridLinesVisibility.horizontal,
     this.height,
+    this.onCellTap,
   });
 
   final BoxConstraints constraints;
@@ -22,6 +23,7 @@ class DataGridContainer extends ConsumerWidget {
   final GridLinesVisibility gridLinesVisibility;
   final GridLinesVisibility headerGridLinesVisibility;
   final double? height;
+  final void Function(DataGridCellTapDetails)? onCellTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,6 +45,9 @@ class DataGridContainer extends ConsumerWidget {
               headerHoverColor: UColors.gray100,
             ),
             child: SfDataGrid(
+              onCellTap: onCellTap,
+              columnResizeMode: ColumnResizeMode.onResize,
+              allowColumnsResizing: true,
               gridLinesVisibility: gridLinesVisibility,
               key: dataGridKey,
               rowsPerPage: 25,
