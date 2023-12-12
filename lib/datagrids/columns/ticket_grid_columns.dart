@@ -32,7 +32,7 @@ List<GridColumn> ticketGridColumns = [
     ),
   ),
   GridColumn(
-    minimumWidth: 300,
+    minimumWidth: 200,
     columnName: TicketGridFields.driverName,
     label: const Center(
       child: Text(
@@ -127,7 +127,8 @@ List<GridColumn> ticketGridColumns = [
     allowFiltering: false,
     allowSorting: false,
     minimumWidth: 300,
-    columnWidthMode: ColumnWidthMode.fitByCellValue,
+    maximumWidth: 400,
+    columnWidthMode: ColumnWidthMode.auto,
     columnName: TicketGridFields.violations,
     label: const Center(
       child: Text(

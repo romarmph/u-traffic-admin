@@ -34,7 +34,7 @@ class Wrapper extends ConsumerWidget {
                     ref.watch(availableEnforcerProvider);
                     ref.watch(availableEnforcerStreamProvider);
                     ref.watch(trafficPostProvider);
-                    return const HomePage();
+                    return const TicketPage();
                   },
                   error: (error, stackTrace) {
                     return const LoginErrorPage();

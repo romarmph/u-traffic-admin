@@ -4,8 +4,13 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as excel;
 import 'package:u_traffic_admin/config/exports/exports.dart';
+
+final dateRangeProvider = StateProvider<PickerDateRange?>((ref) => null);
+final dateType = StateProvider<String>((ref) => 'Date Issued');
+final violationFilter = StateProvider<List<Violation>>((ref) => []);
 
 class TicketPage extends ConsumerStatefulWidget {
   const TicketPage({super.key});
@@ -18,10 +23,15 @@ class _TicketPageState extends ConsumerState<TicketPage> {
   final searchController = TextEditingController();
   final _key = GlobalKey<SfDataGridState>();
 
+  bool _isFilterNotClear() {
+    return ref.watch(dateRangeProvider) != null ||
+        ref.watch(ticketViewSearchQueryProvider).isNotEmpty ||
+        ref.watch(ticketViewStatusQueryProvider) != 'all';
+  }
+
   @override
   Widget build(BuildContext context) {
     final appBarHeight = AppBar().preferredSize.height;
-
     return PageContainer(
       route: Routes.tickets,
       appBar: AppBar(
@@ -58,6 +68,105 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                         child: Row(
                           children: [
                             const Spacer(),
+                            OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 22,
+                                  horizontal: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    USpace.space8,
+                                  ),
+                                ),
+                                side: const BorderSide(
+                                  color: UColors.gray300,
+                                ),
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: DateRangePickerDialog(
+                                        onSubmit: (value) {
+                                          if (value == null) {
+                                            return;
+                                          }
+                                        },
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.list_alt_rounded,
+                                color: UColors.gray700,
+                              ),
+                              label: const Text(
+                                'Filter by Violation',
+                                style: TextStyle(
+                                  color: UColors.gray700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 22,
+                                  horizontal: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                    USpace.space8,
+                                  ),
+                                ),
+                                side: const BorderSide(
+                                  color: UColors.gray300,
+                                ),
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: DateRangePickerDialog(
+                                        onSubmit: (value) {
+                                          if (value == null) {
+                                            return;
+                                          }
+
+                                          PickerDateRange dateRange =
+                                              value as PickerDateRange;
+
+                                          ref
+                                              .read(dateRangeProvider.notifier)
+                                              .state = dateRange;
+
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.calendar_today_rounded,
+                                color: UColors.gray700,
+                              ),
+                              label: const Text(
+                                'Select Date Range',
+                                style: TextStyle(
+                                  color: UColors.gray700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 16,
+                            ),
                             StatusTypeDropDown(
                               value: ref.watch(
                                 ticketViewStatusQueryProvider,
@@ -77,6 +186,43 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                 // 'submitted',
                                 'expired',
                               ],
+                            ),
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            Visibility(
+                              visible: _isFilterNotClear(),
+                              child: OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 22,
+                                    horizontal: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                      USpace.space8,
+                                    ),
+                                  ),
+                                  side: const BorderSide(
+                                    color: UColors.gray300,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  ref.read(dateRangeProvider.notifier).state =
+                                      null;
+                                  ref
+                                      .read(ticketViewSearchQueryProvider
+                                          .notifier)
+                                      .state = '';
+                                  ref
+                                      .read(ticketViewStatusQueryProvider
+                                          .notifier)
+                                      .state = 'all';
+                                  searchController.clear();
+                                },
+                                icon: const Icon(Icons.close),
+                                label: const Text('Clear Filter'),
+                              ),
                             ),
                             const SizedBox(
                               width: 16,
@@ -147,6 +293,12 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                             final query =
                                 ref.watch(ticketViewSearchQueryProvider);
 
+                            data = _searchTicket(data, query);
+
+                            if (ref.watch(dateRangeProvider) != null) {
+                              data = _filterTicketByDate(data);
+                            }
+
                             return DataGridContainer(
                               onCellTap: (details) {
                                 if (details.rowColumnIndex.rowIndex == 0) {
@@ -165,10 +317,10 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                               dataGridKey: _key,
                               source: TicketDataGridSource(
                                 ref: ref,
-                                ticketList: _searchTicket(data, query),
+                                ticketList: data,
                                 currentRoute: Routes.payment,
                               ),
-                              dataCount: _searchTicket(data, query).length,
+                              dataCount: data.length,
                               gridColumns: ticketGridColumns,
                               constraints: constraints,
                             );
@@ -217,6 +369,52 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       }).toList();
     }
     return tickets;
+  }
+
+  List<Ticket> _filterTicketByDate(List<Ticket> tickets) {
+    final type = ref.watch(dateType);
+    final PickerDateRange? dateRange = ref.watch(dateRangeProvider);
+    final DateTime startDate = dateRange!.startDate!;
+    final DateTime? endDate = dateRange.endDate;
+
+    if (type == 'Date Issued') {
+      return tickets.where((ticket) {
+        final ticketDate = ticket.dateCreated.toDate();
+
+        if (endDate == null) {
+          return ticketDate.isAfter(startDate) &&
+              ticketDate.isBefore(
+                startDate.add(
+                  const Duration(
+                    hours: 23,
+                    minutes: 59,
+                    seconds: 59,
+                  ),
+                ),
+              );
+        }
+
+        return ticketDate.isAfter(startDate) && ticketDate.isBefore(endDate);
+      }).toList();
+    }
+    return tickets.where((ticket) {
+      final ticketDate = ticket.ticketDueDate.toDate();
+
+      if (endDate == null) {
+        return ticketDate.isAfter(startDate) &&
+            ticketDate.isBefore(
+              startDate.add(
+                const Duration(
+                  hours: 23,
+                  minutes: 59,
+                  seconds: 59,
+                ),
+              ),
+            );
+      }
+
+      return ticketDate.isAfter(startDate) && ticketDate.isBefore(endDate);
+    }).toList();
   }
 
   void _showExportDialog() {
@@ -414,5 +612,62 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     style.vAlign = excel.VAlignType.center;
 
     return workbook;
+  }
+}
+
+class DateRangePickerDialog extends ConsumerWidget {
+  const DateRangePickerDialog({
+    super.key,
+    this.onSubmit,
+  });
+
+  final dynamic Function(Object?)? onSubmit;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      width: 500,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          USpace.space8,
+        ),
+        color: UColors.white,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          StatusTypeDropDown(
+            statusList: const [
+              'Date Issued',
+              'Due Date',
+            ],
+            onChanged: (value) {
+              ref.read(dateType.notifier).state = value!;
+            },
+            value: ref.watch(dateType),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          SizedBox(
+            height: 400,
+            width: 400,
+            child: SfDateRangePicker(
+              selectionMode: DateRangePickerSelectionMode.range,
+              showActionButtons: true,
+              onCancel: () {
+                Navigator.pop(context);
+              },
+              headerStyle: const DateRangePickerHeaderStyle(
+                textAlign: TextAlign.center,
+              ),
+              onSubmit: onSubmit,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

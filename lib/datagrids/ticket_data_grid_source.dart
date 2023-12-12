@@ -94,7 +94,6 @@ class TicketDataGridSource extends DataGridSource {
         if (dataGridCell.columnName == TicketGridFields.violations) {
           return Container(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            alignment: Alignment.center,
             child: Text(
               dataGridCell.value,
               overflow: TextOverflow.clip,
