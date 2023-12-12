@@ -11,6 +11,7 @@ import 'package:u_traffic_admin/config/exports/exports.dart';
 final dateRangeProvider = StateProvider<PickerDateRange?>((ref) => null);
 final dateType = StateProvider<String>((ref) => 'Date Issued');
 final violationFilter = StateProvider<List<Violation>>((ref) => []);
+final isExactMatch = StateProvider<bool>((ref) => false);
 
 class TicketPage extends ConsumerStatefulWidget {
   const TicketPage({super.key});
@@ -26,7 +27,8 @@ class _TicketPageState extends ConsumerState<TicketPage> {
   bool _isFilterNotClear() {
     return ref.watch(dateRangeProvider) != null ||
         ref.watch(ticketViewSearchQueryProvider).isNotEmpty ||
-        ref.watch(ticketViewStatusQueryProvider) != 'all';
+        ref.watch(ticketViewStatusQueryProvider) != 'all' ||
+        ref.watch(violationFilter).isNotEmpty;
   }
 
   @override
@@ -87,14 +89,8 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                 showDialog(
                                   context: context,
                                   builder: (context) {
-                                    return Dialog(
-                                      child: DateRangePickerDialog(
-                                        onSubmit: (value) {
-                                          if (value == null) {
-                                            return;
-                                          }
-                                        },
-                                      ),
+                                    return const Dialog(
+                                      child: ViolationFilterDialog(),
                                     );
                                   },
                                 );
@@ -218,6 +214,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                       .read(ticketViewStatusQueryProvider
                                           .notifier)
                                       .state = 'all';
+                                  ref.read(violationFilter.notifier).state = [];
                                   searchController.clear();
                                 },
                                 icon: const Icon(Icons.close),
@@ -298,6 +295,8 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                             if (ref.watch(dateRangeProvider) != null) {
                               data = _filterTicketByDate(data);
                             }
+
+                            data = _filterBySelectedViolations(data);
 
                             return DataGridContainer(
                               onCellTap: (details) {
@@ -414,6 +413,32 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       }
 
       return ticketDate.isAfter(startDate) && ticketDate.isBefore(endDate);
+    }).toList();
+  }
+
+  List<Ticket> _filterBySelectedViolations(List<Ticket> tickets) {
+    final filters = ref.watch(violationFilter);
+    final isExact = ref.watch(isExactMatch);
+
+    if (filters.isEmpty) {
+      return tickets;
+    }
+
+    return tickets.where((ticket) {
+      final ticketViolations =
+          ticket.issuedViolations.map((e) => e.violationID).toList().join(', ');
+
+      if (isExact) {
+        return filters
+            .map((e) => e.id)
+            .toList()
+            .every((element) => ticketViolations.contains(element!));
+      }
+
+      return filters
+          .map((e) => e.id)
+          .toList()
+          .any((element) => ticketViolations.contains(element!));
     }).toList();
   }
 
@@ -612,6 +637,88 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     style.vAlign = excel.VAlignType.center;
 
     return workbook;
+  }
+}
+
+class ViolationFilterDialog extends ConsumerWidget {
+  const ViolationFilterDialog({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      width: 500,
+      height: 700,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          USpace.space8,
+        ),
+        color: UColors.white,
+      ),
+      child: Column(
+        children: [
+          SwitchListTile(
+            title: const Text('Exact Match'),
+            value: ref.watch(isExactMatch),
+            onChanged: (value) {
+              ref.read(isExactMatch.notifier).state = value;
+            },
+          ),
+          Expanded(
+            child: ref.watch(violationsStreamProvider).when(
+                  data: (data) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: data.length,
+                      itemBuilder: (context, index) {
+                        final violation = data[index];
+                        return CheckboxListTile(
+                          value: ref.watch(violationFilter).contains(violation),
+                          onChanged: (value) {
+                            final violations = ref.read(violationFilter);
+                            if (value!) {
+                              violations.add(violation);
+                            } else {
+                              violations.remove(violation);
+                            }
+
+                            ref.read(violationFilter.notifier).state =
+                                violations.toList();
+                          },
+                          title: Text(
+                            violation.name,
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  error: (error, stackTrace) {
+                    return const Center(
+                      child: Text('Error fetching violations'),
+                    );
+                  },
+                  loading: () => const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Close'),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
