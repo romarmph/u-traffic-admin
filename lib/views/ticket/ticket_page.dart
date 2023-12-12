@@ -444,13 +444,61 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     showDialog(
       context: context,
       builder: (context) {
-        String exportType = 'excel';
+        final _formKey = GlobalKey<FormState>();
+        final titleController = TextEditingController();
+        final checkerController = TextEditingController();
         return AlertDialog(
-          content: const Text(
-            'Export current data',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
+          surfaceTintColor: UColors.white,
+          content: SizedBox(
+            width: 500,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Export current data',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  TextFormField(
+                    controller: titleController,
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Title is required';
+                      }
+
+                      return null;
+                    },
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  TextFormField(
+                    controller: checkerController,
+                    decoration: const InputDecoration(
+                      labelText: 'Checker',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Checker is required';
+                      }
+
+                      return null;
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
           actions: [
@@ -469,11 +517,13 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                       padding: const EdgeInsets.all(USpace.space16),
                     ),
                     onPressed: () async {
-                      final admin = ref.watch(currentAdminProvider);
-                      if (exportType == 'excel') {
+                      if (_formKey.currentState!.validate()) {
+                        final admin = ref.watch(currentAdminProvider);
                         await _createDocument(
                           admin,
                           'pdf',
+                          checkerController.text,
+                          titleController.text,
                         );
                       }
                     },
@@ -497,12 +547,12 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                     ),
                     onPressed: () async {
                       final admin = ref.watch(currentAdminProvider);
-                      if (exportType == 'excel') {
-                        await _createDocument(
-                          admin,
-                          'excel',
-                        );
-                      }
+                      await _createDocument(
+                        admin,
+                        'excel',
+                        checkerController.text,
+                        titleController.text,
+                      );
                     },
                     child: const Text('Excel'),
                   ),
@@ -530,6 +580,8 @@ class _TicketPageState extends ConsumerState<TicketPage> {
   Future<void> _createDocument(
     Admin admin,
     String type,
+    String checker,
+    String title,
   ) async {
     final creatorName = '${admin.firstName} ${admin.lastName}';
     final employeeNo = admin.employeeNo;
@@ -544,14 +596,18 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       },
       excludeColumns: [
         TicketGridFields.actions,
-        TicketGridFields.status,
+        // TicketGridFields.status,
       ],
     );
 
     workbook = _formatWorkbook(workbook);
 
     if (type == 'pdf') {
-      workbook = _toDocument();
+      workbook = _toDocument(
+        '${admin.firstName} ${admin.lastName}',
+        checker,
+        title,
+      );
     }
 
     final List<int> bytes = workbook.saveSync();
@@ -589,12 +645,127 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     });
   }
 
-  PdfDocument _toDocument() {
+  PdfDocument _toDocument(
+    String author,
+    String checker,
+    String title,
+  ) {
     PdfDocument document = PdfDocument();
 
     document.pageSettings.orientation = PdfPageOrientation.landscape;
     PdfPage pdfPage = document.pages.add();
+
+    pdfPage.defaultLayer.graphics.drawString(
+      'Public Order and Safety Division',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        16,
+        style: PdfFontStyle.bold,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.center,
+      ),
+      bounds: const Rect.fromLTWH(0, 32, 762, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      'Urdaneta City, Pangasinan',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        12,
+        style: PdfFontStyle.regular,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.center,
+      ),
+      bounds: const Rect.fromLTWH(0, 54, 762, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      'Ticket Report',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        22,
+        style: PdfFontStyle.bold,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.center,
+      ),
+      bounds: const Rect.fromLTWH(0, 0, 762, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      title,
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        22,
+        style: PdfFontStyle.bold,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.center,
+      ),
+      bounds: const Rect.fromLTWH(0, 100, 762, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      'Date prepared: ${DateTime.now().toTimestamp.toAmericanDate}',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        12,
+        style: PdfFontStyle.regular,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.left,
+      ),
+      bounds: const Rect.fromLTWH(0, 350, 200, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      'Prepared by',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        12,
+        style: PdfFontStyle.regular,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.left,
+      ),
+      bounds: const Rect.fromLTWH(0, 400, 200, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      author,
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        14,
+        style: PdfFontStyle.bold,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.left,
+      ),
+      bounds: const Rect.fromLTWH(0, 420, 200, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      'Checked by',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        12,
+        style: PdfFontStyle.regular,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.left,
+      ),
+      bounds: const Rect.fromLTWH(200, 400, 200, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      checker,
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        14,
+        style: PdfFontStyle.bold,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.left,
+      ),
+      bounds: const Rect.fromLTWH(200, 420, 200, 100),
+    );
+
     PdfGrid pdfGrid = _key.currentState!.exportToPdfGrid(
+      exportTableSummaries: true,
       cellExport: (details) {
         if (details.cellType == DataGridExportCellType.columnHeader) {
           details.pdfCell.style.font = PdfStandardFont(
@@ -617,13 +788,93 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       fitAllColumnsInOnePage: true,
       excludeColumns: [
         TicketGridFields.actions,
-        TicketGridFields.status,
+        // TicketGridFields.status,
       ],
     );
-    pdfGrid.draw(page: pdfPage, bounds: const Rect.fromLTWH(0, 0, 0, 0));
+
+    pdfGrid.draw(
+      page: pdfPage,
+      format: PdfLayoutFormat(
+        layoutType: PdfLayoutType.paginate,
+      ),
+      graphics: pdfPage.graphics,
+      bounds: const Rect.fromLTWH(0, 515, 0, 0),
+    );
+
+    int length = document.pages.count;
+
+    for (int i = 0; i < length; i++) {
+      if (i == 0) continue;
+
+      PdfPage page = document.pages[i];
+      page.graphics.drawString(
+        'Page $i of ${document.pages.count - 1}      Prepared by: Romar Macaraeg       Checked by: Marbert Cerda       ${DateTime.now().toTimestamp.toAmericanDate}',
+        PdfStandardFont(
+          PdfFontFamily.helvetica,
+          8,
+          style: PdfFontStyle.regular,
+        ),
+        format: PdfStringFormat(
+          alignment: PdfTextAlignment.left,
+        ),
+        bounds: const Rect.fromLTWH(0, 507, 500, 515),
+      );
+    }
 
     return document;
   }
+  // PdfDocument _toDocument() {
+  //   PdfDocument document = PdfDocument();
+
+  //   document.pageSettings.orientation = PdfPageOrientation.landscape;
+  //   PdfPage pdfPage = document.pages.add();
+  //   PdfGrid pdfGrid = _key.currentState!.exportToPdfGrid(
+  //     cellExport: (details) {
+  //       if (details.cellType == DataGridExportCellType.columnHeader) {
+  //         details.pdfCell.style.font = PdfStandardFont(
+  //           PdfFontFamily.helvetica,
+  //           8,
+  //           style: PdfFontStyle.regular,
+  //         );
+  //       }
+  //       if (details.cellType == DataGridExportCellType.row) {
+  //         if (details.columnName == TicketGridFields.ticketDueDate ||
+  //             details.columnName == TicketGridFields.dateCreated) {
+  //           details.pdfCell.value = details.cellValue
+  //               .toString()
+  //               .toDateTime
+  //               .toTimestamp
+  //               .toAmericanDate;
+  //         }
+  //       }
+  //     },
+  //     fitAllColumnsInOnePage: true,
+  //     excludeColumns: [
+  //       TicketGridFields.actions,
+  //       // TicketGridFields.status,
+  //     ],
+  //   );
+  //   pdfPage.graphics.drawString(
+  //     'Ticket Report',
+  //     PdfStandardFont(
+  //       PdfFontFamily.helvetica,
+  //       16,
+  //       style: PdfFontStyle.bold,
+  //     ),
+  //     bounds: Rect.fromLTWH(0, 0, 0, 24),
+  //   );
+
+  //   pdfGrid.draw(
+  //     page: pdfPage,
+  //     format: PdfLayoutFormat(
+  //       layoutType: PdfLayoutType.paginate,
+  //     ),
+  //     graphics: pdfPage.graphics,
+  //     bounds: const Rect.fromLTWH(0, 24, 0, 0),
+  //   );
+
+  //   return document;
+  // }
 
   excel.Workbook _formatWorkbook(excel.Workbook workbook) {
     final sheet = workbook.worksheets[0];
