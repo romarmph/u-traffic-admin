@@ -425,20 +425,18 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     }
 
     return tickets.where((ticket) {
-      final ticketViolations =
-          ticket.issuedViolations.map((e) => e.violationID).toList().join(', ');
+      final ticketViolationIds =
+          ticket.issuedViolations.map((e) => e.violationID).toSet();
+
+      final selectedViolationIds = filters.map((e) => e.id).toSet();
 
       if (isExact) {
-        return filters
-            .map((e) => e.id)
-            .toList()
-            .every((element) => ticketViolations.contains(element!));
+        return ticketViolationIds.containsAll(selectedViolationIds) &&
+            selectedViolationIds.containsAll(ticketViolationIds);
       }
 
-      return filters
-          .map((e) => e.id)
-          .toList()
-          .any((element) => ticketViolations.contains(element!));
+      return selectedViolationIds
+          .any((element) => ticketViolationIds.contains(element!));
     }).toList();
   }
 
