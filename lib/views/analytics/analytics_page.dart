@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as excel;
 import 'package:u_traffic_admin/config/exports/exports.dart';
 import 'package:u_traffic_admin/datagrids/columns/enforcer_performance_grid_columns.dart';
+import 'package:u_traffic_admin/datagrids/columns/violation_aggregate_grid_columns.dart';
 import 'package:u_traffic_admin/datagrids/enforcer_performance_data_grid_source.dart';
+import 'package:u_traffic_admin/datagrids/violation_aggregate_data_grid_source.dart';
 import 'package:u_traffic_admin/model/analytics/enforcer_performance.dart';
 import 'package:u_traffic_admin/model/daily_dart_data.dart';
 import 'package:u_traffic_admin/riverpod/aggregates/enforcer_performance..riverpod.dart';
 import 'package:u_traffic_admin/riverpod/aggregates/ticket.riverpod.dart';
+import 'package:u_traffic_admin/riverpod/aggregates/violations.dart';
 import 'package:u_traffic_admin/views/analytics/widgets/dashboard_header.dart';
 import 'package:u_traffic_admin/views/analytics/widgets/doughnut_chart.dart';
 import 'package:u_traffic_admin/views/analytics/widgets/quick_info_row.dart';
@@ -24,6 +27,7 @@ class AnalyticsPage extends ConsumerStatefulWidget {
 
 class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
   final _performanceTableKey = GlobalKey<SfDataGridState>();
+  final _violationCountTableKey = GlobalKey<SfDataGridState>();
   bool _isTableView = true;
   late ZoomPanBehavior _zoomPanBehavior;
 
@@ -171,93 +175,179 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     padding: const EdgeInsets.all(16),
-                    child: LayoutBuilder(builder: (context, constraints) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: 50,
-                            width: constraints.maxWidth,
-                            child: Row(
-                              children: [
-                                const Text(
-                                  "Enforcer Performance",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const Spacer(),
-                                // SizedBox(
-                                //   width: 300,
-                                //   child: SwitchListTile(
-                                //     title: Text(
-                                //       _isTableView
-                                //           ? "Table View"
-                                //           : "Chart View",
-                                //       style: const TextStyle(
-                                //         fontSize: 12,
-                                //       ),
-                                //     ),
-                                //     value: _isTableView,
-                                //     onChanged: (value) {
-                                //       setState(() {
-                                //         _isTableView = value;
-                                //       });
-                                //     },
-                                //   ),
-                                // ),
-                                FilledButton(
-                                  style: FilledButton.styleFrom(
-                                    backgroundColor: UColors.blue600,
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8),
-                                      ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              width: constraints.maxWidth,
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    "Enforcer Performance",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
                                     ),
                                   ),
-                                  onPressed: _showExportDialog,
-                                  child: const Text('Export'),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ref.watch(enforcerPerformanceStream).when(
-                                data: (data) {
-                                  data.sort((a, b) =>
-                                      b.totalTickets.compareTo(a.totalTickets));
-                                  return Expanded(
-                                    child: SizedBox(
-                                      width: constraints.maxWidth,
-                                      child: DataGridContainer(
-                                        dataGridKey: _performanceTableKey,
-                                        constraints: constraints,
-                                        height: constraints.maxHeight - 130,
-                                        source:
-                                            EnforcerPerformanceDataGridSource(
-                                          data,
+                                  const Spacer(),
+                                  // SizedBox(
+                                  //   width: 300,
+                                  //   child: SwitchListTile(
+                                  //     title: Text(
+                                  //       _isTableView
+                                  //           ? "Table View"
+                                  //           : "Chart View",
+                                  //       style: const TextStyle(
+                                  //         fontSize: 12,
+                                  //       ),
+                                  //     ),
+                                  //     value: _isTableView,
+                                  //     onChanged: (value) {
+                                  //       setState(() {
+                                  //         _isTableView = value;
+                                  //       });
+                                  //     },
+                                  //   ),
+                                  // ),
+                                  FilledButton(
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: UColors.blue600,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(8),
                                         ),
-                                        gridColumns:
-                                            enforcerPerformanceGridColumns,
-                                        dataCount: data.length,
                                       ),
                                     ),
-                                  );
-                                },
-                                error: (error, stackTrace) => Center(
-                                  child: Text(
-                                    error.toString(),
-                                    style: const TextStyle(
-                                      color: Colors.red,
+                                    onPressed: () =>
+                                        _showExportDialog(_performanceTableKey),
+                                    child: const Text('Export'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ref.watch(enforcerPerformanceStream).when(
+                                  data: (data) {
+                                    data.sort((a, b) => b.totalTickets
+                                        .compareTo(a.totalTickets));
+                                    return Expanded(
+                                      child: SizedBox(
+                                        width: constraints.maxWidth,
+                                        child: DataGridContainer(
+                                          dataGridKey: _performanceTableKey,
+                                          constraints: constraints,
+                                          height: constraints.maxHeight - 130,
+                                          source:
+                                              EnforcerPerformanceDataGridSource(
+                                            data,
+                                          ),
+                                          gridColumns:
+                                              enforcerPerformanceGridColumns,
+                                          dataCount: data.length,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  error: (error, stackTrace) => Center(
+                                    child: Text(
+                                      error.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                      ),
                                     ),
                                   ),
+                                  loading: () => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
                                 ),
-                                loading: () => const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    height: constraints.maxHeight,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return Column(
+                          children: [
+                            SizedBox(
+                              height: 50,
+                              width: constraints.maxWidth,
+                              child: Row(
+                                children: [
+                                  const Text(
+                                    "Violation Count",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  FilledButton(
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: UColors.blue600,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(8),
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () => _showExportDialog(
+                                      _violationCountTableKey,
+                                    ),
+                                    child: const Text('Export'),
+                                  ),
+                                ],
                               ),
-                        ],
-                      );
-                    }),
+                            ),
+                            ref.watch(violationsAggregate).when(
+                                  data: (data) {
+                                    data.sort(
+                                        (a, b) => b.total.compareTo(a.total));
+                                    return Expanded(
+                                      child: SizedBox(
+                                        width: constraints.maxWidth,
+                                        child: DataGridContainer(
+                                          constraints: constraints,
+                                          dataGridKey: _violationCountTableKey,
+                                          height: constraints.maxHeight - 130,
+                                          source:
+                                              ViolationsAggregateDataGridSource(
+                                            data,
+                                          ),
+                                          gridColumns:
+                                              violationsAggregateGridColumns,
+                                          dataCount: data.length,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  error: (error, stackTrace) => Center(
+                                    child: Text(
+                                      error.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
+                                  loading: () => const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -309,7 +399,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     );
   }
 
-  void _showExportDialog() {
+  void _showExportDialog(GlobalKey<SfDataGridState> key) {
     showDialog(
       context: context,
       builder: (context) {
@@ -389,6 +479,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                       if (formKey.currentState!.validate()) {
                         final admin = ref.watch(currentAdminProvider);
                         await _createDocument(
+                          key,
                           admin,
                           'pdf',
                           checkerController.text,
@@ -417,6 +508,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                     onPressed: () async {
                       final admin = ref.watch(currentAdminProvider);
                       await _createDocument(
+                        key,
                         admin,
                         'excel',
                         checkerController.text,
@@ -447,6 +539,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
   }
 
   Future<void> _createDocument(
+    GlobalKey<SfDataGridState> key,
     Admin admin,
     String type,
     String checker,
@@ -455,7 +548,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     final creatorName = '${admin.firstName} ${admin.lastName}';
     final employeeNo = admin.employeeNo;
     final uid = admin.id!;
-    dynamic workbook = _performanceTableKey.currentState!.exportToExcelWorkbook(
+    dynamic workbook = key.currentState!.exportToExcelWorkbook(
       exportColumnWidth: true,
       cellExport: (details) {
         if (details.cellType == DataGridExportCellType.row) {
@@ -473,6 +566,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
 
     if (type == 'pdf') {
       workbook = _toDocument(
+        key,
         '${admin.firstName} ${admin.lastName}',
         checker,
         title,
@@ -515,6 +609,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
   }
 
   PdfDocument _toDocument(
+    GlobalKey<SfDataGridState> key,
     String author,
     String checker,
     String title,
@@ -633,7 +728,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
       bounds: const Rect.fromLTWH(200, 420, 200, 100),
     );
 
-    PdfGrid pdfGrid = _performanceTableKey.currentState!.exportToPdfGrid(
+    PdfGrid pdfGrid = key.currentState!.exportToPdfGrid(
       exportTableSummaries: true,
       cellExport: (details) {
         if (details.cellType == DataGridExportCellType.columnHeader) {
