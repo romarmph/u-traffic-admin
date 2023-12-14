@@ -444,7 +444,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     showDialog(
       context: context,
       builder: (context) {
-        final _formKey = GlobalKey<FormState>();
+        final formKey = GlobalKey<FormState>();
         final titleController = TextEditingController();
         final checkerController = TextEditingController();
         return AlertDialog(
@@ -452,7 +452,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
           content: SizedBox(
             width: 500,
             child: Form(
-              key: _formKey,
+              key: formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -517,7 +517,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                       padding: const EdgeInsets.all(USpace.space16),
                     ),
                     onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate()) {
                         final admin = ref.watch(currentAdminProvider);
                         await _createDocument(
                           admin,
@@ -823,58 +823,6 @@ class _TicketPageState extends ConsumerState<TicketPage> {
 
     return document;
   }
-  // PdfDocument _toDocument() {
-  //   PdfDocument document = PdfDocument();
-
-  //   document.pageSettings.orientation = PdfPageOrientation.landscape;
-  //   PdfPage pdfPage = document.pages.add();
-  //   PdfGrid pdfGrid = _key.currentState!.exportToPdfGrid(
-  //     cellExport: (details) {
-  //       if (details.cellType == DataGridExportCellType.columnHeader) {
-  //         details.pdfCell.style.font = PdfStandardFont(
-  //           PdfFontFamily.helvetica,
-  //           8,
-  //           style: PdfFontStyle.regular,
-  //         );
-  //       }
-  //       if (details.cellType == DataGridExportCellType.row) {
-  //         if (details.columnName == TicketGridFields.ticketDueDate ||
-  //             details.columnName == TicketGridFields.dateCreated) {
-  //           details.pdfCell.value = details.cellValue
-  //               .toString()
-  //               .toDateTime
-  //               .toTimestamp
-  //               .toAmericanDate;
-  //         }
-  //       }
-  //     },
-  //     fitAllColumnsInOnePage: true,
-  //     excludeColumns: [
-  //       TicketGridFields.actions,
-  //       // TicketGridFields.status,
-  //     ],
-  //   );
-  //   pdfPage.graphics.drawString(
-  //     'Ticket Report',
-  //     PdfStandardFont(
-  //       PdfFontFamily.helvetica,
-  //       16,
-  //       style: PdfFontStyle.bold,
-  //     ),
-  //     bounds: Rect.fromLTWH(0, 0, 0, 24),
-  //   );
-
-  //   pdfGrid.draw(
-  //     page: pdfPage,
-  //     format: PdfLayoutFormat(
-  //       layoutType: PdfLayoutType.paginate,
-  //     ),
-  //     graphics: pdfPage.graphics,
-  //     bounds: const Rect.fromLTWH(0, 24, 0, 0),
-  //   );
-
-  //   return document;
-  // }
 
   excel.Workbook _formatWorkbook(excel.Workbook workbook) {
     final sheet = workbook.worksheets[0];

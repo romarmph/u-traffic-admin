@@ -4,6 +4,20 @@ final getAllTicketsStreamProvider = StreamProvider<List<Ticket>>((ref) {
   return TicketDatabase.instance.getAllTicketsAsStream();
 });
 
+final allTicketsProvider = Provider<List<Ticket>>((ref) {
+  return ref.watch(getAllTicketsStreamProvider).when(
+    data: (tickets) {
+      return tickets;
+    },
+    error: (error, stackTrace) {
+      return [];
+    },
+    loading: () {
+      return [];
+    },
+  );
+});
+
 final getTicketCountProvider = FutureProvider<int>((ref) async {
   return await TicketDatabase.instance.getAllTicketCount();
 });
