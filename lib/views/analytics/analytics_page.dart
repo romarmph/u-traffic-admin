@@ -187,25 +187,25 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                                   ),
                                 ),
                                 const Spacer(),
-                                SizedBox(
-                                  width: 300,
-                                  child: SwitchListTile(
-                                    title: Text(
-                                      _isTableView
-                                          ? "Table View"
-                                          : "Chart View",
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                    value: _isTableView,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _isTableView = value;
-                                      });
-                                    },
-                                  ),
-                                ),
+                                // SizedBox(
+                                //   width: 300,
+                                //   child: SwitchListTile(
+                                //     title: Text(
+                                //       _isTableView
+                                //           ? "Table View"
+                                //           : "Chart View",
+                                //       style: const TextStyle(
+                                //         fontSize: 12,
+                                //       ),
+                                //     ),
+                                //     value: _isTableView,
+                                //     onChanged: (value) {
+                                //       setState(() {
+                                //         _isTableView = value;
+                                //       });
+                                //     },
+                                //   ),
+                                // ),
                                 FilledButton(
                                   style: FilledButton.styleFrom(
                                     backgroundColor: UColors.blue600,
@@ -223,6 +223,8 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                           ),
                           ref.watch(enforcerPerformanceStream).when(
                                 data: (data) {
+                                  data.sort((a, b) =>
+                                      b.totalTickets.compareTo(a.totalTickets));
                                   return Expanded(
                                     child: SizedBox(
                                       width: constraints.maxWidth,
