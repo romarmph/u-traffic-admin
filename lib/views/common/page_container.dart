@@ -161,6 +161,11 @@ class _PageContainerState extends ConsumerState<PageContainer> {
               route: Routes.enforcerSchedules,
               icon: Icons.calendar_month_rounded,
             ),
+            AdminMenuItem(
+              title: 'Attendance',
+              route: Routes.enforcerAttendance,
+              icon: Icons.calendar_view_month_rounded,
+            ),
           ],
         ),
       );

@@ -35,6 +35,10 @@ PageRouteBuilder onGenerateRoute(settings) {
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const CreateEnforcerSchedForm(),
       );
+    case Routes.enforcerAttendance:
+      return PageRouteBuilder(
+        pageBuilder: (_, __, ___) => const EnforcerAttendancePage(),
+      );
     case Routes.tickets:
       return PageRouteBuilder(
         pageBuilder: (_, __, ___) => const TicketPage(),
