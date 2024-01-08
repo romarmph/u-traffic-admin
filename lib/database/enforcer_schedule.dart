@@ -177,4 +177,35 @@ class EnforcerScheduleDatabse {
       });
     }).toList();
   }
+
+  Stream<List<EnforcerSchedule>> getAllEnforcerScheduleByDay(Timestamp day) {
+    try {
+      return _enforcerSchedRef
+          .where('scheduleDay', isEqualTo: day)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs.map((doc) {
+          return EnforcerSchedule.fromJson(
+            doc.data(),
+            doc.id,
+          );
+        }).toList();
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> hasSchedule(Timestamp day) {
+    try {
+      return _enforcerSchedRef
+          .where('scheduleDay', isEqualTo: day)
+          .get()
+          .then((value) {
+        return value.docs.isNotEmpty;
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

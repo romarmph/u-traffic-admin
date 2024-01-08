@@ -4,4 +4,8 @@ extension DateTimeExtension on DateTime {
   Timestamp get toTimestamp {
     return Timestamp.fromDate(this);
   }
+
+  String get toMonthYear {
+    return DateFormat('MMMM yyyy').format(this);
+  }
 }
