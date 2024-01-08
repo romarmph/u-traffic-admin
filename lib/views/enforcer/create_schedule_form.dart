@@ -11,104 +11,7 @@ class CreateEnforcerSchedForm extends ConsumerStatefulWidget {
 
 class CreateEnforcerSchedFormState
     extends ConsumerState<CreateEnforcerSchedForm> {
-  final _enforcerSearchController = TextEditingController();
-  final _trafficPostSearchController = TextEditingController();
-
-  @override
-  void initState() {
-    _enforcerSearchController.addListener(() {
-      ref.read(unassignedEnforcerSearchProvider.notifier).state =
-          _enforcerSearchController.text;
-    });
-    _trafficPostSearchController.addListener(() {
-      ref.read(unassignedTrafficPostSearchProvider.notifier).state =
-          _trafficPostSearchController.text;
-    });
-    super.initState();
-  }
-
-  Future<bool> isFormVali() async {
-    final selectedEnforcer = ref.watch(selectedEnforcerProvider);
-    final selectedTrafficPost = ref.watch(selectedTrafficPostProvider);
-    final selectedShift = ref.watch(selectedShiftProvider);
-
-    if (selectedEnforcer == null) {
-      await QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: 'Error',
-        text: 'Please select an enforcer.',
-      );
-      return false;
-    }
-
-    if (selectedShift == 'night') {
-      return true;
-    }
-
-    if (selectedTrafficPost == null) {
-      await QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        title: 'Error',
-        text: 'Please select a traffic post.',
-      );
-      return false;
-    }
-
-    return true;
-  }
-
-  void _onCreateButtonTap() async {
-    final isValid = await isFormVali();
-
-    if (!isValid) {
-      return;
-    }
-
-    final enforcer = ref.watch(selectedEnforcerProvider);
-    final currentAdmin = ref.read(currentAdminProvider);
-    final post = ref.watch(selectedTrafficPostProvider);
-    final shift = ref.watch(selectedShiftProvider);
-
-    if (post == null) {
-      shift == 'night';
-    }
-
-    final EnforcerSchedule enforcerSchedule = EnforcerSchedule(
-      shift: shift.toShiftPeriod,
-      enforcerId: enforcer!.id!,
-      enforcerName:
-          '${enforcer.firstName} ${enforcer.middleName} ${enforcer.lastName}',
-      postId: post != null ? post.id! : '',
-      postName: post != null ? post.name : '',
-      createdBy: currentAdmin.id!,
-      createdAt: Timestamp.now(),
-    );
-
-    try {
-      EnforcerScheduleDatabse.instance.addEnforcerSched(
-        enforcerSchedule,
-      );
-      await QuickAlert.show(
-        context: navigatorKey.currentContext!,
-        type: QuickAlertType.success,
-        title: 'Success',
-        text: 'Enforcer Schedule has been created.',
-      );
-      disposeProvider();
-      Navigator.pop(navigatorKey.currentContext!);
-    } catch (e) {
-      await QuickAlert.show(
-        context: navigatorKey.currentContext!,
-        type: QuickAlertType.error,
-        title: 'Error',
-        text: 'Something went wrong. Please try again.',
-      );
-      disposeProvider();
-      Navigator.pop(navigatorKey.currentContext!);
-    }
-  }
+  DateTime? _selectedDate;
 
   void disposeProvider() {
     ref.invalidate(unassignedEnforcerSearchProvider);
@@ -131,249 +34,417 @@ class CreateEnforcerSchedFormState
         actions: const [CurrenAdminButton()],
       ),
       route: Routes.enforcerSchedulesCreate,
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return Padding(
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Container(
+          decoration: BoxDecoration(
+            color: UColors.white,
+            borderRadius: BorderRadius.circular(USpace.space16),
+          ),
+          child: Padding(
             padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: constraints.maxWidth,
-              height: constraints.maxHeight,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    height: constraints.maxHeight - 100 - 48,
-                    padding: const EdgeInsets.all(USpace.space16),
-                    decoration: BoxDecoration(
-                      color: UColors.white,
-                      borderRadius: BorderRadius.circular(USpace.space16),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Text(
-                          'New Schedule',
-                          style: TextStyle(
-                            color: UColors.gray400,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        const Divider(),
-                        const SizedBox(
-                          height: USpace.space16,
-                        ),
-                        const Text('Select Shift'),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: StatusTypeDropDown(
-                            value: ref.watch(selectedShiftProvider),
-                            onChanged: (value) {
-                              ref.read(selectedShiftProvider.notifier).state =
-                                  value!;
-                              if (value == 'night') {
-                                ref
-                                    .read(selectedTrafficPostProvider.notifier)
-                                    .state = null;
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SizedBox(
+                  width: constraints.maxWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Schedule Day'),
+                          UElevatedButton(
+                            onPressed: () async {
+                              final scheds = ref.watch(tempSchedule);
+
+                              if (scheds.isEmpty) {
+                                QuickAlert.show(
+                                  context: context,
+                                  type: QuickAlertType.error,
+                                  text: 'Please assign an enforcer first',
+                                );
+                                return;
                               }
+
+                              for (final sched in scheds) {
+                                await EnforcerScheduleDatabse.instance
+                                    .addEnforcerSched(
+                                  sched,
+                                );
+                              }
+
+                              await QuickAlert.show(
+                                context: navigatorKey.currentContext!,
+                                type: QuickAlertType.success,
+                                text: 'Schedule created successfully',
+                              );
+
+                              Navigator.of(navigatorKey.currentContext!)
+                                  .pushNamed(
+                                Routes.enforcerSchedules,
+                              );
                             },
-                            statusList: const [
-                              'morning',
-                              'afternoon',
-                              'night',
-                            ],
+                            child: const Text('Save'),
                           ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      SizedBox(
+                        width: 300,
+                        child: ListTile(
+                          onTap: () async {
+                            final DateTime? date = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now().add(
+                                const Duration(days: 1),
+                              ),
+                              firstDate: DateTime.now().add(
+                                const Duration(days: 1),
+                              ),
+                              lastDate: DateTime.now().add(
+                                const Duration(days: 365),
+                              ),
+                            );
+                            if (date != null) {
+                              setState(() {
+                                _selectedDate = date;
+                              });
+                            }
+                          },
+                          title: Text(
+                            _selectedDate != null
+                                ? DateFormat.yMMMMd().format(_selectedDate!)
+                                : 'Select Date',
+                          ),
+                          subtitle: const Text('Tap to select date'),
                         ),
-                        const SizedBox(
-                          width: USpace.space16,
-                        ),
-                        const SizedBox(
-                          height: USpace.space16,
-                        ),
-                        Row(
+                      ),
+                      const Divider(),
+                      const Text('Enforcers'),
+                      Expanded(
+                        child: Row(
                           children: [
                             Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 6,
-                                    child: Text(
-                                      'Assign Traffic Post',
-                                      style: const UTextStyle()
-                                          .textlgfontmedium
-                                          .copyWith(
-                                            color: UColors.gray500,
-                                          ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Visibility(
-                                      visible:
-                                          ref.watch(selectedShiftProvider) !=
-                                              'night',
-                                      child: TextField(
-                                        controller:
-                                            _trafficPostSearchController,
-                                        decoration: InputDecoration(
-                                          hintText: 'Search Traffic post',
-                                          prefixIcon:
-                                              const Icon(Icons.search_rounded),
-                                          border: OutlineInputBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              USpace.space8,
-                                            ),
-                                          ),
+                              child: SchedList(
+                                shift: ShiftPeriod.morning,
+                                onPressed: () {
+                                  if (_selectedDate == null) {
+                                    QuickAlert.show(
+                                      context: context,
+                                      type: QuickAlertType.error,
+                                      text: 'Please select a date first',
+                                    );
+                                    return;
+                                  }
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Assign Enforcer'),
+                                        content: AssignEnforcerModal(
+                                          day: _selectedDate!.toTimestamp,
+                                          shift: ShiftPeriod.morning,
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                      );
+                                    },
+                                  );
+                                },
                               ),
                             ),
-                            const SizedBox(
-                              width: USpace.space16,
-                            ),
+                            VerticalDivider(),
                             Expanded(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 6,
-                                    child: Text(
-                                      'Assign Enforcer',
-                                      style: const UTextStyle()
-                                          .textlgfontmedium
-                                          .copyWith(
-                                            color: UColors.gray500,
-                                          ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: TextField(
-                                      controller: _enforcerSearchController,
-                                      decoration: InputDecoration(
-                                        hintText: 'Search Enforcer',
-                                        prefixIcon:
-                                            const Icon(Icons.search_rounded),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            USpace.space8,
-                                          ),
+                              child: SchedList(
+                                shift: ShiftPeriod.afternoon,
+                                onPressed: () {
+                                  if (_selectedDate == null) {
+                                    QuickAlert.show(
+                                      context: context,
+                                      type: QuickAlertType.error,
+                                      text: 'Please select a date first',
+                                    );
+                                    return;
+                                  }
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Assign Enforcer'),
+                                        content: AssignEnforcerModal(
+                                          day: _selectedDate!.toTimestamp,
+                                          shift: ShiftPeriod.afternoon,
                                         ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                            VerticalDivider(),
+                            Expanded(
+                              child: SchedList(
+                                shift: ShiftPeriod.night,
+                                onPressed: () {
+                                  if (_selectedDate == null) {
+                                    QuickAlert.show(
+                                      context: context,
+                                      type: QuickAlertType.error,
+                                      text: 'Please select a date first',
+                                    );
+                                    return;
+                                  }
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text('Assign Enforcer'),
+                                        content: AssignEnforcerModal(
+                                          day: _selectedDate!.toTimestamp,
+                                          shift: ShiftPeriod.night,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: USpace.space12,
-                        ),
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  height: constraints.maxHeight,
-                                  width: constraints.maxWidth,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      USpace.space12,
-                                    ),
-                                    color: UColors.white,
-                                    border: Border.all(
-                                      color: UColors.gray200,
-                                      strokeAlign: BorderSide.strokeAlignInside,
-                                    ),
-                                  ),
-                                  child: const AssignableTrafficPostListView(),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: USpace.space16,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  height: constraints.maxHeight,
-                                  width: constraints.maxWidth,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      USpace.space12,
-                                    ),
-                                    color: UColors.white,
-                                    border: Border.all(
-                                      color: UColors.gray200,
-                                      strokeAlign: BorderSide.strokeAlignInside,
-                                    ),
-                                  ),
-                                  child: const AssignableEnforcerListView(),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(
-                    height: USpace.space16,
-                  ),
-                  Container(
-                    height: 100,
-                    padding: const EdgeInsets.all(USpace.space16),
-                    decoration: BoxDecoration(
-                      color: UColors.white,
-                      borderRadius: BorderRadius.circular(USpace.space16),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: USpace.space32,
-                              vertical: USpace.space24,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                USpace.space8,
-                              ),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Cancel'),
-                        ),
-                        const SizedBox(width: USpace.space16),
-                        FilledButton.icon(
-                          style: FilledButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: USpace.space32,
-                              vertical: USpace.space24,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                USpace.space8,
-                              ),
-                            ),
-                          ),
-                          onPressed: _onCreateButtonTap,
-                          label: const Text('Save Schedule'),
-                          icon: const Icon(Icons.save_rounded),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 }
+
+class SchedList extends ConsumerWidget {
+  const SchedList({
+    super.key,
+    required this.shift,
+    required this.onPressed,
+  });
+
+  final ShiftPeriod shift;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    List<EnforcerSchedule> schedules = ref.watch(tempSchedule);
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(shift.name.toUpperCase()),
+            FilledButton(
+              onPressed: onPressed,
+              child: const Text('Assign Enforcer'),
+            ),
+          ],
+        ),
+        Expanded(
+          child: ListView(
+              children: schedules.where((arg) => arg.shift == shift).map((e) {
+            return ListTile(
+              contentPadding: const EdgeInsets.all(8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(USpace.space16),
+                side: const BorderSide(
+                  color: UColors.gray200,
+                ),
+              ),
+              title: Text("Enforcer: ${e.enforcerName}"),
+              subtitle: Text("Post: ${e.postName}"),
+              trailing: IconButton(
+                onPressed: () {
+                  schedules.remove(e);
+                  ref.read(tempSchedule.notifier).state = [...schedules];
+                },
+                icon: const Icon(Icons.delete),
+              ),
+            );
+          }).toList()),
+        ),
+      ],
+    );
+  }
+}
+
+class AssignEnforcerModal extends ConsumerStatefulWidget {
+  const AssignEnforcerModal({
+    super.key,
+    required this.day,
+    required this.shift,
+  });
+
+  final Timestamp day;
+  final ShiftPeriod shift;
+
+  @override
+  ConsumerState<AssignEnforcerModal> createState() =>
+      _AssignEnforcerModalState();
+}
+
+class _AssignEnforcerModalState extends ConsumerState<AssignEnforcerModal> {
+  Enforcer? selectedEnforcer;
+  TrafficPost? selectedPost;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: UColors.white,
+        borderRadius: BorderRadius.circular(USpace.space16),
+      ),
+      width: 900,
+      height: 800,
+      child: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: ref.watch(availableEnforcers(widget.day)).when(
+                        data: (data) {
+                          return ListView.builder(
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              final Enforcer enforcer = data[index];
+
+                              if (ref.watch(tempSchedule).any((element) =>
+                                  element.enforcerId == enforcer.id)) {
+                                return const SizedBox();
+                              }
+
+                              return RadioListTile(
+                                value: enforcer,
+                                groupValue: selectedEnforcer,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedEnforcer = value as Enforcer;
+                                  });
+                                },
+                                title: Text(
+                                  '${enforcer.firstName} ${enforcer.lastName}',
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        error: (e, s) {
+                          return const Center(
+                            child: Text('Error'),
+                          );
+                        },
+                      ),
+                ),
+                Expanded(
+                  child: ref.watch(availablePosts(widget.day)).when(
+                        data: (data) {
+                          return ListView.builder(
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              final TrafficPost post = data[index];
+
+                              if (ref.watch(tempSchedule).any(
+                                  (element) => element.postId == post.id)) {
+                                return const SizedBox();
+                              }
+                              return RadioListTile(
+                                value: post,
+                                groupValue: selectedPost,
+                                onChanged: (value) {
+                                  setState(() {
+                                    selectedPost = value as TrafficPost;
+                                  });
+                                },
+                                title: Text(
+                                  post.name,
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        loading: () => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        error: (e, s) {
+                          return const Center(
+                            child: Text('Error'),
+                          );
+                        },
+                      ),
+                ),
+              ],
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              UElevatedButton(
+                onPressed: () {
+                  if (selectedEnforcer == null || selectedPost == null) {
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      text: 'Please select an enforcer and a post',
+                    );
+                    return;
+                  }
+
+                  final EnforcerSchedule schedule = EnforcerSchedule(
+                    enforcerId: selectedEnforcer!.id!,
+                    enforcerName:
+                        '${selectedEnforcer!.firstName} ${selectedEnforcer!.lastName}',
+                    postId: selectedPost!.id!,
+                    postName: selectedPost!.name,
+                    shift: widget.shift,
+                    scheduleDay: widget.day,
+                    createdBy: ref.read(currentAdminProvider).id!,
+                    createdAt: DateTime.now().toTimestamp,
+                  );
+
+                  ref.read(tempSchedule.notifier).state = [
+                    ...ref.watch(tempSchedule),
+                    schedule,
+                  ];
+
+                  Navigator.pop(context);
+                },
+                child: const Text('Assign'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+final availableEnforcers =
+    StreamProvider.family<List<Enforcer>, Timestamp>((ref, day) {
+  return EnforcerScheduleDatabse.instance.getAvailableEnforcersStream(day);
+});
+
+final availablePosts =
+    StreamProvider.family<List<TrafficPost>, Timestamp>((ref, day) {
+  return EnforcerScheduleDatabse.instance.getAvailableTrafficPostsStream(day);
+});
+
+final tempSchedule = StateProvider<List<EnforcerSchedule>>((ref) {
+  return [];
+});

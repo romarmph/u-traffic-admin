@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class EnforcerScheduleDatabse {
@@ -118,5 +120,61 @@ class EnforcerScheduleDatabse {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Stream<List<Enforcer>> getAvailableEnforcersStream(
+      Timestamp givenDay) async* {
+    List<EnforcerSchedule> schedules = [];
+    List<Enforcer> enforcers = [];
+
+    await _firestore
+        .collection('enforcerSchedules')
+        .where('scheduleDay', isEqualTo: givenDay)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        schedules.add(EnforcerSchedule.fromJson(element.data(), element.id));
+      }
+    });
+
+    await _firestore.collection('enforcers').get().then((value) {
+      for (var element in value.docs) {
+        enforcers.add(Enforcer.fromJson(element.data(), element.id));
+      }
+    });
+
+    yield enforcers.where((element) {
+      return schedules.every((element2) {
+        return element.id != element2.enforcerId;
+      });
+    }).toList();
+  }
+
+  Stream<List<TrafficPost>> getAvailableTrafficPostsStream(
+      Timestamp givenDay) async* {
+    List<EnforcerSchedule> schedules = [];
+    List<TrafficPost> trafficPosts = [];
+
+    await _firestore
+        .collection('enforcerSchedules')
+        .where('scheduleDay', isEqualTo: givenDay)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        schedules.add(EnforcerSchedule.fromJson(element.data(), element.id));
+      }
+    });
+
+    await _firestore.collection('trafficPosts').get().then((value) {
+      for (var element in value.docs) {
+        trafficPosts.add(TrafficPost.fromJson(element.data(), element.id));
+      }
+    });
+
+    yield trafficPosts.where((element) {
+      return schedules.every((element2) {
+        return element.id != element2.postId;
+      });
+    }).toList();
   }
 }

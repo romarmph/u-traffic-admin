@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
 class EnforcerSchedulePage extends ConsumerStatefulWidget {
@@ -115,7 +116,7 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
                                 ),
                               );
                             },
-                            child: const Text('Add Enforcer Schedule'),
+                            child: const Text('Create Schedule'),
                           ),
                         ],
                       ),
@@ -130,52 +131,66 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
                       right: 16,
                     ),
                     child: Container(
-                        width: constraints.maxWidth - 32,
-                        decoration: BoxDecoration(
-                          color: UColors.white,
-                          borderRadius: BorderRadius.circular(USpace.space12),
-                        ),
-                        child: ref.watch(getAllEnforcerSchedStream).when(
-                              data: (data) {
-                                final query = ref.watch(scheduleSearchProvider);
-                                final shift = ref.watch(shiftDropdownProvider);
+                      width: constraints.maxWidth - 32,
+                      decoration: BoxDecoration(
+                        color: UColors.white,
+                        borderRadius: BorderRadius.circular(USpace.space12),
+                      ),
+                      child: SfCalendar(
+                        view: CalendarView.month,
+                        // monthViewSettings: const MonthViewSettings(
+                        //   dayFormat: 'EEE',
+                        // ),
 
-                                if (shift != 'All') {
-                                  data = data
-                                      .where((element) =>
-                                          element.shift.name.toLowerCase() ==
-                                          shift.toLowerCase())
-                                      .toList();
-                                }
+                        onTap: (calendarTapDetails) {
+                          print(calendarTapDetails.appointments);
+                        },
+                        onLongPress: (calendarLongPressDetails) {
+                          print(calendarLongPressDetails.appointments);
+                        },
+                      ),
+                      // child: ref.watch(getAllEnforcerSchedStream).when(
+                      //       data: (data) {
+                      //         final query = ref.watch(scheduleSearchProvider);
+                      //         final shift = ref.watch(shiftDropdownProvider);
 
-                                if (query.isNotEmpty) {
-                                  data = _searchSchedule(data, query);
-                                }
+                      //         if (shift != 'All') {
+                      //           data = data
+                      //               .where((element) =>
+                      //                   element.shift.name.toLowerCase() ==
+                      //                   shift.toLowerCase())
+                      //               .toList();
+                      //         }
 
-                                return DataGridContainer(
-                                  height: constraints.maxHeight -
-                                      60 -
-                                      appBarHeight -
-                                      100 -
-                                      16,
-                                  constraints: constraints,
-                                  source: EnforcerScheduleDataGridSource(
-                                    data,
-                                    ref,
-                                  ),
-                                  gridColumns: enforcerSchedGridColumns,
-                                  dataCount: data.length,
-                                );
-                              },
-                              error: (error, stackTrace) {
-                                return const Center(
-                                  child: Text('Error'),
-                                );
-                              },
-                              loading: () => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            )),
+                      //         if (query.isNotEmpty) {
+                      //           data = _searchSchedule(data, query);
+                      //         }
+
+                      //         return DataGridContainer(
+                      //           height: constraints.maxHeight -
+                      //               60 -
+                      //               appBarHeight -
+                      //               100 -
+                      //               16,
+                      //           constraints: constraints,
+                      //           source: EnforcerScheduleDataGridSource(
+                      //             data,
+                      //             ref,
+                      //           ),
+                      //           gridColumns: enforcerSchedGridColumns,
+                      //           dataCount: data.length,
+                      //         );
+                      //       },
+                      //       error: (error, stackTrace) {
+                      //         return const Center(
+                      //           child: Text('Error'),
+                      //         );
+                      //       },
+                      //       loading: () => const Center(
+                      //         child: CircularProgressIndicator(),
+                      //       ),
+                      //     ),
+                    ),
                   ),
                 ),
               ],
@@ -196,4 +211,20 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
           element.shift.name.toLowerCase().contains(query.toLowerCase());
     }).toList();
   }
+}
+
+class CalendarSchedule {
+  CalendarSchedule(
+    this.eventName,
+    this.from,
+    this.to,
+    this.background,
+    this.isAllDay,
+  );
+
+  String eventName;
+  DateTime from;
+  DateTime to;
+  Color background;
+  bool isAllDay;
 }
