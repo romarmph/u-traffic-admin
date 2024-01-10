@@ -27,26 +27,63 @@ class EnforcerAttendancePage extends ConsumerWidget {
                 color: UColors.white,
                 borderRadius: BorderRadius.circular(USpace.space16),
               ),
-              child: SizedBox(
-                width: constraints.maxWidth,
-                child: ref.watch(attendanceProvider).when(
-                      data: (attendance) {
-                        return DataGridContainer(
-                          constraints: constraints,
-                          source: AttendanceDataGridSource(
-                            attendance,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        "Attendance",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const Spacer(),
+                      OutlinedButton(
+                        onPressed: () async {
+                          final date = await showDatePicker(
+                            context: context,
+                            initialDate: ref.watch(dayProvider).toDate(),
+                            firstDate: ref.watch(dayProvider).toDate(),
+                            lastDate: DateTime(2025),
+                          );
+                          if (date != null) {
+                            ref.read(dayProvider.notifier).state =
+                                Timestamp.fromDate(date);
+                          }
+                        },
+                        child: Text(
+                          DateFormat.yMMMMd()
+                              .format(ref.watch(dayProvider).toDate()),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: USpace.space16),
+                  Expanded(
+                    child: ref
+                        .watch(attendanceProvider(ref.watch(dayProvider)))
+                        .when(
+                          data: (attendance) {
+                            return DataGridContainer(
+                              constraints: constraints,
+                              source: AttendanceDataGridSource(
+                                attendance,
+                              ),
+                              gridColumns: attendanceGridColumns,
+                              dataCount: attendance.length,
+                            );
+                          },
+                          loading: () => const Center(
+                            child: CircularProgressIndicator(),
                           ),
-                          gridColumns: attendanceGridColumns,
-                          dataCount: attendance.length,
-                        );
-                      },
-                      loading: () => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      error: (error, stackTrace) => Center(
-                        child: Text(error.toString()),
-                      ),
-                    ),
+                          error: (error, stackTrace) => Center(
+                            child: Text(error.toString()),
+                          ),
+                        ),
+                  ),
+                ],
               ),
             ),
           );
@@ -55,3 +92,7 @@ class EnforcerAttendancePage extends ConsumerWidget {
     );
   }
 }
+
+final dayProvider = StateProvider<Timestamp>((ref) {
+  return Timestamp.fromDate(DateTime.now());
+});

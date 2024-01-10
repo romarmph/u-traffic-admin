@@ -6,6 +6,7 @@ class Attendance {
   final Timestamp timeIn;
   final Timestamp timeOut;
 
+
   Attendance({
     this.id,
     required this.schedule,

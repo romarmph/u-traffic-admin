@@ -10,9 +10,10 @@ class AttendanceDatabase {
   static final _firestore = FirebaseFirestore.instance;
   static final _attendanceCollection = _firestore.collection("attendance");
 
-  Stream<List<Attendance>> getAllAttendanceStream() {
+  Stream<List<Attendance>> getAllAttendanceStream(Timestamp date) {
     return _attendanceCollection
-        .orderBy("date", descending: true)
+        .orderBy("timeIn", descending: true)
+        .where("timeIn", isGreaterThanOrEqualTo: date)
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
