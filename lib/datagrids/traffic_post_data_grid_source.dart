@@ -269,15 +269,22 @@ class ViewTrafficPost extends ConsumerWidget {
                 FilledButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          child: CreateTrafficPostFormDialog(
-                            post: post,
-                          ),
-                        );
-                      },
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (context) {
+                    //     return Dialog(
+                    //       child: CreateTrafficPostFormDialog(
+                    //         post: post,
+                    //       ),
+                    //     );
+                    //   },
+                    // );
+                    Navigator.of(context).push(
+                      PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => CreateTrafficPostForm(
+                          post: post,
+                        ),
+                      ),
                     );
                   },
                   child: const Text('Update'),

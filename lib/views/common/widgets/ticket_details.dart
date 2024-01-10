@@ -474,7 +474,7 @@ class TicketDetails extends ConsumerWidget {
             ),
             overflow: TextOverflow.ellipsis,
           ),
-          subtitle: Column(
+          subtitle: Row(
             children: [
               Text(
                 violation.penalty,
@@ -487,34 +487,20 @@ class TicketDetails extends ConsumerWidget {
               const SizedBox(
                 height: USpace.space4,
               ),
-              Row(
-                children: [
-                  Text(
-                    violation.isBigVehicle
-                        ? "Big Vehicle"
-                        : "Tricycle/Motorcycle",
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: UColors.gray500,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    violation.offense == 1
-                        ? '1st Offense'
-                        : violation.offense == 2
-                            ? '2nd Offense'
-                            : '3rd Offense',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: violation.offense == 1
-                          ? UColors.green500
-                          : violation.offense == 2
-                              ? UColors.yellow500
-                              : UColors.red500,
-                    ),
-                  ),
-                ],
+              Text(
+                violation.offense == 1
+                    ? '1st Offense'
+                    : violation.offense == 2
+                        ? '2nd Offense'
+                        : '3rd Offense',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: violation.offense == 1
+                      ? UColors.green500
+                      : violation.offense == 2
+                          ? UColors.yellow500
+                          : UColors.red500,
+                ),
               ),
             ],
           ),

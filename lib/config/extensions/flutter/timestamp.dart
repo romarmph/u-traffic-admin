@@ -16,4 +16,8 @@ extension TimestampExtension on Timestamp {
   Timestamp get addSevenDays {
     return Timestamp.fromDate(toDate().add(const Duration(days: 7)));
   }
+
+  int get dayOfTheWeek {
+    return toDate().weekday;
+  }
 }
