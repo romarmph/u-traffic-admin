@@ -198,8 +198,11 @@ class ComplaintViewPage extends ConsumerWidget {
                                   .when(
                                 data: (driver) {
                                   return MessageTile(
+                                    createdAt: data.createdAt,
+                                    attachments: data.attachments,
+                                    description: data.description,
                                     isFromDriver: data.isFromDriver,
-                                    comlaint: complaint,
+                                    title: data.title,
                                     senderName:
                                         "${driver.firstName} ${driver.lastName}",
                                     senderPhotoUrl: driver.photoUrl,
@@ -218,9 +221,6 @@ class ComplaintViewPage extends ConsumerWidget {
                                   );
                                 },
                               ),
-                              const SizedBox(
-                                height: 16,
-                              ),
                               ref.watch(getAllRepliesProvider(complaint)).when(
                                 data: (data) {
                                   return Column(
@@ -232,10 +232,16 @@ class ComplaintViewPage extends ConsumerWidget {
                                             .when(
                                           data: (driver) {
                                             return MessageTile(
-                                              comlaint: reply.id!,
+                                              createdAt: reply.createdAt,
+                                              attachments: reply.attachments,
+                                              description: reply.description,
+                                              isFromDriver: reply.isFromDriver,
+                                              title: reply.title,
                                               senderName:
                                                   "${driver.firstName} ${driver.lastName}",
                                               senderPhotoUrl: driver.photoUrl,
+                                              email: driver.email,
+                                              phone: driver.phone,
                                             );
                                           },
                                           error: (error, stackTrace) {
@@ -259,10 +265,15 @@ class ComplaintViewPage extends ConsumerWidget {
                                           .when(
                                         data: (admin) {
                                           return MessageTile(
-                                            comlaint: reply.id!,
+                                            createdAt: reply.createdAt,
+                                            attachments: reply.attachments,
+                                            description: reply.description,
+                                            isFromDriver: reply.isFromDriver,
+                                            title: reply.title,
                                             senderName:
                                                 "${admin.firstName} ${admin.lastName}",
                                             senderPhotoUrl: admin.photoUrl,
+                                            email: admin.email,
                                           );
                                         },
                                         error: (error, stackTrace) {
