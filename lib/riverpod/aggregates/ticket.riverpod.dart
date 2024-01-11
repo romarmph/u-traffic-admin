@@ -92,12 +92,12 @@ final cancelledTicketsAggregateProvider =
   );
 });
 
-final expiredTicketsAggregateProvider = StreamProvider<List<ChartData>>((ref) {
+final overdueTicketsAggregateProvider = StreamProvider<List<ChartData>>((ref) {
   final dateRange = ref.watch(dateRangeProvider);
   return TicketAggregates.instance.getTotalTicketsAggregate(
     dateRange,
     'status',
-    'expired',
+    'overdue',
   );
 });
 

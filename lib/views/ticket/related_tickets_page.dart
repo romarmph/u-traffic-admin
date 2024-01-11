@@ -79,7 +79,7 @@ class _RelatedTicketsPageState extends ConsumerState<RelatedTicketsPage> {
                               'unpaid',
                               'paid',
                               'cancelled',
-                              'expired',
+                              'overdue',
                             ],
                             onChanged: (value) {
                               ref

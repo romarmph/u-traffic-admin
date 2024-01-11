@@ -93,7 +93,7 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                               statusList: const [
                                 'unpaid',
                                 'paid',
-                                'expired',
+                                'overdue',
                                 'cancelled',
                               ],
                             ),

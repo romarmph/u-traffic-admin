@@ -182,7 +182,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                 'cancelled',
                                 // 'refunded',
                                 // 'submitted',
-                                'expired',
+                                'overdue',
                               ],
                             ),
                             const SizedBox(

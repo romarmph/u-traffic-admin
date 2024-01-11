@@ -719,7 +719,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
           dataSource: chartData,
           xValueMapper: (EnforcerPerformance data, _) => data.name,
           yValueMapper: (EnforcerPerformance data, _) =>
-              data.totalTicketsExpired,
+              data.totalTicketsoverdue,
         ),
       ],
     );

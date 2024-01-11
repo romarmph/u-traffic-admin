@@ -452,7 +452,7 @@ class TicketDetails extends ConsumerWidget {
         return UColors.yellow500;
       case "submitted":
         return UColors.blue500;
-      case "expired":
+      case "overdue":
         return UColors.red500;
       default:
         return UColors.red500;
