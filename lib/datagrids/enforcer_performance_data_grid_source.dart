@@ -61,8 +61,8 @@ class EnforcerPerformanceDataGridSource extends DataGridSource {
             value: data.totalTicketsCancelled,
           ),
           DataGridCell(
-            columnName: EnforcerPerformanceGridFields.totalExpiredTickets,
-            value: data.totalTicketsExpired,
+            columnName: EnforcerPerformanceGridFields.totaloverdueTickets,
+            value: data.totalTicketsoverdue,
           ),
           DataGridCell(
             columnName: EnforcerPerformanceGridFields.totalAmountPaid,

@@ -16,7 +16,9 @@ import 'package:u_traffic_admin/riverpod/aggregates/violations.dart';
 import 'package:u_traffic_admin/views/analytics/widgets/dashboard_header.dart';
 import 'package:u_traffic_admin/views/analytics/widgets/doughnut_chart.dart';
 import 'package:u_traffic_admin/views/analytics/widgets/quick_info_row.dart';
+import 'package:u_traffic_admin/views/common/widgets/date_range_picker.dart';
 import 'package:universal_html/html.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class AnalyticsPage extends ConsumerStatefulWidget {
   const AnalyticsPage({super.key});
@@ -28,7 +30,6 @@ class AnalyticsPage extends ConsumerStatefulWidget {
 class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
   final _performanceTableKey = GlobalKey<SfDataGridState>();
   final _violationCountTableKey = GlobalKey<SfDataGridState>();
-  bool _isTableView = true;
   late ZoomPanBehavior _zoomPanBehavior;
 
   @override
@@ -44,6 +45,11 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
   @override
   Widget build(BuildContext context) {
     final columnRange = ref.watch(columnRangeProvider);
+    final PickerDateRange dailyTicketRange =
+        ref.watch(dailyTicketRangeProvider);
+    final PickerDateRange violationDateRange = ref.watch(
+      violationDateRangePicker,
+    );
 
     return PageContainer(
       route: Routes.analytics,
@@ -106,11 +112,136 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                           ),
                         ),
                         const Spacer(),
+                        Visibility(
+                          visible: columnRange == 'daily',
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 200,
+                                child: OutlinedButton.icon(
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 22,
+                                      horizontal: 16,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        USpace.space8,
+                                      ),
+                                    ),
+                                    side: const BorderSide(
+                                      color: UColors.gray300,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Dialog(
+                                          child: UDateRangePickerDialog(
+                                            hideDropdown: true,
+                                            onSubmit: (value) {
+                                              ref
+                                                      .read(
+                                                          dailyTicketRangeProvider
+                                                              .notifier)
+                                                      .state =
+                                                  value as PickerDateRange;
+
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.calendar_today_rounded,
+                                    color: UColors.gray700,
+                                  ),
+                                  label: const Text(
+                                    'Select Date Range',
+                                    style: TextStyle(
+                                      color: UColors.gray700,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              SizedBox(
+                                width: 250,
+                                child: Text(
+                                  "${dailyTicketRange.startDate!.toTimestamp.toAmericanDate}  -  ${dailyTicketRange.endDate!.toTimestamp.toAmericanDate}",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: columnRange == 'by month',
+                          child: Row(
+                            children: [
+                              StatusTypeDropDown(
+                                statusList: const [
+                                  "2023",
+                                  "2024",
+                                ],
+                                onChanged: (value) {
+                                  ref.read(yearProvider.notifier).state =
+                                      value!;
+                                },
+                                value: ref.watch(yearProvider),
+                              ),
+                              const SizedBox(width: 16),
+                              StatusTypeDropDown(
+                                statusList: const [
+                                  "January",
+                                  "February",
+                                  "March",
+                                  "April",
+                                  "May",
+                                  "June",
+                                  "July",
+                                  "August",
+                                  "September",
+                                  "October",
+                                  "November",
+                                  "December",
+                                ],
+                                onChanged: (value) {
+                                  ref.read(monthProvider.notifier).state =
+                                      value!;
+                                },
+                                value: ref.watch(monthProvider),
+                              ),
+                              const SizedBox(width: 16),
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: columnRange == 'by year',
+                          child: StatusTypeDropDown(
+                            statusList: const [
+                              "2022",
+                              "2023",
+                              "2024",
+                            ],
+                            onChanged: (value) {
+                              ref.read(yearProvider.notifier).state = value!;
+                            },
+                            value: ref.watch(yearProvider),
+                          ),
+                        ),
                         StatusTypeDropDown(
                           statusList: const [
                             "Daily",
-                            "Monthly",
-                            "Yearly",
+                            "By month",
+                            "By year",
                           ],
                           onChanged: (value) {
                             ref.read(columnRangeProvider.notifier).state =
@@ -142,7 +273,10 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                                 ColumnSeries<ColumnDataChart, String>(
                                   dataSource: data,
                                   xValueMapper: (ColumnDataChart data, _) =>
-                                      data.column,
+                                      columnRange == 'by year'
+                                          ? data.column.parseMonth
+                                          : DateFormat('MM-dd').format(
+                                              DateTime.parse(data.column)),
                                   yValueMapper: (ColumnDataChart data, _) =>
                                       data.count,
                                   dataLabelSettings: const DataLabelSettings(
@@ -160,6 +294,217 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                               ),
                             ),
                           ),
+                          loading: () => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          "${columnRange.capitalize} Violation Issued",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const Spacer(),
+                        Visibility(
+                          visible: columnRange == 'daily',
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 200,
+                                child: OutlinedButton.icon(
+                                  style: OutlinedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 22,
+                                      horizontal: 16,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        USpace.space8,
+                                      ),
+                                    ),
+                                    side: const BorderSide(
+                                      color: UColors.gray300,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return Dialog(
+                                          child: UDateRangePickerDialog(
+                                            hideDropdown: true,
+                                            onSubmit: (value) {
+                                              ref
+                                                      .read(
+                                                          violationDateRangePicker
+                                                              .notifier)
+                                                      .state =
+                                                  value as PickerDateRange;
+
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.calendar_today_rounded,
+                                    color: UColors.gray700,
+                                  ),
+                                  label: const Text(
+                                    'Select Date Range',
+                                    style: TextStyle(
+                                      color: UColors.gray700,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              SizedBox(
+                                width: 250,
+                                child: Text(
+                                  "${violationDateRange.startDate!.toTimestamp.toAmericanDate}  -  ${violationDateRange.endDate!.toTimestamp.toAmericanDate}",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: columnRange == 'by month',
+                          child: Row(
+                            children: [
+                              StatusTypeDropDown(
+                                statusList: const [
+                                  "2023",
+                                  "2024",
+                                ],
+                                onChanged: (value) {
+                                  ref
+                                      .read(violationYearProvider.notifier)
+                                      .state = value!;
+                                },
+                                value: ref.watch(violationYearProvider),
+                              ),
+                              const SizedBox(width: 16),
+                              StatusTypeDropDown(
+                                statusList: const [
+                                  "January",
+                                  "February",
+                                  "March",
+                                  "April",
+                                  "May",
+                                  "June",
+                                  "July",
+                                  "August",
+                                  "September",
+                                  "October",
+                                  "November",
+                                  "December",
+                                ],
+                                onChanged: (value) {
+                                  ref
+                                      .read(violationMonthProvider.notifier)
+                                      .state = value!;
+                                },
+                                value: ref.watch(violationMonthProvider),
+                              ),
+                              const SizedBox(width: 16),
+                            ],
+                          ),
+                        ),
+                        Visibility(
+                          visible: columnRange == 'by year',
+                          child: StatusTypeDropDown(
+                            statusList: const [
+                              "2022",
+                              "2023",
+                              "2024",
+                            ],
+                            onChanged: (value) {
+                              ref.read(violationYearProvider.notifier).state =
+                                  value!;
+                            },
+                            value: ref.watch(violationYearProvider),
+                          ),
+                        ),
+                        StatusTypeDropDown(
+                          statusList: const [
+                            "Daily",
+                            "By month",
+                            "By year",
+                          ],
+                          onChanged: (value) {
+                            ref.read(columnRangeProvider.notifier).state =
+                                value!.toLowerCase();
+                          },
+                          value: ref.watch(columnRangeProvider).capitalize,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: constraints.maxHeight * 0.5,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(8),
+                        bottomRight: Radius.circular(8),
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    child: ref.watch(violationsColumnChartProvider).when(
+                          data: (data) {
+                            if (columnRange == 'daily') {
+                              data = data.reversed.toList();
+                            }
+                            return SfCartesianChart(
+                              primaryXAxis: CategoryAxis(),
+                              series: <ChartSeries>[
+                                ColumnSeries<ColumnDataChart, String>(
+                                  dataSource: data,
+                                  xValueMapper: (ColumnDataChart data, _) =>
+                                      data.column,
+                                  yValueMapper: (ColumnDataChart data, _) =>
+                                      data.count,
+                                  dataLabelSettings: const DataLabelSettings(
+                                    isVisible: true,
+                                  ),
+                                )
+                              ],
+                            );
+                          },
+                          error: (error, stackTrace) {
+                            return Center(
+                              child: Text(
+                                error.toString(),
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                ),
+                              ),
+                            );
+                          },
                           loading: () => const Center(
                             child: CircularProgressIndicator(),
                           ),
@@ -192,25 +537,6 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
                                     ),
                                   ),
                                   const Spacer(),
-                                  // SizedBox(
-                                  //   width: 300,
-                                  //   child: SwitchListTile(
-                                  //     title: Text(
-                                  //       _isTableView
-                                  //           ? "Table View"
-                                  //           : "Chart View",
-                                  //       style: const TextStyle(
-                                  //         fontSize: 12,
-                                  //       ),
-                                  //     ),
-                                  //     value: _isTableView,
-                                  //     onChanged: (value) {
-                                  //       setState(() {
-                                  //         _isTableView = value;
-                                  //       });
-                                  //     },
-                                  //   ),
-                                  // ),
                                   FilledButton(
                                     style: FilledButton.styleFrom(
                                       backgroundColor: UColors.blue600,
@@ -393,7 +719,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
           dataSource: chartData,
           xValueMapper: (EnforcerPerformance data, _) => data.name,
           yValueMapper: (EnforcerPerformance data, _) =>
-              data.totalTicketsExpired,
+              data.totalTicketsoverdue,
         ),
       ],
     );
@@ -620,11 +946,11 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     PdfPage pdfPage = document.pages.add();
 
     pdfPage.defaultLayer.graphics.drawString(
-      'Public Order and Safety Division',
+      'Republic of the Philippines',
       PdfStandardFont(
         PdfFontFamily.helvetica,
         16,
-        style: PdfFontStyle.bold,
+        style: PdfFontStyle.regular,
       ),
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
@@ -632,10 +958,10 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
       bounds: const Rect.fromLTWH(0, 32, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
-      'Urdaneta City, Pangasinan',
+      'Province of Pangasinan',
       PdfStandardFont(
         PdfFontFamily.helvetica,
-        12,
+        14,
         style: PdfFontStyle.regular,
       ),
       format: PdfStringFormat(
@@ -644,16 +970,28 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
       bounds: const Rect.fromLTWH(0, 54, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
-      'Ticket Report',
+      'Public Order and Safety Division',
       PdfStandardFont(
         PdfFontFamily.helvetica,
-        22,
+        20,
         style: PdfFontStyle.bold,
       ),
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
       ),
-      bounds: const Rect.fromLTWH(0, 0, 762, 100),
+      bounds: const Rect.fromLTWH(0, 72, 762, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      'Urdaneta City, Pangasinan',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        14,
+        style: PdfFontStyle.regular,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.center,
+      ),
+      bounds: const Rect.fromLTWH(0, 96, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
       title,
@@ -665,7 +1003,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
       ),
-      bounds: const Rect.fromLTWH(0, 100, 762, 100),
+      bounds: const Rect.fromLTWH(0, 150, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
       'Date prepared: ${DateTime.now().toTimestamp.toAmericanDate}',
@@ -772,7 +1110,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
 
       PdfPage page = document.pages[i];
       page.graphics.drawString(
-        'Page $i of ${document.pages.count - 1}      Prepared by: Romar Macaraeg       Checked by: Marbert Cerda       ${DateTime.now().toTimestamp.toAmericanDate}',
+        'Page $i of ${document.pages.count - 1}      Prepared by: Romar Macaraeg       Checked by: $checker       ${DateTime.now().toTimestamp.toAmericanDate}',
         PdfStandardFont(
           PdfFontFamily.helvetica,
           8,
@@ -800,3 +1138,21 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     return workbook;
   }
 }
+
+final dailyTicketRangeProvider = StateProvider<PickerDateRange>((ref) {
+  final now = DateTime.now();
+
+  final startDate = DateTime(now.year, now.month, now.day - 15);
+  final endDate = DateTime(now.year, now.month, now.day + 15);
+
+  return PickerDateRange(startDate, endDate);
+});
+
+final violationDateRangePicker = StateProvider<PickerDateRange>((ref) {
+  final now = DateTime.now();
+
+  final startDate = DateTime(now.year, now.month, now.day - 15);
+  final endDate = DateTime(now.year, now.month, now.day + 15);
+
+  return PickerDateRange(startDate, endDate);
+});

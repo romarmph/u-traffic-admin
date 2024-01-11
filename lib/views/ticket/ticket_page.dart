@@ -8,6 +8,8 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as excel;
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
+import 'package:u_traffic_admin/views/common/widgets/date_range_picker.dart';
+
 final dateRangeProvider = StateProvider<PickerDateRange?>((ref) => null);
 final dateType = StateProvider<String>((ref) => 'Date Issued');
 final violationFilter = StateProvider<List<Violation>>((ref) => []);
@@ -129,7 +131,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                   context: context,
                                   builder: (context) {
                                     return Dialog(
-                                      child: DateRangePickerDialog(
+                                      child: UDateRangePickerDialog(
                                         onSubmit: (value) {
                                           if (value == null) {
                                             return;
@@ -180,7 +182,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                 'cancelled',
                                 // 'refunded',
                                 // 'submitted',
-                                'expired',
+                                'overdue',
                               ],
                             ),
                             const SizedBox(
@@ -297,6 +299,20 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                             }
 
                             data = _filterBySelectedViolations(data);
+
+                            Map<TicketStatus, int> statusOrder = {
+                              TicketStatus.overdue: 1,
+                              TicketStatus.unpaid: 2,
+                              TicketStatus.paid: 3,
+                              TicketStatus.cancelled: 4,
+                            };
+
+                            List<Ticket> tickets = data;
+
+                            tickets.sort((a, b) => statusOrder[a.status]!
+                                .compareTo(statusOrder[b.status]!));
+
+                            data = tickets;
 
                             return DataGridContainer(
                               onCellTap: (details) {
@@ -519,6 +535,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         final admin = ref.watch(currentAdminProvider);
+                        print(checkerController.text);
                         await _createDocument(
                           admin,
                           'pdf',
@@ -656,11 +673,11 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     PdfPage pdfPage = document.pages.add();
 
     pdfPage.defaultLayer.graphics.drawString(
-      'Public Order and Safety Division',
+      'Republic of the Philippines',
       PdfStandardFont(
         PdfFontFamily.helvetica,
         16,
-        style: PdfFontStyle.bold,
+        style: PdfFontStyle.regular,
       ),
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
@@ -668,10 +685,10 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       bounds: const Rect.fromLTWH(0, 32, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
-      'Urdaneta City, Pangasinan',
+      'Province of Pangasinan',
       PdfStandardFont(
         PdfFontFamily.helvetica,
-        12,
+        14,
         style: PdfFontStyle.regular,
       ),
       format: PdfStringFormat(
@@ -680,17 +697,30 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       bounds: const Rect.fromLTWH(0, 54, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
-      'Ticket Report',
+      'Public Order and Safety Division',
       PdfStandardFont(
         PdfFontFamily.helvetica,
-        22,
+        20,
         style: PdfFontStyle.bold,
       ),
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
       ),
-      bounds: const Rect.fromLTWH(0, 0, 762, 100),
+      bounds: const Rect.fromLTWH(0, 72, 762, 100),
     );
+    pdfPage.defaultLayer.graphics.drawString(
+      'Urdaneta City, Pangasinan',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        14,
+        style: PdfFontStyle.regular,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.center,
+      ),
+      bounds: const Rect.fromLTWH(0, 96, 762, 100),
+    );
+
     pdfPage.defaultLayer.graphics.drawString(
       title,
       PdfStandardFont(
@@ -701,7 +731,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
       ),
-      bounds: const Rect.fromLTWH(0, 100, 762, 100),
+      bounds: const Rect.fromLTWH(0, 150, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
       'Date prepared: ${DateTime.now().toTimestamp.toAmericanDate}',
@@ -808,7 +838,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
 
       PdfPage page = document.pages[i];
       page.graphics.drawString(
-        'Page $i of ${document.pages.count - 1}      Prepared by: Romar Macaraeg       Checked by: Marbert Cerda       ${DateTime.now().toTimestamp.toAmericanDate}',
+        'Page $i of ${document.pages.count - 1}      Prepared by: Romar Macaraeg       Checked by: $checker       ${DateTime.now().toTimestamp.toAmericanDate}',
         PdfStandardFont(
           PdfFontFamily.helvetica,
           8,
@@ -911,63 +941,6 @@ class ViolationFilterDialog extends ConsumerWidget {
                 Navigator.pop(context);
               },
               child: const Text('Close'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class DateRangePickerDialog extends ConsumerWidget {
-  const DateRangePickerDialog({
-    super.key,
-    this.onSubmit,
-  });
-
-  final dynamic Function(Object?)? onSubmit;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      width: 500,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          USpace.space8,
-        ),
-        color: UColors.white,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          StatusTypeDropDown(
-            statusList: const [
-              'Date Issued',
-              'Due Date',
-            ],
-            onChanged: (value) {
-              ref.read(dateType.notifier).state = value!;
-            },
-            value: ref.watch(dateType),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          SizedBox(
-            height: 400,
-            width: 400,
-            child: SfDateRangePicker(
-              selectionMode: DateRangePickerSelectionMode.range,
-              showActionButtons: true,
-              onCancel: () {
-                Navigator.pop(context);
-              },
-              headerStyle: const DateRangePickerHeaderStyle(
-                textAlign: TextAlign.center,
-              ),
-              onSubmit: onSubmit,
             ),
           ),
         ],

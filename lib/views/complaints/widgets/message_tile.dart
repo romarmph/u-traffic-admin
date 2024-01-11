@@ -1,217 +1,179 @@
 import 'dart:io';
 
-import 'package:expansion_tile_card/expansion_tile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 import 'package:path/path.dart' as path;
-import 'package:u_traffic_admin/riverpod/database/complains_database_providers.dart';
+
 import 'package:u_traffic_admin/views/complaints/widgets/attach_file_tile.dart';
-import 'package:u_traffic_admin/views/complaints/widgets/attach_ticket_tile.dart';
 
 class MessageTile extends ConsumerWidget {
   const MessageTile({
     super.key,
-    required this.comlaint,
+    required this.title,
+    required this.description,
     required this.senderPhotoUrl,
     required this.senderName,
+    required this.attachments,
     this.isFromDriver = false,
     this.email,
     this.phone,
+    required this.createdAt,
   });
 
-  final String comlaint;
+  final String title;
+  final String description;
   final String senderPhotoUrl;
   final String senderName;
   final bool isFromDriver;
+  final List<Attachment> attachments;
   final String? email;
   final String? phone;
+  final Timestamp createdAt;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(getComplaintByIdProvider(comlaint)).when(
-      data: (complaint) {
-        return ExpansionTileCard(
-          baseColor: UColors.white,
-          expandedColor: UColors.white,
-          initiallyExpanded: true,
-          elevation: 0,
-          leading: ClipOval(
-            clipBehavior: Clip.antiAliasWithSaveLayer,
-            child: CircleAvatar(
-              radius: 18,
-              backgroundColor: UColors.gray300,
+    if (!isFromDriver) {
+      return Padding(
+        padding: const EdgeInsets.only(
+          left: 12,
+          right: 12,
+          bottom: 16,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: UColors.gray50,
+                      border: Border.all(
+                        color: UColors.gray100,
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          title,
+                          style: const UTextStyle().textsmfontbold,
+                          textAlign: TextAlign.end,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          description,
+                          style: const UTextStyle().textbasefontnormal,
+                          textAlign: TextAlign.end,
+                        ),
+                        const SizedBox(height: 4),
+                        ..._buildAttachments(attachments),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    createdAt.toAmericanDate,
+                    style: const UTextStyle().textxsfontmedium.copyWith(
+                          color: UColors.gray400,
+                        ),
+                    textAlign: TextAlign.start,
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            Container(
+              width: 40,
+              height: 40,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              decoration: BoxDecoration(
+                color: UColors.gray300,
+                borderRadius: BorderRadius.circular(40),
+              ),
               child: CachedNetworkImage(
                 imageUrl: senderPhotoUrl,
               ),
             ),
-          ),
-          title: Text(
-            complaint.title,
-            style: const UTextStyle().textlgfontbold,
-          ),
-          subtitle: Row(
-            children: [
-              Text(
-                isFromDriver ? 'Sent by' : 'Replied by',
-                style: const UTextStyle().textsmfontmedium,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                senderName,
-                style: const UTextStyle().textsmfontmedium,
-              ),
-              const SizedBox(width: 8),
-              const Text(
-                'at',
-              ),
-              const SizedBox(width: 8),
-              Text(
-                complaint.createdAt.toAmericanDate,
-                style: const UTextStyle().textsmfontmedium,
-              ),
-              Visibility(
-                visible: isFromDriver,
-                child: Row(
-                  children: [
-                    const SizedBox(width: 8),
-                    const Text(
-                      '-',
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      email ?? "",
-                      style: const TextStyle(
-                        color: UColors.blue500,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      phone ?? "",
-                      style: const TextStyle(
-                        color: UColors.blue500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          initialElevation: 0,
-          shadowColor: Colors.transparent,
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              child: Text(
-                complaint.description,
-                style: const UTextStyle().textsmfontmedium,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 16),
-              width: double.infinity,
-              child: const Text(
-                'Attached Ticket',
-                textAlign: TextAlign.left,
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              child: complaint.attachedTicket.isEmpty
-                  ? Container(
-                      width: 300,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: UColors.gray100,
-                        border: Border.all(
-                          color: UColors.gray300,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        'No ticket attached',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: UColors.gray400,
-                        ),
-                      ),
-                    )
-                  : ref
-                      .watch(
-                          getTicketByIdFutureProvider(complaint.attachedTicket))
-                      .when(
-                      data: (ticket) {
-                        return AttachTicketCard(
-                          ticket: ticket,
-                        );
-                      },
-                      error: (error, stackTrace) {
-                        return Center(
-                          child: Text(
-                            error.toString(),
-                            style: const UTextStyle().textlgfontbold,
-                          ),
-                        );
-                      },
-                      loading: () {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
-                    ),
-            ),
-            complaint.attachments.isNotEmpty
-                ? Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: _buildAttachments(complaint.attachments),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                    ),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: UColors.gray100,
-                        border: Border.all(
-                          color: UColors.gray300,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Text(
-                        'No attachments',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: UColors.gray400,
-                        ),
-                      ),
-                    ),
-                  ),
           ],
-        );
-      },
-      error: (error, stackTrace) {
-        return Center(
-          child: Text(
-            error.toString(),
-            style: const UTextStyle().textlgfontbold,
+        ),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 12,
+        right: 12,
+        bottom: 8,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            decoration: BoxDecoration(
+              color: UColors.gray300,
+              borderRadius: BorderRadius.circular(40),
+            ),
+            child: CachedNetworkImage(
+              imageUrl: senderPhotoUrl,
+            ),
           ),
-        );
-      },
-      loading: () {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: UColors.gray50,
+                    border: Border.all(
+                      color: UColors.gray100,
+                    ),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        title,
+                        style: const UTextStyle().textsmfontbold,
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        description,
+                        style: const UTextStyle().textbasefontnormal,
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(height: 4),
+                      ..._buildAttachments(attachments),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  createdAt.toAmericanDate,
+                  style: const UTextStyle().textxsfontmedium.copyWith(
+                        color: UColors.gray400,
+                      ),
+                  textAlign: TextAlign.start,
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

@@ -92,12 +92,12 @@ final cancelledTicketsAggregateProvider =
   );
 });
 
-final expiredTicketsAggregateProvider = StreamProvider<List<ChartData>>((ref) {
+final overdueTicketsAggregateProvider = StreamProvider<List<ChartData>>((ref) {
   final dateRange = ref.watch(dateRangeProvider);
   return TicketAggregates.instance.getTotalTicketsAggregate(
     dateRange,
     'status',
-    'expired',
+    'overdue',
   );
 });
 
@@ -109,12 +109,60 @@ final ticketsColumnChartProvider = StreamProvider<List<ColumnDataChart>>((
   ref,
 ) {
   final columngChartRange = ref.watch(columnRangeProvider);
+  final dateRange = ref.watch(dailyTicketRangeProvider);
+  final month = ref.watch(monthProvider);
+  final year = ref.watch(yearProvider);
 
   if (columngChartRange == 'daily') {
-    return TicketAggregates.instance.getDailyChartDataAggregate();
-  } else if (columngChartRange == 'monthly') {
-    return TicketAggregates.instance.getMonthlyChartDataAggregate();
+    return TicketAggregates.instance.getDailyChartDataAggregate(
+      dateRange.startDate!,
+      dateRange.endDate!,
+    );
+  } else if (columngChartRange == 'by month') {
+    return TicketAggregates.instance.getMonthlyChartDataAggregate(
+      month,
+      year,
+    );
   } else {
-    return TicketAggregates.instance.getYearlyChartDataAggregate();
+    return TicketAggregates.instance.getYearlyChartDataAggregate(year);
   }
+});
+
+final violationsColumnChartProvider = StreamProvider<List<ColumnDataChart>>((
+  ref,
+) {
+  final columngChartRange = ref.watch(columnRangeProvider);
+  final dateRange = ref.watch(violationDateRangePicker);
+  final month = ref.watch(violationMonthProvider);
+  final year = ref.watch(violationYearProvider);
+
+  if (columngChartRange == 'daily') {
+    return TicketAggregates.instance.mostIssuedViolations(
+      dateRange.startDate!,
+      dateRange.endDate!,
+    );
+  } else if (columngChartRange == 'by month') {
+    return TicketAggregates.instance.getMonthViolationData(
+      month,
+      year,
+    );
+  } else {
+    return TicketAggregates.instance.getYearlyViolationData(year);
+  }
+});
+
+final monthProvider = StateProvider<String>((ref) {
+  return 'January';
+});
+
+final yearProvider = StateProvider<String>((ref) {
+  return '2023';
+});
+
+final violationMonthProvider = StateProvider<String>((ref) {
+  return 'January';
+});
+
+final violationYearProvider = StateProvider<String>((ref) {
+  return '2023';
 });

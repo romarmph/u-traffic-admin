@@ -5,7 +5,7 @@ class EnforcerPerformance {
   final int totalPaidTickets;
   final int totalUnpaidTickets;
   final int totalTicketsCancelled;
-  final int totalTicketsExpired;
+  final int totalTicketsoverdue;
   final double totalAmountPaid;
   final double totalAmountUnpaid;
 
@@ -16,7 +16,7 @@ class EnforcerPerformance {
     this.totalPaidTickets = 0,
     this.totalUnpaidTickets = 0,
     this.totalTicketsCancelled = 0,
-    this.totalTicketsExpired = 0,
+    this.totalTicketsoverdue = 0,
     this.totalAmountPaid = 0,
     this.totalAmountUnpaid = 0,
   });

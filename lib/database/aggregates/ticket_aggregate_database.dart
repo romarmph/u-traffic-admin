@@ -1,3 +1,4 @@
+import 'package:flutter/semantics.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 import 'package:u_traffic_admin/model/daily_dart_data.dart';
 import 'package:u_traffic_admin/model/date_range.dart';
@@ -188,106 +189,265 @@ class TicketAggregates {
     }
   }
 
-  Stream<List<ColumnDataChart>> getDailyChartDataAggregate() async* {
-    try {
-      final now = DateTime.now();
+  Stream<List<ColumnDataChart>> getDailyChartDataAggregate(
+      DateTime start, DateTime end) async* {
+    Timestamp startTimestamp = Timestamp.fromDate(start);
+    Timestamp endTimestamp = Timestamp.fromDate(end);
 
-      List<ColumnDataChart> aggregates = [];
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      for (var i = 0; i < 30; i++) {
-        final startOfDay = DateTime(now.year, now.month, now.day - i);
-        final endOfDay = DateTime(now.year, now.month, now.day - i, 23, 59, 59);
-
-        final result = await _collection
-            .where('dateCreated',
-                isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
-            .where('dateCreated',
-                isLessThanOrEqualTo: Timestamp.fromDate(endOfDay))
-            .count()
-            .get();
-
-        aggregates.add(
-          ColumnDataChart(
-            column: startOfDay.day.toString(),
-            count: result.count,
-          ),
-        );
-      }
-
-      yield aggregates;
-    } on FirebaseException {
-      rethrow;
-    } catch (e) {
-      rethrow;
+    Map<String, int> dailyTicketCount = {};
+    for (int i = 0; i <= end.difference(start).inDays; i++) {
+      String dateString =
+          DateFormat('yyyy-MM-dd').format(start.add(Duration(days: i)));
+      dailyTicketCount[dateString] = 0;
     }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot querySnapshot = await tickets
+        .where('dateCreated', isGreaterThanOrEqualTo: startTimestamp)
+        .where('dateCreated', isLessThanOrEqualTo: endTimestamp)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      Timestamp timestamp = doc['dateCreated'];
+      DateTime dateTime = timestamp.toDate();
+      String dateString = DateFormat('yyyy-MM-dd').format(dateTime);
+
+      dailyTicketCount.update(dateString, (count) => count + 1);
+    }
+
+    List<ColumnDataChart> chartData = dailyTicketCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
   }
 
-  Stream<List<ColumnDataChart>> getMonthlyChartDataAggregate() async* {
-    try {
-      final now = DateTime.now();
+  Stream<List<ColumnDataChart>> getMonthlyChartDataAggregate(
+    String monthName,
+    String yearString,
+  ) async* {
+    int month = monthName.month;
+    int year = int.parse(yearString);
 
-      final currentMonth = now.month;
-      List<ColumnDataChart> aggregates = [];
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      for (var i = 1; i <= currentMonth; i++) {
-        final startOfMonth = DateTime(now.year, i, 0, 0, 0, 0, 0);
-        final endOfMonth = DateTime(now.year, i + 1, 0, 0, 0, 0, 0, 0);
-
-        final result = await _collection
-            .where('dateCreated',
-                isGreaterThanOrEqualTo: Timestamp.fromDate(startOfMonth))
-            .where('dateCreated',
-                isLessThanOrEqualTo: Timestamp.fromDate(endOfMonth))
-            .count()
-            .get();
-
-        aggregates.add(
-          ColumnDataChart(
-            column: DateFormat.MMMM().format(startOfMonth),
-            count: result.count,
-          ),
-        );
-      }
-
-      yield aggregates;
-    } on FirebaseException {
-      rethrow;
-    } catch (e) {
-      rethrow;
+    Map<String, int> monthlyTicketCount = {};
+    int daysInMonth = DateTime(year, month + 1, 0).day;
+    for (int day = 1; day <= daysInMonth; day++) {
+      String dateString =
+          DateFormat('yyyy-MM-dd').format(DateTime(year, month, day));
+      monthlyTicketCount[dateString] = 0;
     }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot querySnapshot = await tickets
+        .where('dateCreated',
+            isGreaterThanOrEqualTo:
+                Timestamp.fromDate(DateTime(year, month, 1)))
+        .where('dateCreated',
+            isLessThanOrEqualTo:
+                Timestamp.fromDate(DateTime(year, month, daysInMonth)))
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      Timestamp timestamp = doc['dateCreated'];
+      DateTime dateTime = timestamp.toDate();
+      String dateString = DateFormat('yyyy-MM-dd').format(dateTime);
+
+      monthlyTicketCount.update(dateString, (count) => count + 1);
+    }
+
+    List<ColumnDataChart> chartData = monthlyTicketCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
   }
 
-  Stream<List<ColumnDataChart>> getYearlyChartDataAggregate() async* {
-    try {
-      final now = DateTime.now();
+  Stream<List<ColumnDataChart>> getYearlyChartDataAggregate(
+      String yearString) async* {
+    int year = int.parse(yearString);
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      final currentYear = now.year;
-      List<ColumnDataChart> aggregates = [];
+    Map<String, int> yearlyTicketCount = {};
+    for (int month = 1; month <= 12; month++) {
+      String monthString = DateFormat('yyyy-MM').format(DateTime(year, month));
+      yearlyTicketCount[monthString] = 0;
+    }
 
-      for (var i = 2019; i <= currentYear; i++) {
-        final startOfYear = DateTime(i, 1, 1, 0, 0, 0);
-        final endOfYear = DateTime(i + 1, 1, 1, 0, 0, 0);
+    CollectionReference tickets = firestore.collection('tickets');
 
-        final result = await _collection
-            .where('dateCreated',
-                isGreaterThanOrEqualTo: Timestamp.fromDate(startOfYear))
-            .where('dateCreated', isLessThan: Timestamp.fromDate(endOfYear))
-            .count()
-            .get();
+    QuerySnapshot querySnapshot = await tickets
+        .where('dateCreated',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime(year, 1, 1)))
+        .where('dateCreated',
+            isLessThanOrEqualTo: Timestamp.fromDate(DateTime(year, 12, 31)))
+        .get();
 
-        aggregates.add(
-          ColumnDataChart(
-            column: i.toString(),
-            count: result.count,
-          ),
-        );
+    for (var doc in querySnapshot.docs) {
+      Timestamp timestamp = doc['dateCreated'];
+      DateTime dateTime = timestamp.toDate();
+      String monthString = DateFormat('yyyy-MM').format(dateTime);
+
+      yearlyTicketCount.update(monthString, (count) => count + 1);
+    }
+
+    List<ColumnDataChart> chartData = yearlyTicketCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
+  }
+
+  Stream<List<ColumnDataChart>> mostIssuedViolations(
+      DateTime start, DateTime end) async* {
+    Timestamp startTimestamp = Timestamp.fromDate(start);
+    Timestamp endTimestamp = Timestamp.fromDate(end);
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    CollectionReference violations = firestore.collection('violations');
+
+    QuerySnapshot violationSnapshot = await violations.get();
+
+    Map<String, int> violationCount = {};
+    for (var doc in violationSnapshot.docs) {
+      String violationName = doc['name'];
+      violationCount[violationName] = 0;
+    }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot ticketSnapshot = await tickets
+        .where('dateCreated', isGreaterThanOrEqualTo: startTimestamp)
+        .where('dateCreated', isLessThanOrEqualTo: endTimestamp)
+        .get();
+
+    for (var doc in ticketSnapshot.docs) {
+      List<IssuedViolation> issuedViolations = [];
+
+      for (var issuedViolation in doc['issuedViolations']) {
+        issuedViolations.add(IssuedViolation.fromJson(issuedViolation));
       }
 
-      yield aggregates;
-    } on FirebaseException {
-      rethrow;
-    } catch (e) {
-      rethrow;
+      for (var violation in issuedViolations) {
+        String violationName = violation.violation;
+
+        if (violationCount.containsKey(violationName)) {
+          violationCount.update(violationName, (count) => count + 1);
+        }
+      }
     }
+
+    List<ColumnDataChart> chartData = violationCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
+  }
+
+  Stream<List<ColumnDataChart>> getMonthViolationData(
+      String monthName, String yearString) async* {
+    DateFormat format = DateFormat("MMMM yyyy");
+    DateTime dateTime = format.parse("$monthName $yearString");
+    int year = dateTime.year;
+    int month = dateTime.month;
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    CollectionReference violations = firestore.collection('violations');
+
+    QuerySnapshot violationSnapshot = await violations.get();
+
+    Map<String, int> violationCount = {};
+    for (var doc in violationSnapshot.docs) {
+      String violationName = doc['name'];
+      violationCount[violationName] = 0;
+    }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot ticketSnapshot = await tickets
+        .where('dateCreated',
+            isGreaterThanOrEqualTo:
+                Timestamp.fromDate(DateTime(year, month, 1)))
+        .where('dateCreated',
+            isLessThanOrEqualTo: Timestamp.fromDate(
+                DateTime(year, month, DateTime(year, month + 1, 0).day)))
+        .get();
+
+    for (var doc in ticketSnapshot.docs) {
+      List<IssuedViolation> issuedViolations = [];
+
+      for (var val in doc['issuedViolations']) {
+        issuedViolations.add(IssuedViolation.fromJson(val));
+      }
+
+      for (var violation in issuedViolations) {
+        String violationName = violation.violation;
+
+        if (violationCount.containsKey(violationName)) {
+          violationCount.update(violationName, (count) => count + 1);
+        }
+      }
+    }
+
+    List<ColumnDataChart> chartData = violationCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
+  }
+
+  Stream<List<ColumnDataChart>> getYearlyViolationData(
+      String yearString) async* {
+    int year = int.parse(yearString);
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    CollectionReference violations = firestore.collection('violations');
+
+    QuerySnapshot violationSnapshot = await violations.get();
+
+    Map<String, int> violationCount = {};
+    for (var doc in violationSnapshot.docs) {
+      String violationName = doc['name'];
+      violationCount[violationName] = 0;
+    }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot ticketSnapshot = await tickets
+        .where('dateCreated',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime(year, 1, 1)))
+        .where('dateCreated',
+            isLessThanOrEqualTo: Timestamp.fromDate(DateTime(year, 12, 31)))
+        .get();
+
+    for (var doc in ticketSnapshot.docs) {
+      List<IssuedViolation> issuedViolations = [];
+
+      for (var val in doc['issuedViolations']) {
+        issuedViolations.add(IssuedViolation.fromJson(val));
+      }
+
+      for (var violation in issuedViolations) {
+        String violationName = violation.violation;
+
+        if (violationCount.containsKey(violationName)) {
+          violationCount.update(violationName, (count) => count + 1);
+        }
+      }
+    }
+
+    List<ColumnDataChart> chartData = violationCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
   }
 }

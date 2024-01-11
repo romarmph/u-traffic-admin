@@ -81,10 +81,10 @@ final List<GridColumn> enforcerPerformanceGridColumns = [
   GridColumn(
     minimumWidth: 150,
     columnWidthMode: ColumnWidthMode.fitByColumnName,
-    columnName: EnforcerPerformanceGridFields.totalExpiredTickets,
+    columnName: EnforcerPerformanceGridFields.totaloverdueTickets,
     label: const Center(
       child: Text(
-        EnforcerPerformanceGridFields.totalExpiredTickets,
+        EnforcerPerformanceGridFields.totaloverdueTickets,
         style: TextStyle(
           color: UColors.gray500,
           fontWeight: FontWeight.w600,

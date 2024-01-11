@@ -41,8 +41,8 @@ class EnforcerPerformanceDatabase {
       final int totalCancelledTickets = enforcerTickets
           .where((element) => element.status == TicketStatus.cancelled)
           .length;
-      final int totalExpiredTickets = enforcerTickets
-          .where((element) => element.status == TicketStatus.expired)
+      final int totaloverdueTickets = enforcerTickets
+          .where((element) => element.status == TicketStatus.overdue)
           .length;
       final double totalPaidTicketAmount = enforcerTickets
           .where((element) => element.status == TicketStatus.paid)
@@ -60,7 +60,7 @@ class EnforcerPerformanceDatabase {
         totalPaidTickets: totalPaidTickets,
         totalUnpaidTickets: totalUnpaidTickets,
         totalTicketsCancelled: totalCancelledTickets,
-        totalTicketsExpired: totalExpiredTickets,
+        totalTicketsoverdue: totaloverdueTickets,
         totalAmountPaid: totalPaidTicketAmount,
         totalAmountUnpaid: totalUnpaidTicketAmount,
       );
