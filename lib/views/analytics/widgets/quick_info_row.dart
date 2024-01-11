@@ -63,7 +63,7 @@ class QuickInfoRow extends StatelessWidget {
         Expanded(
           child: QuickInfoCard(
             provider: overdueTicketsAggregateProvider,
-            title: "overdue tickets",
+            title: "Overdue tickets",
             icon: Icons.free_cancellation_rounded,
             color: UColors.yellow400,
             isNegative: true,
