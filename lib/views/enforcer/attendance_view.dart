@@ -45,7 +45,7 @@ class EnforcerAttendancePage extends ConsumerWidget {
                           final date = await showDatePicker(
                             context: context,
                             initialDate: ref.watch(dayProvider).toDate(),
-                            firstDate: ref.watch(dayProvider).toDate(),
+                            firstDate: DateTime(2023),
                             lastDate: DateTime(2025),
                           );
                           if (date != null) {
@@ -66,6 +66,7 @@ class EnforcerAttendancePage extends ConsumerWidget {
                         .watch(attendanceProvider(ref.watch(dayProvider)))
                         .when(
                           data: (attendance) {
+                            print(attendance);
                             return DataGridContainer(
                               constraints: constraints,
                               source: AttendanceDataGridSource(

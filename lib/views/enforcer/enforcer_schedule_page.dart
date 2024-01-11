@@ -137,72 +137,44 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
                         color: UColors.white,
                         borderRadius: BorderRadius.circular(USpace.space12),
                       ),
-                      child: MonthView(
-                        key: _calendarKey,
-                        controller: _calendarController,
-                        cellAspectRatio: 2.5 / 1,
-                        cellBuilder: (date, event, isToday, isInMonth) {
-                          return ref
-                              .watch(hasScheduleProvider(date.toTimestamp))
-                              .when(
-                            data: (hasSchedule) {
-                              if (hasSchedule) {
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: hasSchedule
-                                        ? UColors.orange100
-                                        : UColors.white,
-                                    borderRadius: BorderRadius.circular(
-                                      USpace.space8,
-                                    ),
-                                    border: Border.all(
-                                      color: hasSchedule
-                                          ? UColors.orange300
-                                          : UColors.white,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          date.day.toString(),
-                                          style: TextStyle(
-                                            color: hasSchedule
-                                                ? UColors.orange300
-                                                : UColors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 4,
-                                        ),
-                                        Icon(
-                                          Icons.check_circle,
-                                          color: UColors.orange300,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }
+                      child: ref.watch(getAllEnforcerSchedStream).when(
+                          data: (data) {
+                        return MonthView(
+                          key: _calendarKey,
+                          controller: _calendarController,
+                          cellAspectRatio: 2.5 / 1,
+                          cellBuilder: (date, event, isToday, isInMonth) {
+                            final hasSchedule = data.any((sched) {
+                              final temp = sched.scheduleDay!.toDate();
+                              final schedDate = DateTime(
+                                temp.year,
+                                temp.month,
+                                temp.day,
+                              );
 
-                              return Container(
-                                decoration: BoxDecoration(
-                                  color: hasSchedule
-                                      ? UColors.orange100
-                                      : UColors.white,
-                                  borderRadius: BorderRadius.circular(
-                                    USpace.space8,
-                                  ),
-                                  border: Border.all(
-                                    color: hasSchedule
-                                        ? UColors.orange300
-                                        : UColors.white,
-                                  ),
+                              return schedDate == date;
+                            });
+
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: hasSchedule
+                                    ? UColors.orange100
+                                    : UColors.white,
+                                borderRadius: BorderRadius.circular(
+                                  USpace.space8,
                                 ),
-                                child: Center(
-                                  child: Text(
+                                border: Border.all(
+                                  color: hasSchedule
+                                      ? UColors.orange300
+                                      : UColors.white,
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
                                     date.day.toString(),
                                     style: TextStyle(
                                       color: hasSchedule
@@ -211,65 +183,69 @@ class _EnforcerSchedulePageState extends ConsumerState<EnforcerSchedulePage> {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                ),
-                              );
-                            },
-                            loading: () {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            },
-                            error: (error, stackTrace) {
-                              return Center(
-                                child: Text(
-                                  error.toString(),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        onCellTap: (events, date) {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                child: ShowScheduleModal(
-                                  day: date.toTimestamp,
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        headerBuilder: (date) {
-                          return Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  _calendarKey.currentState!.previousPage();
-                                },
-                                icon: const Icon(Icons.arrow_back_ios),
+                                  hasSchedule
+                                      ? const Icon(
+                                          Icons.check_circle_outline,
+                                          color: UColors.orange300,
+                                        )
+                                      : const SizedBox.shrink(),
+                                ],
                               ),
-                              Expanded(
-                                child: Center(
-                                  child: Text(
-                                    date.toMonthYear,
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
+                            );
+                          },
+                          onCellTap: (events, date) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  child: ShowScheduleModal(
+                                    day: date.toTimestamp,
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          headerBuilder: (date) {
+                            return Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    _calendarKey.currentState!.previousPage();
+                                  },
+                                  icon: const Icon(Icons.arrow_back_ios),
+                                ),
+                                Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      date.toMonthYear,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              IconButton(
-                                onPressed: () {
-                                  _calendarKey.currentState!.nextPage();
-                                },
-                                icon: const Icon(Icons.arrow_forward_ios),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
+                                IconButton(
+                                  onPressed: () {
+                                    _calendarKey.currentState!.nextPage();
+                                  },
+                                  icon: const Icon(Icons.arrow_forward_ios),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }, error: (error, stackTrace) {
+                        return Center(
+                          child: Text(
+                            error.toString(),
+                          ),
+                        );
+                      }, loading: () {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }),
                     ),
                   ),
                 ),
@@ -510,6 +486,8 @@ final getAllSchedulesByDay = StreamProvider.autoDispose
   return EnforcerScheduleDatabse.instance.getAllEnforcerScheduleByDay(day);
 });
 
-final hasScheduleProvider = FutureProvider.family<bool, Timestamp>((ref, day) {
-  return EnforcerScheduleDatabse.instance.hasSchedule(day);
-});
+final getAllSchedules = StreamProvider<List<EnforcerSchedule>>(
+  (ref) {
+    return EnforcerScheduleDatabse.instance.getAllEnforcerSched();
+  },
+);

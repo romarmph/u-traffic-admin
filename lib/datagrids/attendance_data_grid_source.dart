@@ -6,7 +6,9 @@ import 'package:u_traffic_admin/model/attendance.dart';
 class AttendanceDataGridSource extends DataGridSource {
   AttendanceDataGridSource(
     this.attendance,
-  ) {}
+  ) {
+    buildDataGridRows();
+  }
 
   List<Attendance> attendance;
 

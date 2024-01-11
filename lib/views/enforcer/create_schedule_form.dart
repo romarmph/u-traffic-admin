@@ -98,12 +98,8 @@ class CreateEnforcerSchedFormState
                           onTap: () async {
                             final DateTime? date = await showDatePicker(
                               context: context,
-                              initialDate: DateTime.now().add(
-                                const Duration(days: 1),
-                              ),
-                              firstDate: DateTime.now().add(
-                                const Duration(days: 1),
-                              ),
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
                               lastDate: DateTime.now().add(
                                 const Duration(days: 365),
                               ),
