@@ -535,6 +535,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                     onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         final admin = ref.watch(currentAdminProvider);
+                        print(checkerController.text);
                         await _createDocument(
                           admin,
                           'pdf',
@@ -672,11 +673,11 @@ class _TicketPageState extends ConsumerState<TicketPage> {
     PdfPage pdfPage = document.pages.add();
 
     pdfPage.defaultLayer.graphics.drawString(
-      'Public Order and Safety Division',
+      'Republic of the Philippines',
       PdfStandardFont(
         PdfFontFamily.helvetica,
         16,
-        style: PdfFontStyle.bold,
+        style: PdfFontStyle.regular,
       ),
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
@@ -684,10 +685,10 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       bounds: const Rect.fromLTWH(0, 32, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
-      'Urdaneta City, Pangasinan',
+      'Province of Pangasinan',
       PdfStandardFont(
         PdfFontFamily.helvetica,
-        12,
+        14,
         style: PdfFontStyle.regular,
       ),
       format: PdfStringFormat(
@@ -696,17 +697,30 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       bounds: const Rect.fromLTWH(0, 54, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
-      'Ticket Report',
+      'Public Order and Safety Division',
       PdfStandardFont(
         PdfFontFamily.helvetica,
-        22,
+        20,
         style: PdfFontStyle.bold,
       ),
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
       ),
-      bounds: const Rect.fromLTWH(0, 0, 762, 100),
+      bounds: const Rect.fromLTWH(0, 72, 762, 100),
     );
+    pdfPage.defaultLayer.graphics.drawString(
+      'Urdaneta City, Pangasinan',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        14,
+        style: PdfFontStyle.regular,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.center,
+      ),
+      bounds: const Rect.fromLTWH(0, 96, 762, 100),
+    );
+
     pdfPage.defaultLayer.graphics.drawString(
       title,
       PdfStandardFont(
@@ -717,7 +731,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
       ),
-      bounds: const Rect.fromLTWH(0, 100, 762, 100),
+      bounds: const Rect.fromLTWH(0, 150, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
       'Date prepared: ${DateTime.now().toTimestamp.toAmericanDate}',
@@ -824,7 +838,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
 
       PdfPage page = document.pages[i];
       page.graphics.drawString(
-        'Page $i of ${document.pages.count - 1}      Prepared by: Romar Macaraeg       Checked by: Marbert Cerda       ${DateTime.now().toTimestamp.toAmericanDate}',
+        'Page $i of ${document.pages.count - 1}      Prepared by: Romar Macaraeg       Checked by: $checker       ${DateTime.now().toTimestamp.toAmericanDate}',
         PdfStandardFont(
           PdfFontFamily.helvetica,
           8,

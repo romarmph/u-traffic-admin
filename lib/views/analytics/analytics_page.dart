@@ -1098,7 +1098,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
 
       PdfPage page = document.pages[i];
       page.graphics.drawString(
-        'Page $i of ${document.pages.count - 1}      Prepared by: Romar Macaraeg       Checked by: Marbert Cerda       ${DateTime.now().toTimestamp.toAmericanDate}',
+        'Page $i of ${document.pages.count - 1}      Prepared by: Romar Macaraeg       Checked by: $checker       ${DateTime.now().toTimestamp.toAmericanDate}',
         PdfStandardFont(
           PdfFontFamily.helvetica,
           8,
