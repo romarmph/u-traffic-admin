@@ -195,17 +195,4 @@ class EnforcerScheduleDatabse {
       rethrow;
     }
   }
-
-  Future<bool> hasSchedule(Timestamp day) {
-    try {
-      return _enforcerSchedRef
-          .where('scheduleDay', isEqualTo: day)
-          .get()
-          .then((value) {
-        return value.docs.isNotEmpty;
-      });
-    } catch (e) {
-      rethrow;
-    }
-  }
 }
