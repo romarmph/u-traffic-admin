@@ -210,7 +210,6 @@ class TicketAggregates {
         .where('dateCreated', isLessThanOrEqualTo: endTimestamp)
         .get();
 
-    // Iterate over each document
     for (var doc in querySnapshot.docs) {
       Timestamp timestamp = doc['dateCreated'];
       DateTime dateTime = timestamp.toDate();
@@ -272,20 +271,16 @@ class TicketAggregates {
   Stream<List<ColumnDataChart>> getYearlyChartDataAggregate(
       String yearString) async* {
     int year = int.parse(yearString);
-    // Get a reference to the Firestore instance
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    // Initialize the map with all months in the year and set count to 0
     Map<String, int> yearlyTicketCount = {};
     for (int month = 1; month <= 12; month++) {
       String monthString = DateFormat('yyyy-MM').format(DateTime(year, month));
       yearlyTicketCount[monthString] = 0;
     }
 
-    // Get the tickets collection
     CollectionReference tickets = firestore.collection('tickets');
 
-    // Get the documents created in the specified year
     QuerySnapshot querySnapshot = await tickets
         .where('dateCreated',
             isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime(year, 1, 1)))
@@ -293,25 +288,166 @@ class TicketAggregates {
             isLessThanOrEqualTo: Timestamp.fromDate(DateTime(year, 12, 31)))
         .get();
 
-    // Iterate over each document
     for (var doc in querySnapshot.docs) {
-      // Get the dateCreated field and convert it to a month string
       Timestamp timestamp = doc['dateCreated'];
       DateTime dateTime = timestamp.toDate();
       String monthString = DateFormat('yyyy-MM').format(dateTime);
 
-      // Increment the count for the corresponding month
       yearlyTicketCount.update(monthString, (count) => count + 1);
     }
 
-    // Convert the map to a list of ColumnDataChart objects
     List<ColumnDataChart> chartData = yearlyTicketCount.entries.map((entry) {
       return ColumnDataChart(column: entry.key, count: entry.value);
     }).toList();
 
-    print(chartData.first.column);
+    yield chartData;
+  }
 
-    // Yield the list of ColumnDataChart objects
+  Stream<List<ColumnDataChart>> mostIssuedViolations(
+      DateTime start, DateTime end) async* {
+    Timestamp startTimestamp = Timestamp.fromDate(start);
+    Timestamp endTimestamp = Timestamp.fromDate(end);
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    CollectionReference violations = firestore.collection('violations');
+
+    QuerySnapshot violationSnapshot = await violations.get();
+
+    Map<String, int> violationCount = {};
+    for (var doc in violationSnapshot.docs) {
+      String violationName = doc['name'];
+      violationCount[violationName] = 0;
+    }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot ticketSnapshot = await tickets
+        .where('dateCreated', isGreaterThanOrEqualTo: startTimestamp)
+        .where('dateCreated', isLessThanOrEqualTo: endTimestamp)
+        .get();
+
+    for (var doc in ticketSnapshot.docs) {
+      List<IssuedViolation> issuedViolations = [];
+
+      for (var issuedViolation in doc['issuedViolations']) {
+        issuedViolations.add(IssuedViolation.fromJson(issuedViolation));
+      }
+
+      for (var violation in issuedViolations) {
+        String violationName = violation.violation;
+
+        if (violationCount.containsKey(violationName)) {
+          violationCount.update(violationName, (count) => count + 1);
+        }
+      }
+    }
+
+    List<ColumnDataChart> chartData = violationCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
+  }
+
+  Stream<List<ColumnDataChart>> getMonthViolationData(
+      String monthName, String yearString) async* {
+    DateFormat format = DateFormat("MMMM yyyy");
+    DateTime dateTime = format.parse("$monthName $yearString");
+    int year = dateTime.year;
+    int month = dateTime.month;
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    CollectionReference violations = firestore.collection('violations');
+
+    QuerySnapshot violationSnapshot = await violations.get();
+
+    Map<String, int> violationCount = {};
+    for (var doc in violationSnapshot.docs) {
+      String violationName = doc['name'];
+      violationCount[violationName] = 0;
+    }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot ticketSnapshot = await tickets
+        .where('dateCreated',
+            isGreaterThanOrEqualTo:
+                Timestamp.fromDate(DateTime(year, month, 1)))
+        .where('dateCreated',
+            isLessThanOrEqualTo: Timestamp.fromDate(
+                DateTime(year, month, DateTime(year, month + 1, 0).day)))
+        .get();
+
+    for (var doc in ticketSnapshot.docs) {
+      List<IssuedViolation> issuedViolations = [];
+
+      for (var val in doc['issuedViolations']) {
+        issuedViolations.add(IssuedViolation.fromJson(val));
+      }
+
+      for (var violation in issuedViolations) {
+        String violationName = violation.violation;
+
+        if (violationCount.containsKey(violationName)) {
+          violationCount.update(violationName, (count) => count + 1);
+        }
+      }
+    }
+
+    List<ColumnDataChart> chartData = violationCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
+  }
+
+  Stream<List<ColumnDataChart>> getYearlyViolationData(
+      String yearString) async* {
+    int year = int.parse(yearString);
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    CollectionReference violations = firestore.collection('violations');
+
+    QuerySnapshot violationSnapshot = await violations.get();
+
+    Map<String, int> violationCount = {};
+    for (var doc in violationSnapshot.docs) {
+      String violationName = doc['name'];
+      violationCount[violationName] = 0;
+    }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot ticketSnapshot = await tickets
+        .where('dateCreated',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime(year, 1, 1)))
+        .where('dateCreated',
+            isLessThanOrEqualTo: Timestamp.fromDate(DateTime(year, 12, 31)))
+        .get();
+
+    for (var doc in ticketSnapshot.docs) {
+      List<IssuedViolation> issuedViolations = [];
+
+      for (var val in doc['issuedViolations']) {
+        issuedViolations.add(IssuedViolation.fromJson(val));
+      }
+
+      for (var violation in issuedViolations) {
+        String violationName = violation.violation;
+
+        if (violationCount.containsKey(violationName)) {
+          violationCount.update(violationName, (count) => count + 1);
+        }
+      }
+    }
+
+    List<ColumnDataChart> chartData = violationCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
     yield chartData;
   }
 }

@@ -6,8 +6,10 @@ class UDateRangePickerDialog extends ConsumerWidget {
   const UDateRangePickerDialog({
     super.key,
     this.onSubmit,
+    this.hideDropdown = false,
   });
 
+  final bool hideDropdown;
   final dynamic Function(Object?)? onSubmit;
 
   @override
@@ -25,18 +27,26 @@ class UDateRangePickerDialog extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          StatusTypeDropDown(
-            statusList: const [
-              'Date Issued',
-              'Due Date',
-            ],
-            onChanged: (value) {
-              ref.read(dateType.notifier).state = value!;
-            },
-            value: ref.watch(dateType),
-          ),
-          const SizedBox(
-            height: 16,
+          Visibility(
+            visible: !hideDropdown,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                StatusTypeDropDown(
+                  statusList: const [
+                    'Date Issued',
+                    'Due Date',
+                  ],
+                  onChanged: (value) {
+                    ref.read(dateType.notifier).state = value!;
+                  },
+                  value: ref.watch(dateType),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+              ],
+            ),
           ),
           SizedBox(
             height: 400,

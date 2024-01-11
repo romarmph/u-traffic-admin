@@ -128,10 +128,41 @@ final ticketsColumnChartProvider = StreamProvider<List<ColumnDataChart>>((
   }
 });
 
+final violationsColumnChartProvider = StreamProvider<List<ColumnDataChart>>((
+  ref,
+) {
+  final columngChartRange = ref.watch(columnRangeProvider);
+  final dateRange = ref.watch(violationDateRangePicker);
+  final month = ref.watch(violationMonthProvider);
+  final year = ref.watch(violationYearProvider);
+
+  if (columngChartRange == 'daily') {
+    return TicketAggregates.instance.mostIssuedViolations(
+      dateRange.startDate!,
+      dateRange.endDate!,
+    );
+  } else if (columngChartRange == 'by month') {
+    return TicketAggregates.instance.getMonthViolationData(
+      month,
+      year,
+    );
+  } else {
+    return TicketAggregates.instance.getYearlyViolationData(year);
+  }
+});
+
 final monthProvider = StateProvider<String>((ref) {
   return 'January';
 });
 
 final yearProvider = StateProvider<String>((ref) {
+  return '2023';
+});
+
+final violationMonthProvider = StateProvider<String>((ref) {
+  return 'January';
+});
+
+final violationYearProvider = StateProvider<String>((ref) {
   return '2023';
 });
