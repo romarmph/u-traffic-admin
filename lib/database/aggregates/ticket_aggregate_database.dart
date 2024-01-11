@@ -1,3 +1,4 @@
+import 'package:flutter/semantics.dart';
 import 'package:u_traffic_admin/config/exports/exports.dart';
 import 'package:u_traffic_admin/model/daily_dart_data.dart';
 import 'package:u_traffic_admin/model/date_range.dart';
@@ -188,106 +189,129 @@ class TicketAggregates {
     }
   }
 
-  Stream<List<ColumnDataChart>> getDailyChartDataAggregate() async* {
-    try {
-      final now = DateTime.now();
+  Stream<List<ColumnDataChart>> getDailyChartDataAggregate(
+      DateTime start, DateTime end) async* {
+    Timestamp startTimestamp = Timestamp.fromDate(start);
+    Timestamp endTimestamp = Timestamp.fromDate(end);
 
-      List<ColumnDataChart> aggregates = [];
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      for (var i = 0; i < 30; i++) {
-        final startOfDay = DateTime(now.year, now.month, now.day - i);
-        final endOfDay = DateTime(now.year, now.month, now.day - i, 23, 59, 59);
-
-        final result = await _collection
-            .where('dateCreated',
-                isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay))
-            .where('dateCreated',
-                isLessThanOrEqualTo: Timestamp.fromDate(endOfDay))
-            .count()
-            .get();
-
-        aggregates.add(
-          ColumnDataChart(
-            column: startOfDay.day.toString(),
-            count: result.count,
-          ),
-        );
-      }
-
-      yield aggregates;
-    } on FirebaseException {
-      rethrow;
-    } catch (e) {
-      rethrow;
+    Map<String, int> dailyTicketCount = {};
+    for (int i = 0; i <= end.difference(start).inDays; i++) {
+      String dateString =
+          DateFormat('yyyy-MM-dd').format(start.add(Duration(days: i)));
+      dailyTicketCount[dateString] = 0;
     }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot querySnapshot = await tickets
+        .where('dateCreated', isGreaterThanOrEqualTo: startTimestamp)
+        .where('dateCreated', isLessThanOrEqualTo: endTimestamp)
+        .get();
+
+    // Iterate over each document
+    for (var doc in querySnapshot.docs) {
+      Timestamp timestamp = doc['dateCreated'];
+      DateTime dateTime = timestamp.toDate();
+      String dateString = DateFormat('yyyy-MM-dd').format(dateTime);
+
+      dailyTicketCount.update(dateString, (count) => count + 1);
+    }
+
+    List<ColumnDataChart> chartData = dailyTicketCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
   }
 
-  Stream<List<ColumnDataChart>> getMonthlyChartDataAggregate() async* {
-    try {
-      final now = DateTime.now();
+  Stream<List<ColumnDataChart>> getMonthlyChartDataAggregate(
+    String monthName,
+    String yearString,
+  ) async* {
+    int month = monthName.month;
+    int year = int.parse(yearString);
 
-      final currentMonth = now.month;
-      List<ColumnDataChart> aggregates = [];
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      for (var i = 1; i <= currentMonth; i++) {
-        final startOfMonth = DateTime(now.year, i, 0, 0, 0, 0, 0);
-        final endOfMonth = DateTime(now.year, i + 1, 0, 0, 0, 0, 0, 0);
-
-        final result = await _collection
-            .where('dateCreated',
-                isGreaterThanOrEqualTo: Timestamp.fromDate(startOfMonth))
-            .where('dateCreated',
-                isLessThanOrEqualTo: Timestamp.fromDate(endOfMonth))
-            .count()
-            .get();
-
-        aggregates.add(
-          ColumnDataChart(
-            column: DateFormat.MMMM().format(startOfMonth),
-            count: result.count,
-          ),
-        );
-      }
-
-      yield aggregates;
-    } on FirebaseException {
-      rethrow;
-    } catch (e) {
-      rethrow;
+    Map<String, int> monthlyTicketCount = {};
+    int daysInMonth = DateTime(year, month + 1, 0).day;
+    for (int day = 1; day <= daysInMonth; day++) {
+      String dateString =
+          DateFormat('yyyy-MM-dd').format(DateTime(year, month, day));
+      monthlyTicketCount[dateString] = 0;
     }
+
+    CollectionReference tickets = firestore.collection('tickets');
+
+    QuerySnapshot querySnapshot = await tickets
+        .where('dateCreated',
+            isGreaterThanOrEqualTo:
+                Timestamp.fromDate(DateTime(year, month, 1)))
+        .where('dateCreated',
+            isLessThanOrEqualTo:
+                Timestamp.fromDate(DateTime(year, month, daysInMonth)))
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      Timestamp timestamp = doc['dateCreated'];
+      DateTime dateTime = timestamp.toDate();
+      String dateString = DateFormat('yyyy-MM-dd').format(dateTime);
+
+      monthlyTicketCount.update(dateString, (count) => count + 1);
+    }
+
+    List<ColumnDataChart> chartData = monthlyTicketCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    yield chartData;
   }
 
-  Stream<List<ColumnDataChart>> getYearlyChartDataAggregate() async* {
-    try {
-      final now = DateTime.now();
+  Stream<List<ColumnDataChart>> getYearlyChartDataAggregate(
+      String yearString) async* {
+    int year = int.parse(yearString);
+    // Get a reference to the Firestore instance
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-      final currentYear = now.year;
-      List<ColumnDataChart> aggregates = [];
-
-      for (var i = 2019; i <= currentYear; i++) {
-        final startOfYear = DateTime(i, 1, 1, 0, 0, 0);
-        final endOfYear = DateTime(i + 1, 1, 1, 0, 0, 0);
-
-        final result = await _collection
-            .where('dateCreated',
-                isGreaterThanOrEqualTo: Timestamp.fromDate(startOfYear))
-            .where('dateCreated', isLessThan: Timestamp.fromDate(endOfYear))
-            .count()
-            .get();
-
-        aggregates.add(
-          ColumnDataChart(
-            column: i.toString(),
-            count: result.count,
-          ),
-        );
-      }
-
-      yield aggregates;
-    } on FirebaseException {
-      rethrow;
-    } catch (e) {
-      rethrow;
+    // Initialize the map with all months in the year and set count to 0
+    Map<String, int> yearlyTicketCount = {};
+    for (int month = 1; month <= 12; month++) {
+      String monthString = DateFormat('yyyy-MM').format(DateTime(year, month));
+      yearlyTicketCount[monthString] = 0;
     }
+
+    // Get the tickets collection
+    CollectionReference tickets = firestore.collection('tickets');
+
+    // Get the documents created in the specified year
+    QuerySnapshot querySnapshot = await tickets
+        .where('dateCreated',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(DateTime(year, 1, 1)))
+        .where('dateCreated',
+            isLessThanOrEqualTo: Timestamp.fromDate(DateTime(year, 12, 31)))
+        .get();
+
+    // Iterate over each document
+    for (var doc in querySnapshot.docs) {
+      // Get the dateCreated field and convert it to a month string
+      Timestamp timestamp = doc['dateCreated'];
+      DateTime dateTime = timestamp.toDate();
+      String monthString = DateFormat('yyyy-MM').format(dateTime);
+
+      // Increment the count for the corresponding month
+      yearlyTicketCount.update(monthString, (count) => count + 1);
+    }
+
+    // Convert the map to a list of ColumnDataChart objects
+    List<ColumnDataChart> chartData = yearlyTicketCount.entries.map((entry) {
+      return ColumnDataChart(column: entry.key, count: entry.value);
+    }).toList();
+
+    print(chartData.first.column);
+
+    // Yield the list of ColumnDataChart objects
+    yield chartData;
   }
 }

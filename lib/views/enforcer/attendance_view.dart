@@ -66,7 +66,6 @@ class EnforcerAttendancePage extends ConsumerWidget {
                         .watch(attendanceProvider(ref.watch(dayProvider)))
                         .when(
                           data: (attendance) {
-                            print(attendance);
                             return DataGridContainer(
                               constraints: constraints,
                               source: AttendanceDataGridSource(

@@ -109,12 +109,29 @@ final ticketsColumnChartProvider = StreamProvider<List<ColumnDataChart>>((
   ref,
 ) {
   final columngChartRange = ref.watch(columnRangeProvider);
+  final dateRange = ref.watch(dailyTicketRangeProvider);
+  final month = ref.watch(monthProvider);
+  final year = ref.watch(yearProvider);
 
   if (columngChartRange == 'daily') {
-    return TicketAggregates.instance.getDailyChartDataAggregate();
-  } else if (columngChartRange == 'monthly') {
-    return TicketAggregates.instance.getMonthlyChartDataAggregate();
+    return TicketAggregates.instance.getDailyChartDataAggregate(
+      dateRange.startDate!,
+      dateRange.endDate!,
+    );
+  } else if (columngChartRange == 'by month') {
+    return TicketAggregates.instance.getMonthlyChartDataAggregate(
+      month,
+      year,
+    );
   } else {
-    return TicketAggregates.instance.getYearlyChartDataAggregate();
+    return TicketAggregates.instance.getYearlyChartDataAggregate(year);
   }
+});
+
+final monthProvider = StateProvider<String>((ref) {
+  return 'January';
+});
+
+final yearProvider = StateProvider<String>((ref) {
+  return '2023';
 });

@@ -8,6 +8,8 @@ import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as excel;
 import 'package:u_traffic_admin/config/exports/exports.dart';
 
+import 'package:u_traffic_admin/views/common/widgets/date_range_picker.dart';
+
 final dateRangeProvider = StateProvider<PickerDateRange?>((ref) => null);
 final dateType = StateProvider<String>((ref) => 'Date Issued');
 final violationFilter = StateProvider<List<Violation>>((ref) => []);
@@ -129,7 +131,7 @@ class _TicketPageState extends ConsumerState<TicketPage> {
                                   context: context,
                                   builder: (context) {
                                     return Dialog(
-                                      child: DateRangePickerDialog(
+                                      child: UDateRangePickerDialog(
                                         onSubmit: (value) {
                                           if (value == null) {
                                             return;
@@ -911,63 +913,6 @@ class ViolationFilterDialog extends ConsumerWidget {
                 Navigator.pop(context);
               },
               child: const Text('Close'),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class DateRangePickerDialog extends ConsumerWidget {
-  const DateRangePickerDialog({
-    super.key,
-    this.onSubmit,
-  });
-
-  final dynamic Function(Object?)? onSubmit;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      width: 500,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          USpace.space8,
-        ),
-        color: UColors.white,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          StatusTypeDropDown(
-            statusList: const [
-              'Date Issued',
-              'Due Date',
-            ],
-            onChanged: (value) {
-              ref.read(dateType.notifier).state = value!;
-            },
-            value: ref.watch(dateType),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          SizedBox(
-            height: 400,
-            width: 400,
-            child: SfDateRangePicker(
-              selectionMode: DateRangePickerSelectionMode.range,
-              showActionButtons: true,
-              onCancel: () {
-                Navigator.pop(context);
-              },
-              headerStyle: const DateRangePickerHeaderStyle(
-                textAlign: TextAlign.center,
-              ),
-              onSubmit: onSubmit,
             ),
           ),
         ],
