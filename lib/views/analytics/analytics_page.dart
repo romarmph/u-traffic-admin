@@ -946,11 +946,11 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
     PdfPage pdfPage = document.pages.add();
 
     pdfPage.defaultLayer.graphics.drawString(
-      'Public Order and Safety Division',
+      'Republic of the Philippines',
       PdfStandardFont(
         PdfFontFamily.helvetica,
         16,
-        style: PdfFontStyle.bold,
+        style: PdfFontStyle.regular,
       ),
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
@@ -958,10 +958,10 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
       bounds: const Rect.fromLTWH(0, 32, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
-      'Urdaneta City, Pangasinan',
+      'Province of Pangasinan',
       PdfStandardFont(
         PdfFontFamily.helvetica,
-        12,
+        14,
         style: PdfFontStyle.regular,
       ),
       format: PdfStringFormat(
@@ -970,16 +970,28 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
       bounds: const Rect.fromLTWH(0, 54, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
-      'Ticket Report',
+      'Public Order and Safety Division',
       PdfStandardFont(
         PdfFontFamily.helvetica,
-        22,
+        20,
         style: PdfFontStyle.bold,
       ),
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
       ),
-      bounds: const Rect.fromLTWH(0, 0, 762, 100),
+      bounds: const Rect.fromLTWH(0, 72, 762, 100),
+    );
+    pdfPage.defaultLayer.graphics.drawString(
+      'Urdaneta City, Pangasinan',
+      PdfStandardFont(
+        PdfFontFamily.helvetica,
+        14,
+        style: PdfFontStyle.regular,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.center,
+      ),
+      bounds: const Rect.fromLTWH(0, 96, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
       title,
@@ -991,7 +1003,7 @@ class _AnalyticsPageState extends ConsumerState<AnalyticsPage> {
       format: PdfStringFormat(
         alignment: PdfTextAlignment.center,
       ),
-      bounds: const Rect.fromLTWH(0, 100, 762, 100),
+      bounds: const Rect.fromLTWH(0, 150, 762, 100),
     );
     pdfPage.defaultLayer.graphics.drawString(
       'Date prepared: ${DateTime.now().toTimestamp.toAmericanDate}',
