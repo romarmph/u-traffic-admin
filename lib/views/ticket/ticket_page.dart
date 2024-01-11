@@ -300,6 +300,20 @@ class _TicketPageState extends ConsumerState<TicketPage> {
 
                             data = _filterBySelectedViolations(data);
 
+                            Map<TicketStatus, int> statusOrder = {
+                              TicketStatus.overdue: 1,
+                              TicketStatus.unpaid: 2,
+                              TicketStatus.paid: 3,
+                              TicketStatus.cancelled: 4,
+                            };
+
+                            List<Ticket> tickets = data;
+
+                            tickets.sort((a, b) => statusOrder[a.status]!
+                                .compareTo(statusOrder[b.status]!));
+
+                            data = tickets;
+
                             return DataGridContainer(
                               onCellTap: (details) {
                                 if (details.rowColumnIndex.rowIndex == 0) {

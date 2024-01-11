@@ -84,7 +84,7 @@ List<GridColumn> ticketGridColumns = [
     columnName: TicketGridFields.totalFine,
     label: const Center(
       child: Text(
-        'Fina Amount',
+        'Fine Amount',
         style: TextStyle(
           color: UColors.gray500,
           fontWeight: FontWeight.w600,

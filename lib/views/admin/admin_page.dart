@@ -153,7 +153,11 @@ class _AdminPageState extends ConsumerState<AdminPage> {
                             width: 16,
                           ),
                           UElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                Routes.adminStaffsCreate,
+                              );
+                            },
                             child: const Text('Add Admin'),
                           ),
                         ],
