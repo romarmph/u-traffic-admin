@@ -54,11 +54,11 @@ class AttendanceDataGridSource extends DataGridSource {
         ),
         DataGridCell<String>(
           columnName: AttendanceGridFields.timeIn,
-          value: attendance.timeIn.toAmericanDate,
+          value: attendance.timeIn.toAmericanDateWithTime,
         ),
         DataGridCell<String>(
           columnName: AttendanceGridFields.timeOut,
-          value: attendance.timeOut.toAmericanDate,
+          value: attendance.timeOut.toAmericanDateWithTime,
         ),
       ]);
     }).toList(growable: false);
