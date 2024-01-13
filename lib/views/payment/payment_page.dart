@@ -203,6 +203,16 @@ class _PaymentHomePageState extends ConsumerState<PaymentHomePage>
                                 paymentSearchQueryProvider,
                               );
                               return DataGridContainer(
+                                onCellTap: (details) {
+                                  if (details.rowColumnIndex.rowIndex == 0) {
+                                    return;
+                                  }
+                                  goToTicketView(
+                                    data[details.rowColumnIndex.rowIndex - 1]
+                                        .id!,
+                                    Routes.tickets,
+                                  );
+                                },
                                 height: constraints.maxHeight -
                                     60 -
                                     appBarHeight -

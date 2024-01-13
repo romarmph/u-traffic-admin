@@ -5,6 +5,10 @@ extension TimestampExtension on Timestamp {
     return DateFormat('MMM dd,yyyy').format(toDate());
   }
 
+  String get toAmericanDateWithTime {
+    return DateFormat('MMM dd,yyyy - hh:mm a').format(toDate());
+  }
+
   String get toTime {
     return DateFormat('hh:mm a').format(toDate());
   }
