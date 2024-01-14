@@ -58,7 +58,9 @@ class AttendanceDataGridSource extends DataGridSource {
         ),
         DataGridCell<String>(
           columnName: AttendanceGridFields.timeOut,
-          value: attendance.timeOut.toAmericanDateWithTime,
+          value: attendance.timeOut == null
+              ? ''
+              : attendance.timeOut!.toAmericanDateWithTime,
         ),
       ]);
     }).toList(growable: false);
