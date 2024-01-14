@@ -4,8 +4,7 @@ class Attendance {
   final String? id;
   final EnforcerSchedule schedule;
   final Timestamp timeIn;
-  final Timestamp timeOut;
-
+  final Timestamp? timeOut;
 
   Attendance({
     this.id,
