@@ -266,6 +266,46 @@ class ShowScheduleModal extends ConsumerWidget {
 
   final Timestamp day;
 
+  void _deleteSchedule(String id) async {
+    final result = await QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.confirm,
+      title: 'Delete Schedule',
+      text: 'Are you sure you want to delete this schedule?',
+      onConfirmBtnTap: () {
+        Navigator.of(navigatorKey.currentContext!).pop(true);
+      },
+    );
+
+    if (result != true) {
+      return;
+    }
+
+    QuickAlert.show(
+      context: navigatorKey.currentContext!,
+      type: QuickAlertType.loading,
+    );
+
+    try {
+      await EnforcerScheduleDatabse.instance.deleteEnforcerSched(id);
+      Navigator.of(navigatorKey.currentContext!).pop();
+      QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.success,
+        title: 'Success',
+        text: 'Schedule successfully deleted',
+      );
+    } catch (e) {
+      Navigator.of(navigatorKey.currentContext!).pop();
+      QuickAlert.show(
+        context: navigatorKey.currentContext!,
+        type: QuickAlertType.error,
+        title: 'Error',
+        text: e.toString(),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
@@ -323,8 +363,14 @@ class ShowScheduleModal extends ConsumerWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  _deleteSchedule(schedules[index].id!);
+                                },
+                                icon: const Icon(Icons.delete),
+                              ),
                               subtitle: Text(
-                                schedules[index].shift.name.toUpperCase(),
+                                "${schedules[index].shift.name.toUpperCase()} - ${schedules[index].postName}",
                                 style: const TextStyle(
                                   fontSize: 14,
                                 ),
@@ -378,8 +424,14 @@ class ShowScheduleModal extends ConsumerWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  _deleteSchedule(schedules[index].id!);
+                                },
+                                icon: const Icon(Icons.delete),
+                              ),
                               subtitle: Text(
-                                schedules[index].shift.name.toUpperCase(),
+                                "${schedules[index].shift.name.toUpperCase()} - ${schedules[index].postName}",
                                 style: const TextStyle(
                                   fontSize: 14,
                                 ),
@@ -433,8 +485,14 @@ class ShowScheduleModal extends ConsumerWidget {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
+                              trailing: IconButton(
+                                onPressed: () {
+                                  _deleteSchedule(schedules[index].id!);
+                                },
+                                icon: const Icon(Icons.delete),
+                              ),
                               subtitle: Text(
-                                schedules[index].shift.name.toUpperCase(),
+                                "${schedules[index].shift.name.toUpperCase()} - ${schedules[index].postName}",
                                 style: const TextStyle(
                                   fontSize: 14,
                                 ),
